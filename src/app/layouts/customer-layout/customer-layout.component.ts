@@ -27,9 +27,9 @@ interface NavItem {
     <div class="min-h-full flex flex-col">
       <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30">
         <div class="container-app flex h-16 items-center gap-4">
-          <a routerLink="/" class="flex items-center gap-2 font-semibold text-slate-900 dark:text-slate-100">
-            <span class="inline-block h-8 w-8 rounded-lg bg-brand-600"></span>
-            <span class="hidden sm:inline">Car Rental</span>
+          <a routerLink="/" class="flex items-center gap-3 font-black text-slate-900 dark:text-slate-100 group">
+            <span class="inline-block h-10 w-10 rounded-xl bg-brand-600 shadow-lg shadow-brand-500/30 group-hover:scale-105 transition-transform"></span>
+            <span class="hidden sm:inline text-2xl tracking-tight">{{ 'common.company_name' | t }}<span class="text-brand-600 text-3xl leading-none">.</span></span>
           </a>
 
           <nav class="hidden md:flex items-center gap-1 ml-6">

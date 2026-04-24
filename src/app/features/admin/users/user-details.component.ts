@@ -10,21 +10,23 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { SpinnerComponent } from '../../../shared/components/spinner/spinner.component';
+import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
+import { LanguageService } from '../../../core/services/language.service';
 import { User } from '../../../models/user.model';
 import { AdminUsersService } from './admin-users.service';
 
 @Component({
   selector: 'app-admin-user-details',
   standalone: true,
-  imports: [RouterLink, DatePipe, SpinnerComponent],
+  imports: [RouterLink, DatePipe, SpinnerComponent, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="flex flex-col gap-6">
       <nav class="flex items-center gap-2 text-sm text-slate-500">
-        <a routerLink="/admin/users" class="hover:text-brand-700">Users</a>
-        <span>/</span>
+        <a routerLink="/admin/users" class="hover:text-brand-700">{{ 'users.title' | t }}</a>
+        <span class="rtl:-scale-x-100">/</span>
         <span class="text-slate-900 font-medium">
-          {{ user()?.name ?? 'User details' }}
+          {{ user()?.name ?? ('users.details.title' | t) }}
         </span>
       </nav>
 
@@ -41,8 +43,8 @@ import { AdminUsersService } from './admin-users.service';
           </svg>
           <p class="text-base font-medium text-slate-900">{{ error() }}</p>
           <div class="flex items-center gap-2">
-            <a routerLink="/admin/users" class="btn-secondary">Back to users</a>
-            <button type="button" class="btn-primary" (click)="load()">Retry</button>
+            <a routerLink="/admin/users" class="btn-secondary">{{ 'users.details.back' | t }}</a>
+            <button type="button" class="btn-primary" (click)="load()">{{ 'common.retry' | t }}</button>
           </div>
         </div>
       } @else {
@@ -55,8 +57,8 @@ import { AdminUsersService } from './admin-users.service';
               {{ initialsFor(u.name) }}
             </div>
             <div>
-              <h1 class="text-2xl font-semibold text-slate-900">{{ u.name }}</h1>
-              <p class="text-sm text-slate-500">{{ u.email }}</p>
+              <h1 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">{{ u.name }}</h1>
+              <p class="text-sm text-slate-500 dark:text-slate-400">{{ u.email }}</p>
             </div>
           </div>
           <span
@@ -66,53 +68,53 @@ import { AdminUsersService } from './admin-users.service';
             [class.bg-slate-100]="u.role !== 'admin'"
             [class.text-slate-700]="u.role !== 'admin'"
           >
-            {{ u.role }}
+            {{ 'users.filters.role_' + u.role | t }}
           </span>
         </header>
 
         <div class="grid gap-4 md:grid-cols-2">
           <article class="card">
-            <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">
-              Account
+            <h2 class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-4">
+              {{ 'users.details.account' | t }}
             </h2>
             <dl class="space-y-3 text-sm">
               <div class="flex justify-between gap-4">
-                <dt class="text-slate-500">ID</dt>
-                <dd class="font-medium text-slate-900">{{ u.id }}</dd>
+                <dt class="text-slate-500 dark:text-slate-400">{{ 'users.details.id' | t }}</dt>
+                <dd class="font-medium text-slate-900 dark:text-slate-100">{{ u.id }}</dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-slate-500">Role</dt>
-                <dd class="font-medium text-slate-900">{{ u.role }}</dd>
+                <dt class="text-slate-500 dark:text-slate-400">{{ 'users.table.role' | t }}</dt>
+                <dd class="font-medium text-slate-900 dark:text-slate-100">{{ 'users.filters.role_' + u.role | t }}</dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-slate-500">Joined</dt>
-                <dd class="font-medium text-slate-900">
+                <dt class="text-slate-500 dark:text-slate-400">{{ 'users.table.joined' | t }}</dt>
+                <dd class="font-medium text-slate-900 dark:text-slate-100">
                   {{ u.created_at | date: 'longDate' }}
                 </dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-slate-500">Wallet</dt>
-                <dd class="font-medium text-slate-900">{{ u.wallet }}</dd>
+                <dt class="text-slate-500 dark:text-slate-400">{{ 'users.details.wallet' | t }}</dt>
+                <dd class="font-medium text-slate-900 dark:text-slate-100">{{ u.wallet }}</dd>
               </div>
             </dl>
           </article>
 
           <article class="card">
-            <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">
-              Contact
+            <h2 class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-4">
+              {{ 'users.details.contact' | t }}
             </h2>
             <dl class="space-y-3 text-sm">
               <div class="flex justify-between gap-4">
-                <dt class="text-slate-500">Email</dt>
-                <dd class="font-medium text-slate-900 break-all text-right">{{ u.email }}</dd>
+                <dt class="text-slate-500 dark:text-slate-400">{{ 'users.table.email' | t }}</dt>
+                <dd class="font-medium text-slate-900 dark:text-slate-100 break-all text-right">{{ u.email }}</dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-slate-500">Phone</dt>
-                <dd class="font-medium text-slate-900">{{ u.phone }}</dd>
+                <dt class="text-slate-500 dark:text-slate-400">{{ 'users.table.phone' | t }}</dt>
+                <dd class="font-medium text-slate-900 dark:text-slate-100">{{ u.phone }}</dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-slate-500">Country</dt>
-                <dd class="font-medium text-slate-900">{{ u.country }}</dd>
+                <dt class="text-slate-500 dark:text-slate-400">{{ 'users.table.country' | t }}</dt>
+                <dd class="font-medium text-slate-900 dark:text-slate-100">{{ u.country }}</dd>
               </div>
             </dl>
           </article>
@@ -124,6 +126,7 @@ import { AdminUsersService } from './admin-users.service';
 })
 export class UserDetailsComponent implements OnInit {
   private readonly service = inject(AdminUsersService);
+  private readonly lang = inject(LanguageService);
 
   @Input() id?: string;
 
@@ -137,7 +140,7 @@ export class UserDetailsComponent implements OnInit {
 
   load(): void {
     if (!this.id) {
-      this.error.set('Invalid user id.');
+      this.error.set(this.lang.translate('users.details.error_invalid_id'));
       return;
     }
 
@@ -153,11 +156,11 @@ export class UserDetailsComponent implements OnInit {
         this.loading.set(false);
         this.user.set(null);
         if (err.status === 404) {
-          this.error.set('This user no longer exists.');
+          this.error.set(this.lang.translate('users.details.error_not_found'));
         } else {
           this.error.set(
             (err.error as { message?: string } | null)?.message ??
-              'Failed to load user details.',
+              this.lang.translate('users.details.error_default'),
           );
         }
       },

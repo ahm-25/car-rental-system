@@ -94,7 +94,7 @@ interface AdminNavItem {
         <div class="h-10 w-10 rounded-xl bg-brand-600 flex items-center justify-center shadow-lg shadow-brand-500/30">
           <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
         </div>
-        <span class="text-2xl font-black tracking-tight text-white">Vroom<span class="text-brand-500 text-3xl leading-none">.</span></span>
+        <span class="text-2xl font-black tracking-tight text-white">{{ 'common.company_name' | t }}<span class="text-brand-500 text-3xl leading-none">.</span></span>
       </div>
 
       <nav class="relative flex-1 py-6 px-4 space-y-1.5 overflow-y-auto z-10 mt-4">

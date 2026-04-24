@@ -20,6 +20,8 @@ import {
   PaymentStatus,
 } from '../../../models/order.model';
 import { SpinnerComponent } from '../../../shared/components/spinner/spinner.component';
+import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
+import { LanguageService } from '../../../core/services/language.service';
 import { AdminOrdersService } from './admin-orders.service';
 
 const STATUSES: readonly PaymentStatus[] = ['success', 'pending'];
@@ -33,13 +35,14 @@ const STATUSES: readonly PaymentStatus[] = ['success', 'pending'];
     DatePipe,
     DecimalPipe,
     SpinnerComponent,
+    TranslatePipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="flex flex-col gap-6 max-w-5xl">
       <nav class="flex items-center gap-2 text-sm text-slate-500">
-        <a routerLink="/admin/orders" class="hover:text-brand-700">Orders</a>
-        <span>/</span>
+        <a routerLink="/admin/orders" class="hover:text-brand-700">{{ 'orders.title' | t }}</a>
+        <span class="rtl:-scale-x-100">/</span>
         <span class="text-slate-900 font-medium">
           #{{ order()?.id ?? id }}
         </span>
@@ -53,8 +56,8 @@ const STATUSES: readonly PaymentStatus[] = ['success', 'pending'];
         <div class="card flex flex-col items-center gap-3 py-12 text-center">
           <p class="font-medium text-slate-900">{{ error() }}</p>
           <div class="flex gap-2">
-            <a routerLink="/admin/orders" class="btn-secondary">Back to orders</a>
-            <button type="button" class="btn-primary" (click)="load()">Retry</button>
+            <a routerLink="/admin/orders" class="btn-secondary">{{ 'orders.details.back' | t }}</a>
+            <button type="button" class="btn-primary" (click)="load()">{{ 'common.retry' | t }}</button>
           </div>
         </div>
       } @else {
@@ -62,10 +65,10 @@ const STATUSES: readonly PaymentStatus[] = ['success', 'pending'];
         <header class="card flex flex-wrap items-start justify-between gap-4">
           <div>
             <h1 class="text-2xl font-semibold text-slate-900">
-              Order #{{ o.id }}
+              {{ 'orders.statuses.' + o.order_type | t }} #{{ o.id }}
             </h1>
             <p class="text-sm text-slate-500 mt-1">
-              Created {{ o.created_at | date: 'medium' }}
+              {{ 'orders.details.created' | t }} {{ o.created_at | date: 'medium' }}
             </p>
           </div>
           <span
@@ -75,52 +78,52 @@ const STATUSES: readonly PaymentStatus[] = ['success', 'pending'];
             [class.bg-amber-100]="o.payment_status === 'pending'"
             [class.text-amber-800]="o.payment_status === 'pending'"
           >
-            {{ o.payment_status }}
+            {{ 'orders.statuses.' + o.payment_status | t }}
           </span>
         </header>
 
         <div class="grid gap-4 md:grid-cols-3">
           <article class="card md:col-span-2">
             <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">
-              Order
+              {{ 'orders.details.info' | t }}
             </h2>
             <dl class="grid grid-cols-2 gap-3 text-sm">
               <div>
-                <dt class="text-slate-500">Delivery</dt>
+                <dt class="text-slate-500">{{ 'orders.details.delivery' | t }}</dt>
                 <dd class="font-medium text-slate-900">
                   {{ o.delivery_date | date: 'mediumDate' }}
                 </dd>
               </div>
               <div>
-                <dt class="text-slate-500">Receiving</dt>
+                <dt class="text-slate-500">{{ 'orders.details.receiving' | t }}</dt>
                 <dd class="font-medium text-slate-900">
                   {{ o.receiving_date | date: 'mediumDate' }}
                 </dd>
               </div>
               <div>
-                <dt class="text-slate-500">Days</dt>
+                <dt class="text-slate-500">{{ 'orders.details.days' | t }}</dt>
                 <dd class="font-medium text-slate-900">{{ o.days }}</dd>
               </div>
               <div>
-                <dt class="text-slate-500">Total</dt>
+                <dt class="text-slate-500">{{ 'orders.details.total' | t }}</dt>
                 <dd class="font-medium text-slate-900">
                   {{ +o.total_price | number: '1.2-2' }}
                 </dd>
               </div>
               <div>
-                <dt class="text-slate-500">Points</dt>
+                <dt class="text-slate-500">{{ 'orders.details.points' | t }}</dt>
                 <dd class="font-medium text-slate-900">{{ o.points }}</dd>
               </div>
               <div>
-                <dt class="text-slate-500">Payment</dt>
-                <dd class="font-medium text-slate-900">{{ o.payment_type }}</dd>
+                <dt class="text-slate-500">{{ 'orders.details.payment' | t }}</dt>
+                <dd class="font-medium text-slate-900">{{ 'orders.statuses.' + o.payment_type | t }}</dd>
               </div>
               <div>
-                <dt class="text-slate-500">Type</dt>
-                <dd class="font-medium text-slate-900">{{ o.order_type }}</dd>
+                <dt class="text-slate-500">{{ 'orders.details.type' | t }}</dt>
+                <dd class="font-medium text-slate-900">{{ 'orders.statuses.' + o.order_type | t }}</dd>
               </div>
               <div>
-                <dt class="text-slate-500">Updated</dt>
+                <dt class="text-slate-500">{{ 'orders.details.updated' | t }}</dt>
                 <dd class="font-medium text-slate-900">
                   {{ o.updated_at | date: 'medium' }}
                 </dd>
@@ -131,7 +134,7 @@ const STATUSES: readonly PaymentStatus[] = ['success', 'pending'];
           <!-- Status update -->
           <article class="card">
             <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">
-              Update status
+              {{ 'orders.details.update_status' | t }}
             </h2>
             <form
               [formGroup]="statusForm"
@@ -139,14 +142,14 @@ const STATUSES: readonly PaymentStatus[] = ['success', 'pending'];
               class="flex flex-col gap-3"
             >
               <div>
-                <label for="payment_status" class="label">Payment status</label>
+                <label for="payment_status" class="label">{{ 'orders.details.status_label' | t }}</label>
                 <select
                   id="payment_status"
                   class="input"
                   formControlName="payment_status"
                 >
                   @for (s of statuses; track s) {
-                    <option [value]="s">{{ s }}</option>
+                    <option [value]="s">{{ 'orders.statuses.' + s | t }}</option>
                   }
                 </select>
               </div>
@@ -157,9 +160,9 @@ const STATUSES: readonly PaymentStatus[] = ['success', 'pending'];
               >
                 @if (updating()) {
                   <app-spinner size="sm" />
-                  Saving…
+                  {{ 'orders.details.saving' | t }}
                 } @else {
-                  Save
+                  {{ 'orders.details.save' | t }}
                 }
               </button>
             </form>
@@ -169,24 +172,24 @@ const STATUSES: readonly PaymentStatus[] = ['success', 'pending'];
         <div class="grid gap-4 md:grid-cols-2">
           <article class="card">
             <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">
-              Customer
+              {{ 'orders.details.customer' | t }}
             </h2>
             @if (o.user; as u) {
               <dl class="space-y-2 text-sm">
                 <div class="flex justify-between gap-4">
-                  <dt class="text-slate-500">Name</dt>
+                  <dt class="text-slate-500">{{ 'orders.details.name' | t }}</dt>
                   <dd class="font-medium text-slate-900">{{ u.name }}</dd>
                 </div>
                 <div class="flex justify-between gap-4">
-                  <dt class="text-slate-500">Email</dt>
+                  <dt class="text-slate-500">{{ 'orders.details.email' | t }}</dt>
                   <dd class="font-medium text-slate-900 break-all text-right">{{ u.email }}</dd>
                 </div>
                 <div class="flex justify-between gap-4">
-                  <dt class="text-slate-500">Phone</dt>
+                  <dt class="text-slate-500">{{ 'orders.details.phone' | t }}</dt>
                   <dd class="font-medium text-slate-900">{{ u.phone }}</dd>
                 </div>
                 <div class="flex justify-between gap-4">
-                  <dt class="text-slate-500">Country</dt>
+                  <dt class="text-slate-500">{{ 'orders.details.country' | t }}</dt>
                   <dd class="font-medium text-slate-900">{{ u.country }}</dd>
                 </div>
                 <div class="pt-2">
@@ -194,7 +197,7 @@ const STATUSES: readonly PaymentStatus[] = ['success', 'pending'];
                     [routerLink]="['/admin/users', u.id]"
                     class="text-brand-600 hover:text-brand-700 text-sm font-medium"
                   >
-                    View customer →
+                    {{ 'orders.details.view_customer' | t }} →
                   </a>
                 </div>
               </dl>
@@ -205,24 +208,24 @@ const STATUSES: readonly PaymentStatus[] = ['success', 'pending'];
 
           <article class="card">
             <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">
-              Car
+              {{ 'orders.details.car' | t }}
             </h2>
             @if (o.car; as c) {
               <dl class="space-y-2 text-sm">
                 <div class="flex justify-between gap-4">
-                  <dt class="text-slate-500">Name</dt>
+                  <dt class="text-slate-500">{{ 'orders.details.name' | t }}</dt>
                   <dd class="font-medium text-slate-900">{{ c.name }}</dd>
                 </div>
                 <div class="flex justify-between gap-4">
-                  <dt class="text-slate-500">Brand</dt>
+                  <dt class="text-slate-500">{{ 'cars.fields.brand' | t }}</dt>
                   <dd class="font-medium text-slate-900">{{ c.brand }}</dd>
                 </div>
                 <div class="flex justify-between gap-4">
-                  <dt class="text-slate-500">Model</dt>
+                  <dt class="text-slate-500">{{ 'cars.fields.model' | t }}</dt>
                   <dd class="font-medium text-slate-900">{{ c.model }}</dd>
                 </div>
                 <div class="flex justify-between gap-4">
-                  <dt class="text-slate-500">Price / day</dt>
+                  <dt class="text-slate-500">{{ 'cars.fields.price_per_day' | t }}</dt>
                   <dd class="font-medium text-slate-900">
                     {{ +c.price_per_day | number: '1.2-2' }}
                   </dd>
@@ -232,7 +235,7 @@ const STATUSES: readonly PaymentStatus[] = ['success', 'pending'];
                     [routerLink]="['/admin/cars', c.id]"
                     class="text-brand-600 hover:text-brand-700 text-sm font-medium"
                   >
-                    View car →
+                    {{ 'orders.details.view_car' | t }} →
                   </a>
                 </div>
               </dl>
@@ -246,18 +249,18 @@ const STATUSES: readonly PaymentStatus[] = ['success', 'pending'];
           <article class="card p-0 overflow-hidden">
             <div class="p-6 pb-4">
               <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide">
-                Installments
+                {{ 'orders.details.installments' | t }}
               </h2>
             </div>
             <div class="overflow-x-auto">
               <table class="min-w-full divide-y divide-slate-200 text-sm">
                 <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
                   <tr>
-                    <th class="px-4 py-2">#</th>
-                    <th class="px-4 py-2 text-right">Amount</th>
-                    <th class="px-4 py-2">Due date</th>
-                    <th class="px-4 py-2">Status</th>
-                    <th class="px-4 py-2">Paid at</th>
+                    <th class="px-4 py-2">{{ 'orders.details.inst_id' | t }}</th>
+                    <th class="px-4 py-2 text-right">{{ 'orders.details.inst_amount' | t }}</th>
+                    <th class="px-4 py-2">{{ 'orders.details.inst_due' | t }}</th>
+                    <th class="px-4 py-2">{{ 'orders.details.inst_status' | t }}</th>
+                    <th class="px-4 py-2">{{ 'orders.details.inst_paid_at' | t }}</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 bg-white">
@@ -278,7 +281,7 @@ const STATUSES: readonly PaymentStatus[] = ['success', 'pending'];
                           [class.bg-amber-100]="inst.status === 'pending'"
                           [class.text-amber-800]="inst.status === 'pending'"
                         >
-                          {{ inst.status }}
+                          {{ 'orders.details.inst_' + inst.status | t }}
                         </span>
                       </td>
                       <td class="px-4 py-2 text-slate-600">
@@ -300,6 +303,7 @@ export class AdminOrderDetailsComponent implements OnInit {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly service = inject(AdminOrdersService);
   private readonly notify = inject(NotificationService);
+  private readonly lang = inject(LanguageService);
 
   @Input() id?: string;
 
@@ -326,7 +330,7 @@ export class AdminOrderDetailsComponent implements OnInit {
 
   load(): void {
     if (!this.id) {
-      this.error.set('Invalid order id.');
+      this.error.set(this.lang.translate('orders.details.not_found'));
       return;
     }
 
@@ -344,9 +348,9 @@ export class AdminOrderDetailsComponent implements OnInit {
         this.order.set(null);
         this.error.set(
           err.status === 404
-            ? 'This order no longer exists.'
+            ? this.lang.translate('orders.details.not_found')
             : (err.error as { message?: string } | null)?.message ??
-                'Failed to load order details.',
+                this.lang.translate('orders.details.error_default'),
         );
       },
     });
@@ -362,7 +366,12 @@ export class AdminOrderDetailsComponent implements OnInit {
       next: (order) => {
         this.order.set(order);
         this.updating.set(false);
-        this.notify.success(`Order #${order.id} status set to "${order.payment_status}".`);
+        this.notify.success(
+          this.lang.translate('orders.details.status_updated', {
+            id: order.id.toString(),
+            status: this.lang.translate('orders.statuses.' + order.payment_status),
+          }),
+        );
       },
       error: () => {
         this.updating.set(false);

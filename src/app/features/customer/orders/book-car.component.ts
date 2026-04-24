@@ -1,4 +1,4 @@
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DatePipe, DecimalPipe, NgClass, UpperCasePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -27,6 +27,8 @@ import {
 } from '../../../models/order.model';
 import { FieldErrorComponent } from '../../../shared/components/field-error/field-error.component';
 import { SpinnerComponent } from '../../../shared/components/spinner/spinner.component';
+import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
+import { LanguageService } from '../../../core/services/language.service';
 import {
   dateAfterValidator,
   notInPastValidator,
@@ -75,20 +77,23 @@ function diffInDays(startIso: string, endIso: string): number {
     DecimalPipe,
     SpinnerComponent,
     FieldErrorComponent,
+    TranslatePipe,
+    NgClass,
+    UpperCasePipe
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nav class="mb-6 flex items-center gap-2 text-sm text-slate-500">
-      <a routerLink="/cars" class="hover:text-brand-600 transition">Cars</a>
-      <span>/</span>
+      <a routerLink="/cars" class="hover:text-brand-600 transition">{{ 'nav.cars' | t }}</a>
+      <span class="rtl:-scale-x-100">/</span>
       <a
         [routerLink]="['/cars', id]"
-        class="hover:text-brand-600 transition"
+        class="hover:text-brand-600 transition font-medium"
       >
-        {{ car()?.name ?? 'Car' }}
+        {{ car()?.name ?? ('common.loading' | t) }}
       </a>
-      <span>/</span>
-      <span class="text-slate-900 font-medium">Book</span>
+      <span class="rtl:-scale-x-100">/</span>
+      <span class="text-slate-900 dark:text-slate-100 font-black">Book</span>
     </nav>
 
     @if (loadingCar()) {
@@ -97,10 +102,10 @@ function diffInDays(startIso: string, endIso: string): number {
       </div>
     } @else if (loadError()) {
       <div class="card flex flex-col items-center gap-3 py-12 text-center">
-        <p class="font-medium text-slate-900">{{ loadError() }}</p>
+        <p class="font-medium text-slate-900 dark:text-slate-100">{{ loadError() }}</p>
         <div class="flex gap-2">
-          <a routerLink="/cars" class="btn-secondary">Back to cars</a>
-          <button type="button" class="btn-primary" (click)="loadCar()">Retry</button>
+          <a routerLink="/cars" class="btn-secondary">{{ 'customer_orders.details.back' | t }}</a>
+          <button type="button" class="btn-primary" (click)="loadCar()">{{ 'common.retry' | t }}</button>
         </div>
       </div>
     } @else {
@@ -114,37 +119,38 @@ function diffInDays(startIso: string, endIso: string): number {
           novalidate
         >
           <!-- Car preview -->
-          <div class="card flex items-center gap-4">
-            <div class="h-16 w-16 flex-shrink-0 rounded-xl bg-gradient-to-br from-brand-500 to-brand-900 flex items-center justify-center">
-              <svg class="h-8 w-8 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.4">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14" />
+          <header class="card flex items-center gap-4 bg-slate-900 text-white border-none shadow-2xl overflow-hidden relative">
+            <div class="absolute inset-0 bg-gradient-to-r from-brand-600/20 to-transparent pointer-events-none"></div>
+            <div class="h-16 w-16 min-h-[4rem] min-w-[4rem] rounded-2xl bg-white/10 flex items-center justify-center relative z-10">
+              <svg class="h-8 w-8 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14M6 17h2m8 0h2" />
               </svg>
             </div>
-            <div class="flex-1 min-w-0">
-              <p class="text-xs uppercase tracking-wider text-slate-400">
-                Booking
+            <div class="flex-1 min-w-0 relative z-10">
+              <p class="text-[10px] uppercase font-black tracking-widest text-brand-400">
+                {{ 'customer_orders.booking.title' | t: { name: '' } }}
               </p>
-              <p class="text-lg font-semibold text-slate-900 truncate">
-                {{ c.name }} · {{ c.brand }} {{ c.model }}
-              </p>
-              <p class="text-sm text-slate-500">
-                {{ +c.price_per_day | number: '1.2-2' }} / day
+              <h1 class="text-xl font-black truncate">
+                {{ c.brand }} {{ c.name }} <span class="text-white/40 font-bold ml-1">{{ c.model }}</span>
+              </h1>
+              <p class="text-xs text-white/60 font-medium">
+                $ {{ +c.price_per_day | number: '1.2-2' }} {{ 'customer_cars.per_day' | t }}
               </p>
             </div>
-          </div>
+          </header>
 
           <!-- Dates -->
           <section class="card">
-            <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">
-              Rental dates
+            <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">
+              {{ 'customer_orders.booking.delivery_date' | t | uppercase }} & {{ 'customer_orders.booking.receiving_date' | t | uppercase }}
             </h2>
-            <div class="grid gap-4 sm:grid-cols-2">
+            <div class="grid gap-6 sm:grid-cols-2">
               <div>
-                <label for="delivery_date" class="label">Delivery date</label>
+                <label for="delivery_date" class="block text-xs font-black text-slate-500 uppercase tracking-wider mb-2">{{ 'customer_orders.booking.delivery_date' | t }}</label>
                 <input
                   id="delivery_date"
                   type="date"
-                  class="input"
+                  class="input bg-slate-50 border-slate-100 font-bold"
                   [min]="todayISO"
                   formControlName="delivery_date"
                 />
@@ -157,11 +163,11 @@ function diffInDays(startIso: string, endIso: string): number {
                 />
               </div>
               <div>
-                <label for="receiving_date" class="label">Receiving date</label>
+                <label for="receiving_date" class="block text-xs font-black text-slate-500 uppercase tracking-wider mb-2">{{ 'customer_orders.booking.receiving_date' | t }}</label>
                 <input
                   id="receiving_date"
                   type="date"
-                  class="input"
+                  class="input bg-slate-50 border-slate-100 font-bold"
                   [min]="minReceivingIso()"
                   formControlName="receiving_date"
                 />
@@ -177,28 +183,24 @@ function diffInDays(startIso: string, endIso: string): number {
 
             <!-- Live summary -->
             <div
-              class="mt-4 rounded-xl border p-4 text-sm"
-              [class.border-slate-200]="days() > 0"
-              [class.bg-slate-50]="days() > 0"
-              [class.border-amber-200]="days() === 0"
-              [class.bg-amber-50]="days() === 0"
+              class="mt-6 rounded-2xl border-2 p-5 transition-all"
+              [ngClass]="days() > 0
+                ? 'border-brand-500/20 bg-brand-50/50'
+                : 'border-slate-100 bg-slate-50/50'"
             >
               @if (days() > 0) {
                 <div class="flex items-center justify-between gap-4">
-                  <span class="text-slate-600">
-                    {{ days() }} {{ days() === 1 ? 'day' : 'days' }} ×
-                    {{ +c.price_per_day | number: '1.2-2' }}
+                  <span class="text-slate-600 font-bold">
+                    {{ days() }} {{ days() === 1 ? ('orders.table.day' | t) : ('orders.table.days' | t) }} &times;
+                    $ {{ +c.price_per_day | number: '1.2-2' }}
                   </span>
-                  <span class="font-semibold text-slate-900">
-                    {{ estimatedTotal() | number: '1.2-2' }}
+                  <span class="text-xl font-black text-slate-950">
+                    $ {{ estimatedTotal() | number: '1.2-2' }}
                   </span>
                 </div>
-                <p class="text-xs text-slate-500 mt-1">
-                  Final amount confirmed on submission.
-                </p>
               } @else {
-                <p class="text-amber-800">
-                  Pick both dates to see the total.
+                <p class="text-slate-400 text-sm font-medium italic">
+                  Choose dates to see estimates...
                 </p>
               }
             </div>
@@ -206,23 +208,19 @@ function diffInDays(startIso: string, endIso: string): number {
 
           <!-- Payment type -->
           <section class="card">
-            <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">
-              Payment method
+            <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">
+              {{ 'customer_orders.booking.payment_type' | t | uppercase }}
             </h2>
             <div
-              class="grid gap-3 sm:grid-cols-3"
+              class="grid gap-4 sm:grid-cols-3"
               role="radiogroup"
-              aria-label="Payment method"
             >
               @for (opt of paymentOptions; track opt.value) {
                 <label
-                  class="relative flex cursor-pointer flex-col gap-1 rounded-xl border p-4 transition-all"
-                  [class.border-brand-600]="form.controls.payment_type.value === opt.value"
-                  [class.bg-brand-50]="form.controls.payment_type.value === opt.value"
-                  [class.ring-2]="form.controls.payment_type.value === opt.value"
-                  [class.ring-brand-500]="form.controls.payment_type.value === opt.value"
-                  [class.border-slate-200]="form.controls.payment_type.value !== opt.value"
-                  [class.hover:bg-slate-50]="form.controls.payment_type.value !== opt.value"
+                  class="relative flex cursor-pointer flex-col gap-1 rounded-2xl border-2 p-4 transition-all"
+                  [ngClass]="form.controls.payment_type.value === opt.value
+                    ? 'border-brand-600 bg-brand-50/50'
+                    : 'border-slate-100 hover:border-slate-200'"
                 >
                   <input
                     type="radio"
@@ -230,10 +228,10 @@ function diffInDays(startIso: string, endIso: string): number {
                     formControlName="payment_type"
                     [value]="opt.value"
                   />
-                  <span class="font-semibold text-slate-900 capitalize">
-                    {{ opt.label }}
+                  <span class="font-black text-slate-900 dark:text-slate-100 uppercase text-[10px] tracking-widest">
+                    {{ 'orders.statuses.' + opt.value | t }}
                   </span>
-                  <span class="text-xs text-slate-500">{{ opt.hint }}</span>
+                  <span class="text-lg font-black text-slate-900 dark:text-slate-100 mt-1 capitalize">{{ opt.label }}</span>
                 </label>
               }
             </div>
@@ -241,23 +239,19 @@ function diffInDays(startIso: string, endIso: string): number {
 
           <!-- Order type -->
           <section class="card">
-            <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">
-              How to pay
+            <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">
+              {{ 'customer_orders.booking.order_type' | t | uppercase }}
             </h2>
             <div
-              class="grid gap-3 sm:grid-cols-2"
+              class="grid gap-4 sm:grid-cols-2"
               role="radiogroup"
-              aria-label="Order type"
             >
               @for (opt of orderTypeOptions; track opt.value) {
                 <label
-                  class="relative flex cursor-pointer flex-col gap-1 rounded-xl border p-4 transition-all"
-                  [class.border-brand-600]="form.controls.order_type.value === opt.value"
-                  [class.bg-brand-50]="form.controls.order_type.value === opt.value"
-                  [class.ring-2]="form.controls.order_type.value === opt.value"
-                  [class.ring-brand-500]="form.controls.order_type.value === opt.value"
-                  [class.border-slate-200]="form.controls.order_type.value !== opt.value"
-                  [class.hover:bg-slate-50]="form.controls.order_type.value !== opt.value"
+                  class="relative flex cursor-pointer flex-col gap-1 rounded-2xl border-2 p-4 transition-all"
+                  [ngClass]="form.controls.order_type.value === opt.value
+                    ? 'border-brand-600 bg-brand-50/50'
+                    : 'border-slate-100 hover:border-slate-200'"
                 >
                   <input
                     type="radio"
@@ -265,25 +259,30 @@ function diffInDays(startIso: string, endIso: string): number {
                     formControlName="order_type"
                     [value]="opt.value"
                   />
-                  <span class="font-semibold text-slate-900">{{ opt.label }}</span>
-                  <span class="text-xs text-slate-500">{{ opt.hint }}</span>
+                  <span class="font-black text-slate-900 dark:text-slate-100 uppercase text-[10px] tracking-widest">
+                    {{ 'orders.statuses.' + opt.value | t }}
+                  </span>
+                  <span class="text-lg font-black text-slate-900 dark:text-slate-100 mt-1">{{ opt.label }}</span>
                 </label>
               }
             </div>
 
             <!-- Installment details -->
             @if (isInstallments()) {
-              <div class="mt-6 border-t border-slate-100 pt-6 grid gap-4 sm:grid-cols-2">
+              <div class="mt-8 pt-8 border-t border-slate-100 grid gap-6 sm:grid-cols-2">
                 <div>
-                  <label for="down_payment" class="label">Down payment</label>
-                  <input
-                    id="down_payment"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    class="input"
-                    formControlName="down_payment"
-                  />
+                  <label for="down_payment" class="block text-xs font-black text-slate-500 uppercase tracking-wider mb-2">Down payment</label>
+                  <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
+                    <input
+                      id="down_payment"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      class="input pl-8 bg-slate-50 border-brand-100 focus:ring-brand-500/20 font-black"
+                      formControlName="down_payment"
+                    />
+                  </div>
                   <app-field-error
                     [control]="form.controls.down_payment"
                     [serverErrors]="serverErrors()?.['down_payment']"
@@ -294,15 +293,15 @@ function diffInDays(startIso: string, endIso: string): number {
                   />
                 </div>
                 <div>
-                  <label for="number_of_installments" class="label">
-                    Number of installments
+                  <label for="number_of_installments" class="block text-xs font-black text-slate-500 uppercase tracking-wider mb-2">
+                    Installments count
                   </label>
                   <input
                     id="number_of_installments"
                     type="number"
                     min="2"
                     step="1"
-                    class="input"
+                    class="input bg-slate-50 border-brand-100 focus:ring-brand-500/20 font-black"
                     formControlName="number_of_installments"
                   />
                   <app-field-error
@@ -314,19 +313,16 @@ function diffInDays(startIso: string, endIso: string): number {
 
                 @if (perInstallmentPreview() > 0) {
                   <div
-                    class="sm:col-span-2 rounded-xl bg-brand-50 border border-brand-100 p-4 text-sm"
+                    class="sm:col-span-2 rounded-2xl bg-brand-600 text-white p-5 flex items-center justify-between shadow-xl shadow-brand-500/30"
                   >
-                    <p class="text-brand-900 font-medium">
-                      {{ form.controls.number_of_installments.value }}
-                      installments of approximately
-                      <span class="font-bold">
-                        {{ perInstallmentPreview() | number: '1.2-2' }}
-                      </span>
-                      each
-                    </p>
-                    <p class="text-xs text-brand-900/70 mt-1">
-                      Exact schedule is generated by the server on submission.
-                    </p>
+                    <div>
+                      <p class="text-[10px] font-black uppercase tracking-widest text-brand-200">Monthly Payment Estimate</p>
+                      <p class="text-2xl font-black mt-1">$ {{ perInstallmentPreview() | number: '1.2-2' }}</p>
+                    </div>
+                    <div class="text-right">
+                      <p class="text-lg font-black">{{ form.controls.number_of_installments.value }}</p>
+                      <p class="text-[10px] font-black uppercase tracking-widest text-brand-200">Months</p>
+                    </div>
                   </div>
                 }
               </div>
@@ -336,31 +332,35 @@ function diffInDays(startIso: string, endIso: string): number {
           <!-- Submit error -->
           @if (submitError()) {
             <div
-              class="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800"
+              class="flex items-start gap-3 rounded-2xl border-2 border-red-100 bg-red-50 p-4 text-sm text-red-800"
             >
               <svg class="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <p class="flex-1 font-medium">{{ submitError() }}</p>
+              <p class="flex-1 font-bold">{{ submitError() }}</p>
             </div>
           }
 
           <!-- Submit -->
-          <div class="flex items-center justify-between gap-3">
-            <a [routerLink]="['/cars', c.id]" class="btn-secondary">Cancel</a>
+          <div class="flex items-center justify-between gap-4 mt-4">
+            <a [routerLink]="['/cars', c.id]" class="text-slate-400 font-black uppercase tracking-widest text-xs hover:text-slate-600 transition-colors">{{ 'common.cancel' | t }}</a>
             <button
               type="submit"
-              class="btn-primary inline-flex items-center gap-2 px-6 py-3 text-base"
+              class="btn-primary flex-1 sm:flex-none inline-flex items-center justify-center gap-3 px-10 py-5 text-lg font-black group"
               [disabled]="!canSubmit()"
             >
               @if (submitting()) {
                 <app-spinner size="sm" />
-                Creating order…
+                <span>{{ 'customer_orders.booking.booking' | t }}</span>
               } @else {
-                Confirm booking
+                <span>{{ 'customer_orders.booking.confirm' | t }}</span>
                 @if (estimatedTotal() > 0) {
-                  · {{ estimatedTotal() | number: '1.2-2' }}
+                  <span class="opacity-30">|</span>
+                  <span>$ {{ estimatedTotal() | number: '1.2-2' }}</span>
                 }
+                <svg class="h-5 w-5 group-hover:translate-x-1 transition-transform rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                   <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
               }
             </button>
           </div>
@@ -369,25 +369,25 @@ function diffInDays(startIso: string, endIso: string): number {
         <!-- Summary sidebar -->
         <aside class="lg:col-span-1">
           <div
-            class="sticky top-24 bg-white rounded-3xl shadow-card border border-slate-200 p-6 sm:p-8"
+            class="sticky top-24 bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl border border-slate-100 dark:border-slate-800 p-8"
           >
-            <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">
-              Summary
+            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-8">
+              {{ 'customer_orders.details.info' | t | uppercase }}
             </h3>
-            <dl class="space-y-3 text-sm">
+            <dl class="space-y-6 text-sm">
               <div class="flex justify-between gap-4">
-                <dt class="text-slate-500">Car</dt>
-                <dd class="font-medium text-slate-900 text-right">{{ c.name }}</dd>
+                <dt class="text-slate-500 font-bold uppercase tracking-wider text-[10px]">{{ 'cars.form.name_label' | t }}</dt>
+                <dd class="font-black text-slate-950 dark:text-slate-100 text-right">{{ c.name }}</dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-slate-500">Rate</dt>
-                <dd class="font-medium text-slate-900">
-                  {{ +c.price_per_day | number: '1.2-2' }} / day
+                <dt class="text-slate-500 font-bold uppercase tracking-wider text-[10px]">{{ 'customer_cars.price_label' | t }}</dt>
+                <dd class="font-black text-slate-950 dark:text-slate-100">
+                  $ {{ +c.price_per_day | number: '1.2-2' }} {{ 'customer_cars.per_day' | t }}
                 </dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-slate-500">Delivery</dt>
-                <dd class="font-medium text-slate-900">
+                <dt class="text-slate-500 font-bold uppercase tracking-wider text-[10px]">{{ 'customer_orders.booking.delivery_date' | t }}</dt>
+                <dd class="font-black text-slate-950 dark:text-slate-100">
                   {{
                     form.controls.delivery_date.value
                       ? (form.controls.delivery_date.value | date: 'mediumDate')
@@ -396,8 +396,8 @@ function diffInDays(startIso: string, endIso: string): number {
                 </dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-slate-500">Return</dt>
-                <dd class="font-medium text-slate-900">
+                <dt class="text-slate-500 font-bold uppercase tracking-wider text-[10px]">{{ 'customer_orders.booking.receiving_date' | t }}</dt>
+                <dd class="font-black text-slate-950 dark:text-slate-100">
                   {{
                     form.controls.receiving_date.value
                       ? (form.controls.receiving_date.value | date: 'mediumDate')
@@ -406,39 +406,32 @@ function diffInDays(startIso: string, endIso: string): number {
                 </dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-slate-500">Days</dt>
-                <dd class="font-medium text-slate-900">
+                <dt class="text-slate-500 font-bold uppercase tracking-wider text-[10px]">{{ 'customer_orders.details.days' | t }}</dt>
+                <dd class="font-black text-slate-950 dark:text-slate-100">
                   {{ days() > 0 ? days() : '—' }}
                 </dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-slate-500">Payment</dt>
-                <dd class="font-medium text-slate-900 capitalize">
-                  {{ form.controls.payment_type.value }}
+                <dt class="text-slate-500 font-bold uppercase tracking-wider text-[10px]">{{ 'customer_orders.booking.payment_type' | t }}</dt>
+                <dd class="font-black text-brand-600 uppercase tracking-widest text-[10px]">
+                  {{ 'orders.statuses.' + form.controls.payment_type.value | t }}
                 </dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-slate-500">Plan</dt>
-                <dd class="font-medium text-slate-900">
-                  {{
-                    form.controls.order_type.value === 'full'
-                      ? 'Pay in full'
-                      : 'Installments'
-                  }}
+                <dt class="text-slate-500 font-bold uppercase tracking-wider text-[10px]">{{ 'customer_orders.booking.order_type' | t }}</dt>
+                <dd class="font-black text-brand-600 uppercase tracking-widest text-[10px]">
+                   {{ 'orders.statuses.' + form.controls.order_type.value | t }}
                 </dd>
               </div>
             </dl>
 
-            <div class="mt-6 border-t border-slate-100 pt-6">
-              <div class="flex items-baseline justify-between">
-                <span class="text-sm text-slate-500">Estimated total</span>
-                <span class="text-2xl font-bold text-slate-900">
-                  {{ estimatedTotal() | number: '1.2-2' }}
+            <div class="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ 'customer_orders.booking.total_price' | t }}</span>
+                <span class="text-3xl font-black text-slate-950 dark:text-slate-100">
+                  $ {{ estimatedTotal() | number: '1.2-2' }}
                 </span>
               </div>
-              <p class="text-xs text-slate-500 mt-1">
-                Server-confirmed on submission.
-              </p>
             </div>
           </div>
         </aside>
@@ -454,6 +447,7 @@ export class BookCarComponent implements OnInit {
   private readonly notify = inject(NotificationService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly lang = inject(LanguageService);
 
   @Input() id?: string;
 
@@ -546,7 +540,7 @@ export class BookCarComponent implements OnInit {
 
   loadCar(): void {
     if (!this.id) {
-      this.loadError.set('No car selected.');
+      this.loadError.set(this.lang.translate('customer_cars.details.not_found'));
       return;
     }
 
@@ -562,11 +556,11 @@ export class BookCarComponent implements OnInit {
         this.loadingCar.set(false);
         this.car.set(null);
         if (err.status === 404) {
-          this.loadError.set('This car could not be found.');
+          this.loadError.set(this.lang.translate('customer_cars.details.not_found'));
         } else {
           this.loadError.set(
             (err.error as { message?: string } | null)?.message ??
-              'Failed to load car details.',
+              this.lang.translate('customer_cars.error_default'),
           );
         }
       },
@@ -607,7 +601,7 @@ export class BookCarComponent implements OnInit {
     this.ordersService.create(payload).subscribe({
       next: (order) => {
         this.submitting.set(false);
-        this.notify.success(`Order #${order.id} created.`);
+        this.notify.success(this.lang.translate('customer_orders.booking.success') || 'Booking successful!');
         this.router.navigate(['/orders', order.id]);
       },
       error: (err: HttpErrorResponse) => {
@@ -620,6 +614,8 @@ export class BookCarComponent implements OnInit {
         }
         if (body?.message && !body.errors) {
           this.submitError.set(body.message);
+        } else {
+          this.submitError.set(this.lang.translate('customer_orders.booking.error') || 'Failed to create booking.');
         }
       },
     });
