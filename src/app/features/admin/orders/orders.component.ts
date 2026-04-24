@@ -16,7 +16,6 @@ import {
 } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
-import { NotificationService } from '../../../core/services/notification.service';
 import {
   Order,
   OrderType,
@@ -223,22 +222,13 @@ const ORDER_TYPES: readonly OrderType[] = ['full', 'installments'];
                     </span>
                   </td>
                   <td class="px-4 py-3 text-slate-600">{{ order.order_type }}</td>
-                  <td class="px-4 py-3">
-                    <div class="flex items-center justify-end gap-3">
-                      <a
-                        [routerLink]="['/admin/orders', order.id]"
-                        class="text-brand-600 hover:text-brand-700 font-medium"
-                      >
-                        View
-                      </a>
-                      <button
-                        type="button"
-                        class="text-red-600 hover:text-red-700 font-medium"
-                        (click)="askDelete(order)"
-                      >
-                        Delete
-                      </button>
-                    </div>
+                  <td class="px-4 py-3 text-right">
+                    <a
+                      [routerLink]="['/admin/orders', order.id]"
+                      class="text-brand-600 hover:text-brand-700 font-medium"
+                    >
+                      View
+                    </a>
                   </td>
                 </tr>
               } @empty {
@@ -271,7 +261,7 @@ const ORDER_TYPES: readonly OrderType[] = ['full', 'installments'];
               id="perPage"
               class="input w-20 py-1"
               [value]="perPage()"
-              (change)="changePageSize($any($event.target).value)"
+              (change)="changePageSize(asSelect($event.target).value)"
             >
               @for (size of pageSizes; track size) {
                 <option [value]="size">{{ size }}</option>
@@ -322,53 +312,11 @@ const ORDER_TYPES: readonly OrderType[] = ['full', 'installments'];
         </div>
       </div>
     </section>
-
-    @if (orderToDelete(); as o) {
-      <div
-        class="fixed inset-0 z-40 flex items-center justify-center p-4 bg-slate-900/60"
-        role="dialog"
-        aria-modal="true"
-      >
-        <div class="bg-white rounded-2xl shadow-elevated max-w-md w-full p-6">
-          <h3 class="text-lg font-semibold text-slate-900 mb-2">
-            Delete order #{{ o.id }}?
-          </h3>
-          <p class="text-sm text-slate-600 mb-6">
-            This removes the order permanently. Associated installments will also be
-            deleted. This cannot be undone.
-          </p>
-          <div class="flex justify-end gap-2">
-            <button
-              type="button"
-              class="btn-secondary"
-              [disabled]="deleting()"
-              (click)="cancelDelete()"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              class="btn inline-flex items-center gap-2 bg-red-600 text-white hover:bg-red-700"
-              [disabled]="deleting()"
-              (click)="submitDelete()"
-            >
-              @if (deleting()) {
-                <app-spinner size="sm" />
-                Deleting…
-              } @else {
-                Delete
-              }
-            </button>
-          </div>
-        </div>
-      </div>
-    }
   `,
 })
 export class AdminOrdersComponent implements OnInit {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly service = inject(AdminOrdersService);
-  private readonly notify = inject(NotificationService);
   private readonly destroyRef = inject(DestroyRef);
 
   protected readonly pageSizes = PAGE_SIZES;
@@ -392,9 +340,6 @@ export class AdminOrdersComponent implements OnInit {
   protected readonly meta = signal<PaginationMeta | null>(null);
   protected readonly loading = signal(false);
   protected readonly error = signal<string | null>(null);
-
-  protected readonly orderToDelete = signal<Order | null>(null);
-  protected readonly deleting = signal(false);
 
   protected readonly isLastPage = computed(() => {
     const m = this.meta();
@@ -492,30 +437,8 @@ export class AdminOrdersComponent implements OnInit {
     });
   }
 
-  askDelete(order: Order): void {
-    this.orderToDelete.set(order);
-  }
-
-  cancelDelete(): void {
-    if (this.deleting()) return;
-    this.orderToDelete.set(null);
-  }
-
-  submitDelete(): void {
-    const order = this.orderToDelete();
-    if (!order || this.deleting()) return;
-
-    this.deleting.set(true);
-    this.service.delete(order.id).subscribe({
-      next: (res) => {
-        this.deleting.set(false);
-        this.orderToDelete.set(null);
-        this.notify.success(res.message);
-        this.load();
-      },
-      error: () => {
-        this.deleting.set(false);
-      },
-    });
+  /** Typed cast for DOM event targets in templates (avoids `$any`). */
+  asSelect(target: EventTarget | null): HTMLSelectElement {
+    return target as HTMLSelectElement;
   }
 }

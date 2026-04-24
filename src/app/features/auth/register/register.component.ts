@@ -72,6 +72,22 @@ type ServerErrors = Record<string, string[]>;
       </div>
 
       <div>
+        <label for="country" class="label">Country</label>
+        <input
+          id="country"
+          type="text"
+          autocomplete="country-name"
+          class="input"
+          [class.border-red-400]="showError('country')"
+          formControlName="country"
+        />
+        <app-field-error
+          [control]="form.controls.country"
+          [serverErrors]="serverErrors()?.['country']"
+        />
+      </div>
+
+      <div>
         <label for="password" class="label">Password</label>
         <input
           id="password"
@@ -142,6 +158,10 @@ export class RegisterComponent {
         Validators.required,
         Validators.pattern(/^\+?[0-9]{8,15}$/),
       ]),
+      country: this.fb.control('', [
+        Validators.required,
+        Validators.maxLength(60),
+      ]),
       password: this.fb.control('', [
         Validators.required,
         Validators.minLength(8),
@@ -152,7 +172,13 @@ export class RegisterComponent {
   );
 
   showError(
-    field: 'name' | 'email' | 'phone' | 'password' | 'passwordConfirmation',
+    field:
+      | 'name'
+      | 'email'
+      | 'phone'
+      | 'country'
+      | 'password'
+      | 'passwordConfirmation',
   ): boolean {
     const c = this.form.controls[field];
     return c.invalid && (c.touched || c.dirty);
@@ -167,7 +193,11 @@ export class RegisterComponent {
     this.submitting.set(true);
     this.serverErrors.set(null);
 
-    this.auth.register(this.form.getRawValue()).subscribe({
+    // Map internal form control name → exact API field name
+    const { passwordConfirmation, ...rest } = this.form.getRawValue();
+    const payload = { ...rest, password_confirmation: passwordConfirmation };
+
+    this.auth.register(payload).subscribe({
       next: () => {
         this.router.navigateByUrl(this.auth.defaultRouteForRole());
       },

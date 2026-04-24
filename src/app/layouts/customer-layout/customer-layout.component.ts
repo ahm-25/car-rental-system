@@ -1,9 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { LanguageToggleComponent } from '../../shared/components/language-toggle/language-toggle.component';
+import { ThemeToggleComponent } from '../../shared/components/theme-toggle/theme-toggle.component';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 interface NavItem {
-  label: string;
+  labelKey: string;
   path: string;
   requiresAuth: boolean;
 }
@@ -11,13 +14,20 @@ interface NavItem {
 @Component({
   selector: 'app-customer-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    ThemeToggleComponent,
+    LanguageToggleComponent,
+    TranslatePipe,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="min-h-full flex flex-col">
-      <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+      <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30">
         <div class="container-app flex h-16 items-center gap-4">
-          <a routerLink="/" class="flex items-center gap-2 font-semibold text-slate-900">
+          <a routerLink="/" class="flex items-center gap-2 font-semibold text-slate-900 dark:text-slate-100">
             <span class="inline-block h-8 w-8 rounded-lg bg-brand-600"></span>
             <span class="hidden sm:inline">Car Rental</span>
           </a>
@@ -26,40 +36,48 @@ interface NavItem {
             @for (item of visibleNav(); track item.path) {
               <a
                 [routerLink]="item.path"
-                routerLinkActive="bg-brand-50 text-brand-700"
-                class="px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors"
+                routerLinkActive="bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300"
+                class="px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
-                {{ item.label }}
+                {{ item.labelKey | t }}
               </a>
             }
 
             @if (auth.hasRole('admin')) {
               <a
                 routerLink="/admin/users"
-                class="px-3 py-2 rounded-lg text-sm font-medium text-brand-700 hover:bg-brand-50"
+                class="px-3 py-2 rounded-lg text-sm font-medium text-brand-700 dark:text-brand-300 hover:bg-brand-50 dark:hover:bg-brand-900/30"
               >
-                Admin panel
+                {{ 'nav.admin_panel' | t }}
               </a>
             }
           </nav>
 
           <div class="flex-1"></div>
 
+          <app-language-toggle class="hidden md:inline-flex" />
+          <app-theme-toggle class="hidden md:inline-flex" />
+
           <div class="hidden md:flex items-center gap-2">
             @if (auth.isAuthenticated()) {
-              <span class="text-sm text-slate-600">
-                Hi, <span class="font-medium text-slate-900">{{ auth.user()?.name }}</span>
+              <span class="text-sm text-slate-600 dark:text-slate-400">
+                <span class="font-medium text-slate-900 dark:text-slate-100">{{ auth.user()?.name }}</span>
               </span>
-              <button type="button" class="btn-ghost" (click)="logout()">Logout</button>
+              <button type="button" class="btn-ghost" (click)="logout()">
+                {{ 'nav.logout' | t }}
+              </button>
             } @else {
-              <a routerLink="/login" class="btn-ghost">Login</a>
-              <a routerLink="/register" class="btn-primary">Register</a>
+              <a routerLink="/login" class="btn-ghost">{{ 'nav.login' | t }}</a>
+              <a routerLink="/register" class="btn-primary">{{ 'nav.register' | t }}</a>
             }
           </div>
 
+          <app-language-toggle class="md:hidden" />
+          <app-theme-toggle class="md:hidden" />
+
           <button
             type="button"
-            class="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-lg hover:bg-slate-100"
+            class="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
             [attr.aria-expanded]="menuOpen()"
             aria-label="Toggle navigation"
             (click)="toggleMenu()"
@@ -75,36 +93,40 @@ interface NavItem {
         </div>
 
         @if (menuOpen()) {
-          <div class="md:hidden border-t border-slate-200 bg-white">
+          <div class="md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
             <nav class="container-app py-3 flex flex-col gap-1">
               @for (item of visibleNav(); track item.path) {
                 <a
                   [routerLink]="item.path"
-                  routerLinkActive="bg-brand-50 text-brand-700"
-                  class="px-3 py-2 rounded-lg text-sm font-medium hover:bg-slate-100"
+                  routerLinkActive="bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300"
+                  class="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
                   (click)="closeMenu()"
                 >
-                  {{ item.label }}
+                  {{ item.labelKey | t }}
                 </a>
               }
 
               @if (auth.hasRole('admin')) {
                 <a
                   routerLink="/admin/users"
-                  class="px-3 py-2 rounded-lg text-sm font-medium text-brand-700 hover:bg-brand-50"
+                  class="px-3 py-2 rounded-lg text-sm font-medium text-brand-700 dark:text-brand-300 hover:bg-brand-50 dark:hover:bg-brand-900/30"
                   (click)="closeMenu()"
                 >
-                  Admin panel
+                  {{ 'nav.admin_panel' | t }}
                 </a>
               }
 
               @if (auth.isAuthenticated()) {
                 <button type="button" class="btn-secondary mt-2" (click)="logout(); closeMenu()">
-                  Logout
+                  {{ 'nav.logout' | t }}
                 </button>
               } @else {
-                <a routerLink="/login" class="btn-secondary mt-2" (click)="closeMenu()">Login</a>
-                <a routerLink="/register" class="btn-primary" (click)="closeMenu()">Register</a>
+                <a routerLink="/login" class="btn-secondary mt-2" (click)="closeMenu()">
+                  {{ 'nav.login' | t }}
+                </a>
+                <a routerLink="/register" class="btn-primary" (click)="closeMenu()">
+                  {{ 'nav.register' | t }}
+                </a>
               }
             </nav>
           </div>
@@ -117,9 +139,9 @@ interface NavItem {
         </div>
       </main>
 
-      <footer class="border-t border-slate-200 bg-white">
-        <div class="container-app py-4 text-xs text-slate-500">
-          &copy; {{ year }} Car Rental System
+      <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <div class="container-app py-4 text-xs text-slate-500 dark:text-slate-500">
+          {{ 'footer.copyright' | t: { year: year } }}
         </div>
       </footer>
     </div>
@@ -133,9 +155,9 @@ export class CustomerLayoutComponent {
   protected readonly year = new Date().getFullYear();
 
   private readonly nav: NavItem[] = [
-    { label: 'Cars', path: '/cars', requiresAuth: false },
-    { label: 'Orders', path: '/orders', requiresAuth: true },
-    { label: 'Installments', path: '/installments', requiresAuth: true },
+    { labelKey: 'nav.cars', path: '/cars', requiresAuth: false },
+    { labelKey: 'nav.orders', path: '/orders', requiresAuth: true },
+    { labelKey: 'nav.installments', path: '/installments', requiresAuth: true },
   ];
 
   protected readonly visibleNav = computed(() =>

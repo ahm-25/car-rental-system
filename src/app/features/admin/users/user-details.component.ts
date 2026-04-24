@@ -45,7 +45,8 @@ import { AdminUsersService } from './admin-users.service';
             <button type="button" class="btn-primary" (click)="load()">Retry</button>
           </div>
         </div>
-      } @else if (user(); as u) {
+      } @else {
+        @if (user(); as u) {
         <header class="card flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div class="flex items-center gap-4">
             <div
@@ -116,6 +117,7 @@ import { AdminUsersService } from './admin-users.service';
             </dl>
           </article>
         </div>
+        }
       }
     </section>
   `,

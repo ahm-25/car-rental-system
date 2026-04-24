@@ -38,7 +38,8 @@ import { CustomerOrdersService } from './customer-orders.service';
             <button type="button" class="btn-primary" (click)="load()">Retry</button>
           </div>
         </div>
-      } @else if (order(); as o) {
+      } @else {
+        @if (order(); as o) {
         <header class="card flex flex-wrap items-start justify-between gap-4">
           <div>
             <h1 class="text-2xl font-semibold text-slate-900">Order #{{ o.id }}</h1>
@@ -183,6 +184,7 @@ import { CustomerOrdersService } from './customer-orders.service';
               </table>
             </div>
           </article>
+        }
         }
       }
     </section>

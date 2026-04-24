@@ -41,7 +41,8 @@ import { AdminCarsService } from './admin-cars.service';
             <button type="button" class="btn-primary" (click)="load()">Retry</button>
           </div>
         </div>
-      } @else if (car(); as c) {
+      } @else {
+        @if (car(); as c) {
         <header class="card flex flex-wrap items-start justify-between gap-4">
           <div>
             <h1 class="text-2xl font-semibold text-slate-900">{{ c.name }}</h1>
@@ -120,6 +121,7 @@ import { AdminCarsService } from './admin-cars.service';
             </dl>
           </article>
         </div>
+        }
       }
     </section>
   `,

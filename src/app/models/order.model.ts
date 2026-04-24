@@ -56,10 +56,6 @@ export interface UpdateOrderPayload {
   payment_status?: PaymentStatus;
 }
 
-export interface DeleteOrderResponse {
-  message: string;
-}
-
 export interface PayInstallmentResponse {
   message: string;
   installment: Installment;

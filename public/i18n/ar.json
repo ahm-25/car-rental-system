@@ -1,0 +1,55 @@
+{
+  "common": {
+    "loading": "جارٍ التحميل…",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "close": "إغلاق",
+    "search": "بحث",
+    "reset": "إعادة ضبط",
+    "retry": "إعادة المحاولة",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "view": "عرض",
+    "back": "رجوع",
+    "actions": "إجراءات",
+    "status": "الحالة",
+    "yes": "نعم",
+    "no": "لا"
+  },
+  "nav": {
+    "cars": "السيارات",
+    "orders": "الطلبات",
+    "installments": "الأقساط",
+    "admin_panel": "لوحة الإدارة",
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "logout": "تسجيل الخروج"
+  },
+  "admin": {
+    "users": "المستخدمون",
+    "cars": "السيارات",
+    "orders": "الطلبات",
+    "administrator": "مدير النظام"
+  },
+  "auth": {
+    "sign_in": "تسجيل الدخول",
+    "sign_in_as": "تسجيل الدخول كـ {role}",
+    "welcome_back": "مرحبًا بعودتك — اختر نوع الحساب.",
+    "customer": "عميل",
+    "admin": "مدير",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "create_account": "إنشاء حساب",
+    "no_account": "ليس لديك حساب؟",
+    "create_one": "أنشئ حسابًا",
+    "admin_provisioned": "حسابات الإدارة يتم إنشاؤها من قِبَل مدير النظام."
+  },
+  "footer": {
+    "copyright": "© {year} نظام تأجير السيارات"
+  },
+  "language": {
+    "english": "English",
+    "arabic": "العربية",
+    "switch": "تغيير اللغة"
+  }
+}

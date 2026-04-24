@@ -232,7 +232,7 @@ const PAGE_SIZES = [10, 15, 25, 50] as const;
               id="perPage"
               class="input w-20 py-1"
               [value]="perPage()"
-              (change)="changePageSize($any($event.target).value)"
+              (change)="changePageSize(asSelect($event.target).value)"
             >
               @for (size of pageSizes; track size) {
                 <option [value]="size">{{ size }}</option>
@@ -442,6 +442,11 @@ export class AdminCarsComponent implements OnInit {
       min_price: null,
       max_price: null,
     });
+  }
+
+  /** Typed cast for DOM event targets in templates (avoids `$any`). */
+  asSelect(target: EventTarget | null): HTMLSelectElement {
+    return target as HTMLSelectElement;
   }
 
   askDelete(car: Car): void {

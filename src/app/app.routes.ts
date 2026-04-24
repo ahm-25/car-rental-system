@@ -36,6 +36,7 @@ export const routes: Routes = [
     children: [
       {
         path: 'cars',
+        canActivate: [authGuard],
         loadChildren: () =>
           import('./features/customer/customer.routes').then(
             (m) => m.CUSTOMER_CARS_ROUTES,

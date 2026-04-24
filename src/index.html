@@ -12,6 +12,38 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('crs_theme');
+          var prefersDark =
+            window.matchMedia &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme =
+            stored === 'light' || stored === 'dark'
+              ? stored
+              : prefersDark
+                ? 'dark'
+                : 'light';
+          if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+          }
+
+          var storedLang = localStorage.getItem('crs_lang');
+          var lang =
+            storedLang === 'en' || storedLang === 'ar'
+              ? storedLang
+              : (navigator.language || 'en').toLowerCase().indexOf('ar') === 0
+                ? 'ar'
+                : 'en';
+          document.documentElement.setAttribute('lang', lang);
+          document.documentElement.setAttribute(
+            'dir',
+            lang === 'ar' ? 'rtl' : 'ltr',
+          );
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body class="h-full">
     <app-root></app-root>

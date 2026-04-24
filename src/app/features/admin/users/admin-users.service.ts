@@ -3,7 +3,14 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Paginated } from '../../../models/pagination.model';
-import { User, UserRole } from '../../../models/user.model';
+import {
+  CreateUserPayload,
+  DeleteUserResponse,
+  UpdateUserPayload,
+  User,
+  UserRole,
+  UserWithOrders,
+} from '../../../models/user.model';
 
 export interface UsersQuery {
   page?: number;
@@ -18,6 +25,7 @@ export class AdminUsersService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = environment.apiUrl;
 
+  /** GET /admin/users — paginated list with optional filters */
   list(query: UsersQuery): Observable<Paginated<User>> {
     let params = new HttpParams();
 
@@ -32,7 +40,25 @@ export class AdminUsersService {
     });
   }
 
-  getById(id: number | string): Observable<User> {
-    return this.http.get<User>(`${this.baseUrl}/admin/users/${id}`);
+  /** GET /admin/users/:id — single user with their orders */
+  getById(id: number | string): Observable<UserWithOrders> {
+    return this.http.get<UserWithOrders>(`${this.baseUrl}/admin/users/${id}`);
+  }
+
+  /** POST /admin/users — create a new user (admin or customer) */
+  create(payload: CreateUserPayload): Observable<User> {
+    return this.http.post<User>(`${this.baseUrl}/admin/users`, payload);
+  }
+
+  /** PUT /admin/users/:id — update user fields (name, wallet, etc.) */
+  update(id: number | string, payload: UpdateUserPayload): Observable<User> {
+    return this.http.put<User>(`${this.baseUrl}/admin/users/${id}`, payload);
+  }
+
+  /** DELETE /admin/users/:id */
+  delete(id: number | string): Observable<DeleteUserResponse> {
+    return this.http.delete<DeleteUserResponse>(
+      `${this.baseUrl}/admin/users/${id}`,
+    );
   }
 }

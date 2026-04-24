@@ -2,9 +2,12 @@ import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { LanguageToggleComponent } from '../../shared/components/language-toggle/language-toggle.component';
+import { ThemeToggleComponent } from '../../shared/components/theme-toggle/theme-toggle.component';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 interface AdminNavItem {
-  label: string;
+  labelKey: string;
   path: string;
   icon: 'users' | 'car' | 'receipt';
 }
@@ -12,10 +15,18 @@ interface AdminNavItem {
 @Component({
   selector: 'app-admin-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, NgTemplateOutlet],
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    NgTemplateOutlet,
+    ThemeToggleComponent,
+    LanguageToggleComponent,
+    TranslatePipe,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="min-h-screen flex bg-surface-muted">
+    <div class="min-h-screen flex bg-surface-muted dark:bg-slate-950">
       <!-- Desktop sidebar -->
       <aside
         class="hidden lg:flex lg:flex-col lg:fixed lg:inset-y-0 lg:w-64 bg-slate-900 text-slate-100"
@@ -41,11 +52,11 @@ interface AdminNavItem {
 
       <!-- Content column -->
       <div class="flex-1 lg:pl-64 flex flex-col min-h-screen">
-        <header class="h-16 bg-white border-b border-slate-200 sticky top-0 z-20">
+        <header class="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-20">
           <div class="h-full flex items-center gap-3 px-4 sm:px-6 lg:px-8">
             <button
               type="button"
-              class="lg:hidden inline-flex h-10 w-10 items-center justify-center rounded-lg hover:bg-slate-100"
+              class="lg:hidden inline-flex h-10 w-10 items-center justify-center rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
               aria-label="Open navigation"
               (click)="openDrawer()"
             >
@@ -53,13 +64,17 @@ interface AdminNavItem {
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" />
               </svg>
             </button>
-            <h1 class="text-base sm:text-lg font-semibold text-slate-900">Admin panel</h1>
+            <h1 class="text-base sm:text-lg font-semibold text-slate-900 dark:text-slate-100">
+              {{ 'nav.admin_panel' | t }}
+            </h1>
             <div class="flex-1"></div>
-            <span class="hidden sm:inline text-sm text-slate-600">
+            <app-language-toggle />
+            <app-theme-toggle />
+            <span class="hidden sm:inline text-sm text-slate-600 dark:text-slate-400">
               {{ auth.user()?.name }}
             </span>
             <button type="button" class="btn-ghost" (click)="logout()">
-              Logout
+              {{ 'nav.logout' | t }}
             </button>
           </div>
         </header>
@@ -103,7 +118,7 @@ interface AdminNavItem {
                 </svg>
               }
             }
-            <span>{{ item.label }}</span>
+            <span>{{ item.labelKey | t }}</span>
           </a>
         }
       </nav>
@@ -117,7 +132,7 @@ interface AdminNavItem {
             <div class="text-sm font-medium text-white truncate">
               {{ auth.user()?.name ?? 'Admin' }}
             </div>
-            <div class="text-xs text-slate-400 truncate">Administrator</div>
+            <div class="text-xs text-slate-400 truncate">{{ 'admin.administrator' | t }}</div>
           </div>
         </div>
         <button
@@ -128,7 +143,7 @@ interface AdminNavItem {
           <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
           </svg>
-          Logout
+          {{ 'nav.logout' | t }}
         </button>
       </div>
     </ng-template>
@@ -141,9 +156,9 @@ export class AdminLayoutComponent {
   protected readonly drawerOpen = signal(false);
 
   protected readonly nav: AdminNavItem[] = [
-    { label: 'Users', path: '/admin/users', icon: 'users' },
-    { label: 'Cars', path: '/admin/cars', icon: 'car' },
-    { label: 'Orders', path: '/admin/orders', icon: 'receipt' },
+    { labelKey: 'admin.users', path: '/admin/users', icon: 'users' },
+    { labelKey: 'admin.cars', path: '/admin/cars', icon: 'car' },
+    { labelKey: 'admin.orders', path: '/admin/orders', icon: 'receipt' },
   ];
 
   protected readonly initials = computed(() => {

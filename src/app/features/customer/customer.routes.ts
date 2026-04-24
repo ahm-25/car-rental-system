@@ -13,6 +13,12 @@ export const CUSTOMER_CARS_ROUTES: Routes = [
       import('./cars/car-details.component').then((m) => m.CarDetailsComponent),
     title: 'Car details',
   },
+  {
+    path: ':id/book',
+    loadComponent: () =>
+      import('./orders/book-car.component').then((m) => m.BookCarComponent),
+    title: 'Book car',
+  },
 ];
 
 export const CUSTOMER_ORDERS_ROUTES: Routes = [

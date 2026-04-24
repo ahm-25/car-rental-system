@@ -1,0 +1,55 @@
+{
+  "common": {
+    "loading": "Loading…",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "search": "Search",
+    "reset": "Reset",
+    "retry": "Retry",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "back": "Back",
+    "actions": "Actions",
+    "status": "Status",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "nav": {
+    "cars": "Cars",
+    "orders": "Orders",
+    "installments": "Installments",
+    "admin_panel": "Admin panel",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout"
+  },
+  "admin": {
+    "users": "Users",
+    "cars": "Cars",
+    "orders": "Orders",
+    "administrator": "Administrator"
+  },
+  "auth": {
+    "sign_in": "Sign in",
+    "sign_in_as": "Sign in as {role}",
+    "welcome_back": "Welcome back — choose your account type.",
+    "customer": "Customer",
+    "admin": "Admin",
+    "email": "Email",
+    "password": "Password",
+    "create_account": "Create an account",
+    "no_account": "No account?",
+    "create_one": "Create one",
+    "admin_provisioned": "Admin accounts are provisioned by the system administrator."
+  },
+  "footer": {
+    "copyright": "© {year} Car Rental System"
+  },
+  "language": {
+    "english": "English",
+    "arabic": "العربية",
+    "switch": "Switch language"
+  }
+}

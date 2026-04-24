@@ -13,7 +13,7 @@ import {
   NonNullableFormBuilder,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { NotificationService } from '../../../core/services/notification.service';
 import {
   Order,
@@ -57,7 +57,8 @@ const STATUSES: readonly PaymentStatus[] = ['success', 'pending'];
             <button type="button" class="btn-primary" (click)="load()">Retry</button>
           </div>
         </div>
-      } @else if (order(); as o) {
+      } @else {
+        @if (order(); as o) {
         <header class="card flex flex-wrap items-start justify-between gap-4">
           <div>
             <h1 class="text-2xl font-semibold text-slate-900">
@@ -67,30 +68,15 @@ const STATUSES: readonly PaymentStatus[] = ['success', 'pending'];
               Created {{ o.created_at | date: 'medium' }}
             </p>
           </div>
-          <div class="flex items-center gap-2">
-            <span
-              class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold"
-              [class.bg-emerald-100]="o.payment_status === 'success'"
-              [class.text-emerald-800]="o.payment_status === 'success'"
-              [class.bg-amber-100]="o.payment_status === 'pending'"
-              [class.text-amber-800]="o.payment_status === 'pending'"
-            >
-              {{ o.payment_status }}
-            </span>
-            <button
-              type="button"
-              class="btn inline-flex items-center gap-2 bg-red-600 text-white hover:bg-red-700"
-              [disabled]="deleting()"
-              (click)="deleteOrder(o)"
-            >
-              @if (deleting()) {
-                <app-spinner size="sm" />
-                Deleting…
-              } @else {
-                Delete
-              }
-            </button>
-          </div>
+          <span
+            class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold"
+            [class.bg-emerald-100]="o.payment_status === 'success'"
+            [class.text-emerald-800]="o.payment_status === 'success'"
+            [class.bg-amber-100]="o.payment_status === 'pending'"
+            [class.text-amber-800]="o.payment_status === 'pending'"
+          >
+            {{ o.payment_status }}
+          </span>
         </header>
 
         <div class="grid gap-4 md:grid-cols-3">
@@ -305,6 +291,7 @@ const STATUSES: readonly PaymentStatus[] = ['success', 'pending'];
             </div>
           </article>
         }
+        }
       }
     </section>
   `,
@@ -313,7 +300,6 @@ export class AdminOrderDetailsComponent implements OnInit {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly service = inject(AdminOrdersService);
   private readonly notify = inject(NotificationService);
-  private readonly router = inject(Router);
 
   @Input() id?: string;
 
@@ -324,7 +310,6 @@ export class AdminOrderDetailsComponent implements OnInit {
   protected readonly error = signal<string | null>(null);
 
   protected readonly updating = signal(false);
-  protected readonly deleting = signal(false);
 
   protected readonly statusForm = this.fb.group({
     payment_status: this.fb.control<PaymentStatus>('pending'),
@@ -381,23 +366,6 @@ export class AdminOrderDetailsComponent implements OnInit {
       },
       error: () => {
         this.updating.set(false);
-      },
-    });
-  }
-
-  deleteOrder(order: Order): void {
-    if (this.deleting()) return;
-    if (!confirm(`Delete order #${order.id}? This cannot be undone.`)) return;
-
-    this.deleting.set(true);
-    this.service.delete(order.id).subscribe({
-      next: (res) => {
-        this.deleting.set(false);
-        this.notify.success(res.message);
-        this.router.navigate(['/admin/orders']);
-      },
-      error: () => {
-        this.deleting.set(false);
       },
     });
   }

@@ -3,6 +3,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { Observable, catchError, of, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
+  AdminRegisterPayload,
   AuthResponse,
   LoginPayload,
   RegisterPayload,
@@ -34,9 +35,13 @@ export class AuthService {
     return this._user()?.role === role;
   }
 
-  login(payload: LoginPayload): Observable<AuthResponse> {
+  login(
+    payload: LoginPayload,
+    role: UserRole = 'customer',
+  ): Observable<AuthResponse> {
+    const segment = role === 'admin' ? 'admin' : 'customer';
     return this.http
-      .post<AuthResponse>(`${this.baseUrl}/customer/login`, payload)
+      .post<AuthResponse>(`${this.baseUrl}/${segment}/login`, payload)
       .pipe(tap((res) => this.setSession(res.token, res.user)));
   }
 
@@ -46,16 +51,25 @@ export class AuthService {
       .pipe(tap((res) => this.setSession(res.token, res.user)));
   }
 
+  /** POST /admin/register — creates a new admin account */
+  registerAdmin(payload: AdminRegisterPayload): Observable<AuthResponse> {
+    return this.http
+      .post<AuthResponse>(`${this.baseUrl}/admin/register`, payload)
+      .pipe(tap((res) => this.setSession(res.token, res.user)));
+  }
+
   logout(): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/customer/logout`, {}).pipe(
+    const segment = this._user()?.role === 'admin' ? 'admin' : 'customer';
+    return this.http.post<void>(`${this.baseUrl}/${segment}/logout`, {}).pipe(
       catchError(() => of(void 0)),
       tap(() => this.clearSession()),
     );
   }
 
   loadCurrentUser(): Observable<User> {
+    const segment = this._user()?.role === 'admin' ? 'admin' : 'customer';
     return this.http
-      .get<User>(`${this.baseUrl}/customer/me`)
+      .get<User>(`${this.baseUrl}/${segment}/me`)
       .pipe(tap((user) => this._user.set(user)));
   }
 

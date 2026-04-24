@@ -3,7 +3,6 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {
-  DeleteOrderResponse,
   Order,
   OrderType,
   PaymentStatus,
@@ -51,11 +50,5 @@ export class AdminOrdersService {
 
   update(id: number | string, payload: UpdateOrderPayload): Observable<Order> {
     return this.http.put<Order>(`${this.baseUrl}/admin/orders/${id}`, payload);
-  }
-
-  delete(id: number | string): Observable<DeleteOrderResponse> {
-    return this.http.delete<DeleteOrderResponse>(
-      `${this.baseUrl}/admin/orders/${id}`,
-    );
   }
 }

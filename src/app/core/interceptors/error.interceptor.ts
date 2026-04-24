@@ -6,7 +6,7 @@ import { AuthService } from '../services/auth.service';
 import { NotificationService } from '../services/notification.service';
 
 const isAuthEndpoint = (url: string): boolean =>
-  /\/customer\/(login|register)$/.test(url);
+  /\/(customer|admin)\/(login|register)$/.test(url);
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);

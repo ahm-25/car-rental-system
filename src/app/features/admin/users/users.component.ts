@@ -222,7 +222,7 @@ const PAGE_SIZES = [10, 25, 50] as const;
               id="perPage"
               class="input w-20 py-1"
               [value]="perPage()"
-              (change)="changePageSize($any($event.target).value)"
+              (change)="changePageSize(asSelect($event.target).value)"
             >
               @for (size of pageSizes; track size) {
                 <option [value]="size">{{ size }}</option>
@@ -386,5 +386,10 @@ export class UsersComponent implements OnInit {
 
   resetFilters(): void {
     this.filters.reset({ search: '', role: 'all', country: '' });
+  }
+
+  /** Typed cast for DOM event targets in templates (avoids `$any`). */
+  asSelect(target: EventTarget | null): HTMLSelectElement {
+    return target as HTMLSelectElement;
   }
 }
