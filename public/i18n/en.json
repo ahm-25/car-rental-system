@@ -42,6 +42,7 @@
     "per_day": "/day",
     "kilometers": "km",
     "details": {
+      "header": "Details",
       "back": "Back to cars",
       "available": "Available",
       "mileage": "Mileage",

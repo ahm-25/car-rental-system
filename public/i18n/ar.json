@@ -52,6 +52,7 @@
     "per_day": "/ يوم",
     "kilometers": "كم",
     "details": {
+      "header": "التفاصيل",
       "back": "العودة للسيارات",
       "available": "متاحة",
       "mileage": "المسافة المقطوعة",

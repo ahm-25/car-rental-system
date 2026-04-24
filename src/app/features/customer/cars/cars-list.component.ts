@@ -46,7 +46,7 @@ import { CustomerCarsQuery, CustomerCarsService } from './customer-cars.service'
       </header>
 
       <!-- Search & Filters Bar -->
-      <div class="sticky top-20 z-30 -mt-20 px-4 md:px-8">
+      <div class="md:sticky md:top-20 z-30 md:-mt-20 px-4 md:px-8">
         <form
           [formGroup]="filters"
           (submit)="$event.preventDefault()"
@@ -197,7 +197,7 @@ import { CustomerCarsQuery, CustomerCarsService } from './customer-cars.service'
                     [routerLink]="['/cars', car.id]"
                     class="block w-full bg-slate-50 dark:bg-slate-800 group-hover:bg-brand-600 text-slate-950 dark:text-slate-100 group-hover:text-white font-black py-4 rounded-2xl text-center transition-all duration-300"
                   >
-                    {{ ('customer_cars.details.header' | t) || 'Details' }}
+                    {{ 'customer_cars.details.header' | t }}
                   </a>
                 </div>
               </div>
