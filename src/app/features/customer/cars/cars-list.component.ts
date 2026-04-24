@@ -63,25 +63,25 @@ import {
     <!-- Search Bar -->
     <form
       [formGroup]="filters"
-      class="relative z-40 -mt-16 mx-auto w-[96%] max-w-6xl bg-white rounded-[3rem] shadow-[0_40px_100px_-15px_rgba(0,0,0,0.3)] p-4 md:p-6 border border-slate-100 mb-16"
+      class="relative z-40 -mt-16 mx-auto w-[96%] max-w-6xl bg-white dark:bg-slate-900 rounded-[3rem] shadow-[0_40px_100px_-15px_rgba(0,0,0,0.3)] dark:shadow-[0_40px_100px_-15px_rgba(0,0,0,0.6)] p-4 md:p-6 border border-slate-100 dark:border-slate-800 mb-16"
       (submit)="$event.preventDefault(); search()"
     >
-      <div class="flex flex-col lg:flex-row items-stretch lg:items-center gap-4 lg:gap-0 divide-y lg:divide-y-0 lg:divide-x divide-slate-100">
+      <div class="flex flex-col lg:flex-row items-stretch lg:items-center gap-4 lg:gap-0 divide-y lg:divide-y-0 lg:divide-x divide-slate-100 dark:divide-slate-800">
 
         <!-- Search -->
-        <div class="flex-[1.4] p-6 group transition-all duration-300 hover:bg-slate-50/80 first:rounded-t-[2.5rem] lg:first:rounded-l-[2.5rem] lg:first:rounded-tr-none">
-          <label class="block text-xs font-black text-brand-600 uppercase tracking-[0.25em] mb-4">
+        <div class="flex-[1.4] p-6 group transition-all duration-300 hover:bg-slate-50/80 dark:hover:bg-slate-800/40 first:rounded-t-[2.5rem] lg:first:rounded-l-[2.5rem] lg:first:rounded-tr-none">
+          <label class="block text-xs font-black text-brand-600 dark:text-brand-400 uppercase tracking-[0.25em] mb-4">
             Search
           </label>
           <div class="relative flex items-center">
-            <div class="absolute left-0 w-12 h-12 bg-brand-100/50 rounded-2xl flex items-center justify-center text-brand-600 transition-all group-hover:bg-brand-600 group-hover:text-white">
+            <div class="absolute left-0 w-12 h-12 bg-brand-100/50 dark:bg-brand-500/15 rounded-2xl flex items-center justify-center text-brand-600 dark:text-brand-400 transition-all group-hover:bg-brand-600 group-hover:text-white dark:group-hover:bg-brand-500">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
             <input
               type="search"
-              class="w-full bg-transparent border-none focus:ring-0 text-slate-900 text-2xl font-bold pl-16 placeholder:text-slate-300"
+              class="w-full bg-transparent border-none focus:ring-0 text-slate-900 dark:text-slate-100 text-2xl font-bold pl-16 placeholder:text-slate-300 dark:placeholder:text-slate-600"
               placeholder="Name or model"
               formControlName="search"
               autocomplete="off"
@@ -90,19 +90,19 @@ import {
         </div>
 
         <!-- Brand -->
-        <div class="flex-1 p-6 transition-all duration-300 hover:bg-slate-50/80">
-          <label class="block text-xs font-black text-brand-600 uppercase tracking-[0.25em] mb-4">
+        <div class="flex-1 p-6 transition-all duration-300 hover:bg-slate-50/80 dark:hover:bg-slate-800/40">
+          <label class="block text-xs font-black text-brand-600 dark:text-brand-400 uppercase tracking-[0.25em] mb-4">
             Brand
           </label>
           <div class="relative flex items-center">
-            <div class="absolute left-0 text-slate-400">
+            <div class="absolute left-0 text-slate-400 dark:text-slate-500">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14" />
               </svg>
             </div>
             <input
               type="text"
-              class="w-full bg-transparent border-none focus:ring-0 text-slate-900 text-lg font-bold pl-10 placeholder:text-slate-300 min-h-[48px]"
+              class="w-full bg-transparent border-none focus:ring-0 text-slate-900 dark:text-slate-100 text-lg font-bold pl-10 placeholder:text-slate-300 dark:placeholder:text-slate-600 min-h-[48px]"
               placeholder="e.g. Toyota"
               formControlName="brand"
               autocomplete="off"
@@ -111,29 +111,29 @@ import {
         </div>
 
         <!-- Price range -->
-        <div class="flex-[1.4] flex divide-x divide-slate-100 h-full">
-          <div class="flex-1 p-6 transition-all duration-300 hover:bg-slate-50/80">
-            <label class="block text-xs font-black text-brand-600 uppercase tracking-[0.25em] mb-4">
+        <div class="flex-[1.4] flex divide-x divide-slate-100 dark:divide-slate-800 h-full">
+          <div class="flex-1 p-6 transition-all duration-300 hover:bg-slate-50/80 dark:hover:bg-slate-800/40">
+            <label class="block text-xs font-black text-brand-600 dark:text-brand-400 uppercase tracking-[0.25em] mb-4">
               Min / day
             </label>
             <input
               type="number"
               min="0"
               step="1"
-              class="w-full bg-transparent border-none focus:ring-0 text-slate-900 text-lg font-bold placeholder:text-slate-300 min-h-[48px]"
+              class="w-full bg-transparent border-none focus:ring-0 text-slate-900 dark:text-slate-100 text-lg font-bold placeholder:text-slate-300 dark:placeholder:text-slate-600 min-h-[48px]"
               placeholder="0"
               formControlName="min_price"
             />
           </div>
-          <div class="flex-1 p-6 transition-all duration-300 hover:bg-slate-50/80 last:rounded-b-[2.5rem] lg:last:rounded-br-[2.5rem] lg:last:rounded-tr-none">
-            <label class="block text-xs font-black text-brand-600 uppercase tracking-[0.25em] mb-4">
+          <div class="flex-1 p-6 transition-all duration-300 hover:bg-slate-50/80 dark:hover:bg-slate-800/40 last:rounded-b-[2.5rem] lg:last:rounded-br-[2.5rem] lg:last:rounded-tr-none">
+            <label class="block text-xs font-black text-brand-600 dark:text-brand-400 uppercase tracking-[0.25em] mb-4">
               Max / day
             </label>
             <input
               type="number"
               min="0"
               step="1"
-              class="w-full bg-transparent border-none focus:ring-0 text-slate-900 text-lg font-bold placeholder:text-slate-300 min-h-[48px]"
+              class="w-full bg-transparent border-none focus:ring-0 text-slate-900 dark:text-slate-100 text-lg font-bold placeholder:text-slate-300 dark:placeholder:text-slate-600 min-h-[48px]"
               placeholder="∞"
               formControlName="max_price"
             />
@@ -164,9 +164,9 @@ import {
     <!-- Header -->
     <div class="mb-6 flex items-center justify-between gap-4">
       <div>
-        <h2 class="text-2xl font-semibold text-slate-900">Available cars</h2>
+        <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">Available cars</h2>
         @if (meta(); as m) {
-          <p class="text-sm text-slate-500 mt-0.5">
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
             {{ m.total }} {{ m.total === 1 ? 'result' : 'results' }}
           </p>
         }
@@ -188,7 +188,7 @@ import {
     <!-- Error -->
     @if (error()) {
       <div
-        class="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800 mb-6"
+        class="flex items-start gap-3 rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/40 p-4 text-sm text-red-800 dark:text-red-300 mb-6"
       >
         <p class="flex-1 font-medium">{{ error() }}</p>
         <button type="button" class="btn-secondary" (click)="load()">Retry</button>
@@ -198,12 +198,12 @@ import {
     <!-- Grid -->
     <div class="relative min-h-[240px]">
       @if (cars().length === 0 && !loading() && !error()) {
-        <div class="rounded-2xl border border-slate-200 bg-white p-12 text-center">
-          <svg class="h-14 w-14 mx-auto text-slate-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-12 text-center">
+          <svg class="h-14 w-14 mx-auto text-slate-300 dark:text-slate-600 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14" />
           </svg>
-          <p class="text-lg font-semibold text-slate-800">No cars match your search</p>
-          <p class="text-sm text-slate-500 mt-1">Try adjusting your filters.</p>
+          <p class="text-lg font-semibold text-slate-800 dark:text-slate-100">No cars match your search</p>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Try adjusting your filters.</p>
           @if (hasActiveFilters()) {
             <button type="button" class="btn-secondary mt-4" (click)="resetFilters()">
               Clear filters
@@ -214,7 +214,7 @@ import {
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           @for (car of cars(); track car.id) {
             <article
-              class="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300"
+              class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col shadow-sm dark:shadow-none hover:shadow-xl dark:hover:shadow-brand-500/10 hover:-translate-y-1.5 transition-all duration-300"
             >
               <a
                 [routerLink]="['/cars', car.id]"
@@ -240,20 +240,20 @@ import {
 
               <div class="p-6 flex flex-col flex-1">
                 <div class="mb-4">
-                  <h3 class="text-xl font-bold text-slate-900 mb-1 leading-tight">
+                  <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 mb-1 leading-tight">
                     <a
                       [routerLink]="['/cars', car.id]"
-                      class="hover:text-brand-600 transition-colors"
+                      class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
                     >
                       {{ car.name }}
                     </a>
                   </h3>
-                  <p class="text-sm font-medium text-slate-500">{{ car.brand }}</p>
+                  <p class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ car.brand }}</p>
                 </div>
 
-                <div class="flex items-center gap-4 text-sm text-slate-600 mb-6 py-4 border-y border-slate-100">
+                <div class="flex items-center gap-4 text-sm text-slate-600 dark:text-slate-300 mb-6 py-4 border-y border-slate-100 dark:border-slate-800">
                   <div class="flex items-center gap-1.5">
-                    <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <svg class="w-4 h-4 text-brand-500 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                     </svg>
                     <span class="font-medium">
@@ -264,19 +264,19 @@ import {
 
                 <div class="mt-auto flex items-end justify-between">
                   <div class="flex flex-col">
-                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-1">
+                    <span class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">
                       Price
                     </span>
                     <div class="flex items-baseline gap-1">
-                      <span class="text-2xl font-bold text-slate-900">
+                      <span class="text-2xl font-bold text-slate-900 dark:text-slate-100">
                         {{ +car.price_per_day | number: '1.2-2' }}
                       </span>
-                      <span class="text-sm font-medium text-slate-500">/day</span>
+                      <span class="text-sm font-medium text-slate-500 dark:text-slate-400">/day</span>
                     </div>
                   </div>
                   <a
                     [routerLink]="['/cars', car.id]"
-                    class="px-5 py-2.5 bg-slate-900 hover:bg-brand-600 text-white text-sm font-semibold rounded-xl transition-colors shadow-md hover:shadow-lg"
+                    class="px-5 py-2.5 bg-slate-900 dark:bg-brand-600 hover:bg-brand-600 dark:hover:bg-brand-500 text-white text-sm font-semibold rounded-xl transition-colors shadow-md hover:shadow-lg"
                   >
                     Details
                   </a>
@@ -289,7 +289,7 @@ import {
 
       @if (loading()) {
         <div
-          class="absolute inset-0 flex items-center justify-center bg-white/70 backdrop-blur-sm rounded-2xl"
+          class="absolute inset-0 flex items-center justify-center bg-white/70 dark:bg-slate-950/70 backdrop-blur-sm rounded-2xl"
         >
           <app-spinner size="lg" />
         </div>
@@ -301,6 +301,9 @@ import {
       <app-pagination
         [page]="page()"
         [lastPage]="meta()?.last_page ?? 1"
+        [total]="meta()?.total ?? null"
+        [from]="meta()?.from ?? null"
+        [to]="meta()?.to ?? null"
         [loading]="loading()"
         (pageChange)="goToPage($event)"
       />

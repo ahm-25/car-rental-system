@@ -94,5 +94,13 @@
     "qatar": "قطر",
     "bahrain": "البحرين",
     "oman": "عُمان"
+  },
+  "pagination": {
+    "rows_per_page": "عدد الصفوف",
+    "showing_range": "عرض {from} – {to} من {total}",
+    "total_items": "{total} عنصر",
+    "prev": "السابق",
+    "next": "التالي",
+    "page_of": "صفحة {current} من {last}"
   }
 }

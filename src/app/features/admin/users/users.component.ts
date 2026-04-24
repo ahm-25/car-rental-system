@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgClass } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -54,6 +54,7 @@ const PAGE_SIZES = [10, 25, 50] as const;
     ReactiveFormsModule,
     RouterLink,
     DatePipe,
+    NgClass,
     SpinnerComponent,
     PaginationComponent,
     TranslatePipe,
@@ -63,20 +64,20 @@ const PAGE_SIZES = [10, 25, 50] as const;
     <section class="flex flex-col gap-8">
       <header class="flex flex-wrap items-end justify-between gap-6">
         <div>
-          <h1 class="text-3xl font-black text-slate-900 tracking-tight">{{ 'users.title' | t }}</h1>
-          <p class="text-base text-slate-500 font-medium mt-1">
+          <h1 class="text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight">{{ 'users.title' | t }}</h1>
+          <p class="text-base text-slate-500 dark:text-slate-400 font-medium mt-1">
             {{ 'users.description' | t }}
           </p>
         </div>
 
         <div class="flex items-center gap-4">
           @if (meta(); as m) {
-            <span class="hidden sm:inline text-sm font-medium text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full">
+            <span class="hidden sm:inline text-sm font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-full">
               {{ 'users.showing' | t }}
-              <span class="font-bold text-slate-900">{{ m.from ?? rangeFrom() }}</span>
+              <span class="font-bold text-slate-900 dark:text-slate-100">{{ m.from ?? rangeFrom() }}</span>
               –
-              <span class="font-bold text-slate-900">{{ m.to ?? rangeTo() }}</span>
-              {{ 'users.of' | t }} <span class="font-bold text-brand-600">{{ m.total }}</span>
+              <span class="font-bold text-slate-900 dark:text-slate-100">{{ m.to ?? rangeTo() }}</span>
+              {{ 'users.of' | t }} <span class="font-bold text-brand-600 dark:text-brand-400">{{ m.total }}</span>
             </span>
           }
         </div>
@@ -85,14 +86,14 @@ const PAGE_SIZES = [10, 25, 50] as const;
       <!-- Filters -->
       <form
         [formGroup]="filters"
-        class="bg-white rounded-[2rem] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100"
+        class="bg-white dark:bg-slate-900 rounded-[2rem] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none border border-slate-100 dark:border-slate-800"
         (submit)="$event.preventDefault()"
       >
         <div class="grid gap-6 md:grid-cols-4">
           <div class="md:col-span-2">
-            <label for="search" class="block text-xs font-black text-slate-700 uppercase tracking-widest mb-2 px-1">{{ 'users.search_label' | t }}</label>
+            <label for="search" class="block text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest mb-2 px-1">{{ 'users.search_label' | t }}</label>
             <div class="relative">
-              <div class="absolute inset-y-0 start-0 pl-4 flex items-center pointer-events-none text-slate-400">
+              <div class="absolute inset-y-0 start-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
                 <svg class="h-5 w-5 rtl:-scale-x-100 ms-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
@@ -101,7 +102,7 @@ const PAGE_SIZES = [10, 25, 50] as const;
                 id="search"
                 type="search"
                 [placeholder]="'users.search_placeholder' | t"
-                class="w-full bg-slate-50 border border-slate-200 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 rounded-2xl ps-11 pe-5 py-3.5 text-slate-900 font-medium placeholder:text-slate-400 transition-all text-sm"
+                class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 rounded-2xl ps-11 pe-5 py-3.5 text-slate-900 dark:text-slate-100 font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-all text-sm"
                 formControlName="search"
                 autocomplete="off"
               />
@@ -109,8 +110,8 @@ const PAGE_SIZES = [10, 25, 50] as const;
           </div>
 
           <div>
-            <label for="role" class="block text-xs font-black text-slate-700 uppercase tracking-widest mb-2 px-1">{{ 'users.filters.role' | t }}</label>
-            <select id="role" class="w-full bg-slate-50 border border-slate-200 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 rounded-2xl px-5 py-3.5 text-slate-900 font-medium transition-all text-sm appearance-none" formControlName="role">
+            <label for="role" class="block text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest mb-2 px-1">{{ 'users.filters.role' | t }}</label>
+            <select id="role" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 rounded-2xl px-5 py-3.5 text-slate-900 dark:text-slate-100 font-medium transition-all text-sm appearance-none" formControlName="role">
               <option value="all">{{ 'users.filters.role_all' | t }}</option>
               <option value="admin">{{ 'users.filters.role_admin' | t }}</option>
               <option value="customer">{{ 'users.filters.role_customer' | t }}</option>
@@ -118,8 +119,8 @@ const PAGE_SIZES = [10, 25, 50] as const;
           </div>
 
           <div>
-            <label for="country" class="block text-xs font-black text-slate-700 uppercase tracking-widest mb-2 px-1">{{ 'users.filters.country' | t }}</label>
-            <select id="country" class="w-full bg-slate-50 border border-slate-200 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 rounded-2xl px-5 py-3.5 text-slate-900 font-medium transition-all text-sm appearance-none" formControlName="country">
+            <label for="country" class="block text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest mb-2 px-1">{{ 'users.filters.country' | t }}</label>
+            <select id="country" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 rounded-2xl px-5 py-3.5 text-slate-900 dark:text-slate-100 font-medium transition-all text-sm appearance-none" formControlName="country">
               @for (c of countries; track c.value) {
                 <option [value]="c.value">{{ c.labelKey | t }}</option>
               }
@@ -127,10 +128,10 @@ const PAGE_SIZES = [10, 25, 50] as const;
           </div>
         </div>
 
-        <div class="flex justify-end mt-6 pt-6 border-t border-slate-100">
+        <div class="flex justify-end mt-6 pt-6 border-t border-slate-100 dark:border-slate-800">
           <button
             type="button"
-            class="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-900 px-5 py-2.5 rounded-xl hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:hover:bg-transparent disabled:cursor-not-allowed"
+            class="inline-flex items-center gap-2 text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 px-5 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors disabled:opacity-50 disabled:hover:bg-transparent disabled:cursor-not-allowed"
             [disabled]="!hasActiveFilters()"
             (click)="resetFilters()"
           >
@@ -143,7 +144,7 @@ const PAGE_SIZES = [10, 25, 50] as const;
       <!-- Error banner -->
       @if (error()) {
         <div
-          class="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800"
+          class="flex items-start gap-3 rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/40 p-4 text-sm text-red-800 dark:text-red-300"
         >
           <svg class="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -158,8 +159,8 @@ const PAGE_SIZES = [10, 25, 50] as const;
       <!-- Table -->
       <div class="card p-0 overflow-hidden">
         <div class="relative overflow-x-auto">
-          <table class="min-w-full divide-y divide-slate-200 text-sm">
-            <thead class="bg-slate-50 text-start text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800 text-sm">
+            <thead class="bg-slate-50 dark:bg-slate-800/50 text-start text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               <tr>
                 <th scope="col" class="px-4 py-3">{{ 'users.table.name' | t }}</th>
                 <th scope="col" class="px-4 py-3">{{ 'users.table.email' | t }}</th>
@@ -170,31 +171,30 @@ const PAGE_SIZES = [10, 25, 50] as const;
                 <th scope="col" class="px-4 py-3 text-end">{{ 'users.table.actions' | t }}</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-slate-100 bg-white">
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800 bg-white dark:bg-slate-900">
               @for (user of users(); track user.id) {
-                <tr class="hover:bg-slate-50 transition-colors">
-                  <td class="px-4 py-3 font-medium text-slate-900">{{ user.name }}</td>
-                  <td class="px-4 py-3 text-slate-600">{{ user.email }}</td>
-                  <td class="px-4 py-3 text-slate-600">{{ user.phone }}</td>
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
+                  <td class="px-4 py-3 font-medium text-slate-900 dark:text-slate-100">{{ user.name }}</td>
+                  <td class="px-4 py-3 text-slate-600 dark:text-slate-300">{{ user.email }}</td>
+                  <td class="px-4 py-3 text-slate-600 dark:text-slate-300">{{ user.phone }}</td>
                   <td class="px-4 py-3">
                     <span
                       class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold"
-                      [class.bg-brand-50]="user.role === 'admin'"
-                      [class.text-brand-700]="user.role === 'admin'"
-                      [class.bg-slate-100]="user.role !== 'admin'"
-                      [class.text-slate-700]="user.role !== 'admin'"
+                      [ngClass]="user.role === 'admin'
+                        ? 'bg-brand-50 dark:bg-brand-500/15 text-brand-700 dark:text-brand-300'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'"
                     >
                       {{ roleLabel(user.role) | t }}
                     </span>
                   </td>
-                  <td class="px-4 py-3 text-slate-600">{{ user.country }}</td>
-                  <td class="px-4 py-3 text-slate-500">
+                  <td class="px-4 py-3 text-slate-600 dark:text-slate-300">{{ user.country }}</td>
+                  <td class="px-4 py-3 text-slate-500 dark:text-slate-400">
                     {{ user.created_at | date: 'mediumDate' }}
                   </td>
                   <td class="px-4 py-3 text-end">
                     <a
                       [routerLink]="['/admin/users', user.id]"
-                      class="inline-flex items-center gap-1 text-brand-600 hover:text-brand-700 font-medium"
+                      class="inline-flex items-center gap-1 text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium"
                     >
                       {{ 'users.view' | t }}
                       <svg class="h-4 w-4 rtl:-scale-x-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -208,12 +208,12 @@ const PAGE_SIZES = [10, 25, 50] as const;
                   <tr>
                     <td colspan="7" class="px-4 py-12">
                       <div class="flex flex-col items-center gap-2 text-center">
-                        <svg class="h-10 w-10 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <svg class="h-10 w-10 text-slate-300 dark:text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
                           <path stroke-linecap="round" stroke-linejoin="round" d="M3 12h18" />
                         </svg>
-                        <p class="text-sm font-medium text-slate-700">{{ 'users.empty_title' | t }}</p>
-                        <p class="text-xs text-slate-500">
+                        <p class="text-sm font-medium text-slate-700 dark:text-slate-300">{{ 'users.empty_title' | t }}</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">
                           {{ 'users.empty_subtitle' | t }}
                         </p>
                       </div>
@@ -226,7 +226,7 @@ const PAGE_SIZES = [10, 25, 50] as const;
 
           @if (loading()) {
             <div
-              class="absolute inset-0 flex items-center justify-center bg-white/70 backdrop-blur-sm"
+              class="absolute inset-0 flex items-center justify-center bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm"
             >
               <app-spinner size="lg" />
             </div>
@@ -236,6 +236,9 @@ const PAGE_SIZES = [10, 25, 50] as const;
         <app-pagination
           [page]="page()"
           [lastPage]="meta()?.last_page ?? 1"
+          [total]="meta()?.total ?? null"
+          [from]="meta()?.from ?? null"
+          [to]="meta()?.to ?? null"
           [perPage]="perPage()"
           [pageSizes]="pageSizes"
           [loading]="loading()"

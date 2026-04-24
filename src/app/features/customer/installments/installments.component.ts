@@ -1,4 +1,4 @@
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DatePipe, DecimalPipe, NgClass } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -21,19 +21,19 @@ const PAGE_SIZES = [10, 15, 25] as const;
 @Component({
   selector: 'app-customer-installments',
   standalone: true,
-  imports: [RouterLink, DatePipe, DecimalPipe, SpinnerComponent, PaginationComponent],
+  imports: [RouterLink, DatePipe, DecimalPipe, NgClass, SpinnerComponent, PaginationComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="flex flex-col gap-6">
       <header class="flex items-end justify-between gap-4">
         <div>
           <h1>Installments</h1>
-          <p class="text-sm text-slate-500 mt-1">
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Upcoming and past installment payments. Paying deducts from your wallet.
           </p>
         </div>
         @if (meta(); as m) {
-          <span class="text-sm text-slate-500">
+          <span class="text-sm text-slate-500 dark:text-slate-400">
             {{ m.from ?? 0 }}–{{ m.to ?? 0 }} of {{ m.total }}
           </span>
         }
@@ -41,7 +41,7 @@ const PAGE_SIZES = [10, 15, 25] as const;
 
       @if (error()) {
         <div
-          class="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800"
+          class="flex items-start gap-3 rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/40 p-4 text-sm text-red-800 dark:text-red-300"
         >
           <p class="flex-1 font-medium">{{ error() }}</p>
           <button type="button" class="btn-secondary" (click)="load()">Retry</button>
@@ -51,8 +51,8 @@ const PAGE_SIZES = [10, 15, 25] as const;
       <div class="relative">
         @if (installments().length === 0 && !loading() && !error()) {
           <div class="card flex flex-col items-center gap-2 py-16 text-center">
-            <p class="text-sm font-medium text-slate-700">No installments</p>
-            <p class="text-xs text-slate-500">
+            <p class="text-sm font-medium text-slate-700 dark:text-slate-200">No installments</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">
               You don't have any installment plans at the moment.
             </p>
             <a routerLink="/orders" class="btn-secondary mt-2">View orders</a>
@@ -60,8 +60,8 @@ const PAGE_SIZES = [10, 15, 25] as const;
         } @else {
           <div class="card p-0 overflow-hidden">
             <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-slate-200 text-sm">
-                <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800 text-sm">
+                <thead class="bg-slate-50 dark:bg-slate-800/50 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   <tr>
                     <th class="px-4 py-3">Order</th>
                     <th class="px-4 py-3">Car</th>
@@ -72,44 +72,43 @@ const PAGE_SIZES = [10, 15, 25] as const;
                     <th class="px-4 py-3 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100 bg-white">
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800 bg-white dark:bg-slate-900">
                   @for (inst of installments(); track inst.id) {
-                    <tr class="hover:bg-slate-50 transition-colors">
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
                       <td class="px-4 py-3">
                         <a
                           [routerLink]="['/orders', inst.order_id]"
-                          class="text-brand-600 hover:text-brand-700 font-medium"
+                          class="text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium"
                         >
                           #{{ inst.order_id }}
                         </a>
                       </td>
                       <td class="px-4 py-3">
-                        <div class="text-slate-900 font-medium">
+                        <div class="text-slate-900 dark:text-slate-100 font-medium">
                           {{ inst.order?.car?.name ?? '—' }}
                         </div>
-                        <div class="text-xs text-slate-500">
+                        <div class="text-xs text-slate-500 dark:text-slate-400">
                           {{ inst.order?.car?.brand }}
                           {{ inst.order?.car?.model }}
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-right font-medium text-slate-900">
+                      <td class="px-4 py-3 text-right font-medium text-slate-900 dark:text-slate-100">
                         {{ +inst.amount | number: '1.2-2' }}
                       </td>
-                      <td class="px-4 py-3 text-slate-600">
+                      <td class="px-4 py-3 text-slate-600 dark:text-slate-300">
                         {{ inst.due_date | date: 'mediumDate' }}
                       </td>
                       <td class="px-4 py-3">
                         <span
                           class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold"
-                          [class.bg-emerald-100]="inst.status === 'paid'"
-                          [class.text-emerald-800]="inst.status === 'paid'"
-                          [class.bg-amber-100]="inst.status === 'pending'"
-                          [class.text-amber-800]="inst.status === 'pending'"
+                          [ngClass]="inst.status === 'paid'
+                            ? 'bg-emerald-100 dark:bg-emerald-500/15 text-emerald-800 dark:text-emerald-300'
+                            : 'bg-amber-100 dark:bg-amber-500/15 text-amber-800 dark:text-amber-300'"
                         >
                           {{ inst.status }}
                         </span>
                       </td>
-                      <td class="px-4 py-3 text-slate-600">
+                      <td class="px-4 py-3 text-slate-600 dark:text-slate-300">
                         {{ inst.paid_at ? (inst.paid_at | date: 'medium') : '—' }}
                       </td>
                       <td class="px-4 py-3 text-right">
@@ -128,7 +127,7 @@ const PAGE_SIZES = [10, 15, 25] as const;
                             }
                           </button>
                         } @else {
-                          <span class="text-xs text-slate-400">—</span>
+                          <span class="text-xs text-slate-400 dark:text-slate-500">—</span>
                         }
                       </td>
                     </tr>
@@ -140,7 +139,7 @@ const PAGE_SIZES = [10, 15, 25] as const;
         }
 
         @if (loading()) {
-          <div class="absolute inset-0 flex items-center justify-center bg-white/70 backdrop-blur-sm rounded-2xl">
+          <div class="absolute inset-0 flex items-center justify-center bg-white/70 dark:bg-slate-950/70 backdrop-blur-sm rounded-2xl">
             <app-spinner size="lg" />
           </div>
         }
@@ -150,6 +149,9 @@ const PAGE_SIZES = [10, 15, 25] as const;
         <app-pagination
           [page]="page()"
           [lastPage]="meta()?.last_page ?? 1"
+          [total]="meta()?.total ?? null"
+          [from]="meta()?.from ?? null"
+          [to]="meta()?.to ?? null"
           [loading]="loading()"
           (pageChange)="goToPage($event)"
         />

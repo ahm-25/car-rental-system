@@ -94,5 +94,13 @@
     "qatar": "Qatar",
     "bahrain": "Bahrain",
     "oman": "Oman"
+  },
+  "pagination": {
+    "rows_per_page": "Rows per page",
+    "showing_range": "Showing {from} – {to} of {total}",
+    "total_items": "{total} items",
+    "prev": "Prev",
+    "next": "Next",
+    "page_of": "Page {current} of {last}"
   }
 }
