@@ -18,6 +18,7 @@ import { RouterLink } from '@angular/router';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { Car } from '../../../models/car.model';
 import { PaginationMeta } from '../../../models/pagination.model';
+import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 import { SpinnerComponent } from '../../../shared/components/spinner/spinner.component';
 import {
   CustomerCarsQuery,
@@ -32,6 +33,7 @@ import {
     RouterLink,
     DecimalPipe,
     SpinnerComponent,
+    PaginationComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -295,34 +297,14 @@ import {
     </div>
 
     <!-- Pagination -->
-    @if (meta(); as m) {
-      @if (m.last_page > 1) {
-        <div class="mt-12 flex items-center justify-center gap-2">
-          <button
-            type="button"
-            class="btn-secondary px-4"
-            [disabled]="page() === 1 || loading()"
-            (click)="goToPage(page() - 1)"
-          >
-            Prev
-          </button>
-          <span class="px-4 text-sm text-slate-600">
-            Page
-            <span class="font-semibold text-slate-900">{{ page() }}</span>
-            of
-            <span class="font-semibold text-slate-900">{{ m.last_page }}</span>
-          </span>
-          <button
-            type="button"
-            class="btn-secondary px-4"
-            [disabled]="isLastPage() || loading()"
-            (click)="goToPage(page() + 1)"
-          >
-            Next
-          </button>
-        </div>
-      }
-    }
+    <div class="mt-12 flex justify-center">
+      <app-pagination
+        [page]="page()"
+        [lastPage]="meta()?.last_page ?? 1"
+        [loading]="loading()"
+        (pageChange)="goToPage($event)"
+      />
+    </div>
   `,
 })
 export class CarsListComponent implements OnInit {

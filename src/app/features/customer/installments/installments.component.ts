@@ -12,6 +12,7 @@ import { RouterLink } from '@angular/router';
 import { NotificationService } from '../../../core/services/notification.service';
 import { Installment } from '../../../models/order.model';
 import { PaginationMeta } from '../../../models/pagination.model';
+import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 import { SpinnerComponent } from '../../../shared/components/spinner/spinner.component';
 import { CustomerInstallmentsService } from './customer-installments.service';
 
@@ -20,7 +21,7 @@ const PAGE_SIZES = [10, 15, 25] as const;
 @Component({
   selector: 'app-customer-installments',
   standalone: true,
-  imports: [RouterLink, DatePipe, DecimalPipe, SpinnerComponent],
+  imports: [RouterLink, DatePipe, DecimalPipe, SpinnerComponent, PaginationComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="flex flex-col gap-6">
@@ -145,31 +146,14 @@ const PAGE_SIZES = [10, 15, 25] as const;
         }
       </div>
 
-      @if (meta(); as m) {
-        @if (m.last_page > 1) {
-          <div class="flex items-center justify-center gap-1">
-            <button
-              type="button"
-              class="btn-ghost px-3 py-1"
-              [disabled]="page() === 1 || loading()"
-              (click)="goToPage(page() - 1)"
-            >
-              Prev
-            </button>
-            <span class="px-3 text-slate-600 text-sm">
-              Page {{ page() }} of {{ m.last_page }}
-            </span>
-            <button
-              type="button"
-              class="btn-ghost px-3 py-1"
-              [disabled]="isLastPage() || loading()"
-              (click)="goToPage(page() + 1)"
-            >
-              Next
-            </button>
-          </div>
-        }
-      }
+      <div class="flex justify-center">
+        <app-pagination
+          [page]="page()"
+          [lastPage]="meta()?.last_page ?? 1"
+          [loading]="loading()"
+          (pageChange)="goToPage($event)"
+        />
+      </div>
     </section>
   `,
 })

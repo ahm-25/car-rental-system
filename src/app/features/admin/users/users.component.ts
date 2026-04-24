@@ -17,7 +17,10 @@ import {
 } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 import { SpinnerComponent } from '../../../shared/components/spinner/spinner.component';
+import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
+import { LanguageService } from '../../../core/services/language.service';
 import { PaginationMeta } from '../../../models/pagination.model';
 import { User, UserRole } from '../../../models/user.model';
 import { AdminUsersService, UsersQuery } from './admin-users.service';
@@ -31,15 +34,15 @@ interface FilterValue {
 }
 
 const COUNTRIES = [
-  { value: '', label: 'All countries' },
-  { value: 'Saudi Arabia', label: 'Saudi Arabia' },
-  { value: 'UAE', label: 'UAE' },
-  { value: 'Egypt', label: 'Egypt' },
-  { value: 'Jordan', label: 'Jordan' },
-  { value: 'Kuwait', label: 'Kuwait' },
-  { value: 'Qatar', label: 'Qatar' },
-  { value: 'Bahrain', label: 'Bahrain' },
-  { value: 'Oman', label: 'Oman' },
+  { value: '', labelKey: 'users.filters.country_all' },
+  { value: 'Saudi Arabia', labelKey: 'countries.saudi_arabia' },
+  { value: 'UAE', labelKey: 'countries.uae' },
+  { value: 'Egypt', labelKey: 'countries.egypt' },
+  { value: 'Jordan', labelKey: 'countries.jordan' },
+  { value: 'Kuwait', labelKey: 'countries.kuwait' },
+  { value: 'Qatar', labelKey: 'countries.qatar' },
+  { value: 'Bahrain', labelKey: 'countries.bahrain' },
+  { value: 'Oman', labelKey: 'countries.oman' },
 ];
 
 const PAGE_SIZES = [10, 25, 50] as const;
@@ -47,27 +50,33 @@ const PAGE_SIZES = [10, 25, 50] as const;
 @Component({
   selector: 'app-admin-users',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, DatePipe, SpinnerComponent],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    DatePipe,
+    SpinnerComponent,
+    PaginationComponent,
+    TranslatePipe,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <section class="flex flex-col gap-6">
-      <header class="flex flex-wrap items-end justify-between gap-4">
+    <section class="flex flex-col gap-8">
+      <header class="flex flex-wrap items-end justify-between gap-6">
         <div>
-          <h1 class="text-2xl font-semibold text-slate-900">Users</h1>
-          <p class="text-sm text-slate-500 mt-1">
-            Manage customer and admin accounts.
+          <h1 class="text-3xl font-black text-slate-900 tracking-tight">{{ 'users.title' | t }}</h1>
+          <p class="text-base text-slate-500 font-medium mt-1">
+            {{ 'users.description' | t }}
           </p>
         </div>
 
-        <div class="flex items-center gap-3 text-sm text-slate-500">
+        <div class="flex items-center gap-4">
           @if (meta(); as m) {
-            <span>
-              Showing
-              <span class="font-medium text-slate-900">{{ m.from ?? rangeFrom() }}</span>
+            <span class="hidden sm:inline text-sm font-medium text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full">
+              {{ 'users.showing' | t }}
+              <span class="font-bold text-slate-900">{{ m.from ?? rangeFrom() }}</span>
               –
-              <span class="font-medium text-slate-900">{{ m.to ?? rangeTo() }}</span>
-              of
-              <span class="font-medium text-slate-900">{{ m.total }}</span>
+              <span class="font-bold text-slate-900">{{ m.to ?? rangeTo() }}</span>
+              {{ 'users.of' | t }} <span class="font-bold text-brand-600">{{ m.total }}</span>
             </span>
           }
         </div>
@@ -76,47 +85,59 @@ const PAGE_SIZES = [10, 25, 50] as const;
       <!-- Filters -->
       <form
         [formGroup]="filters"
-        class="card flex flex-col md:flex-row md:items-end gap-4"
+        class="bg-white rounded-[2rem] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100"
         (submit)="$event.preventDefault()"
       >
-        <div class="flex-1 min-w-0">
-          <label for="search" class="label">Search</label>
-          <input
-            id="search"
-            type="search"
-            placeholder="Name, email or phone…"
-            class="input"
-            formControlName="search"
-            autocomplete="off"
-          />
+        <div class="grid gap-6 md:grid-cols-4">
+          <div class="md:col-span-2">
+            <label for="search" class="block text-xs font-black text-slate-700 uppercase tracking-widest mb-2 px-1">{{ 'users.search_label' | t }}</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 start-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                <svg class="h-5 w-5 rtl:-scale-x-100 ms-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input
+                id="search"
+                type="search"
+                [placeholder]="'users.search_placeholder' | t"
+                class="w-full bg-slate-50 border border-slate-200 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 rounded-2xl ps-11 pe-5 py-3.5 text-slate-900 font-medium placeholder:text-slate-400 transition-all text-sm"
+                formControlName="search"
+                autocomplete="off"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label for="role" class="block text-xs font-black text-slate-700 uppercase tracking-widest mb-2 px-1">{{ 'users.filters.role' | t }}</label>
+            <select id="role" class="w-full bg-slate-50 border border-slate-200 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 rounded-2xl px-5 py-3.5 text-slate-900 font-medium transition-all text-sm appearance-none" formControlName="role">
+              <option value="all">{{ 'users.filters.role_all' | t }}</option>
+              <option value="admin">{{ 'users.filters.role_admin' | t }}</option>
+              <option value="customer">{{ 'users.filters.role_customer' | t }}</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="country" class="block text-xs font-black text-slate-700 uppercase tracking-widest mb-2 px-1">{{ 'users.filters.country' | t }}</label>
+            <select id="country" class="w-full bg-slate-50 border border-slate-200 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 rounded-2xl px-5 py-3.5 text-slate-900 font-medium transition-all text-sm appearance-none" formControlName="country">
+              @for (c of countries; track c.value) {
+                <option [value]="c.value">{{ c.labelKey | t }}</option>
+              }
+            </select>
+          </div>
         </div>
 
-        <div class="w-full md:w-48">
-          <label for="role" class="label">Role</label>
-          <select id="role" class="input" formControlName="role">
-            <option value="all">All roles</option>
-            <option value="admin">Admin</option>
-            <option value="customer">Customer</option>
-          </select>
+        <div class="flex justify-end mt-6 pt-6 border-t border-slate-100">
+          <button
+            type="button"
+            class="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-900 px-5 py-2.5 rounded-xl hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:hover:bg-transparent disabled:cursor-not-allowed"
+            [disabled]="!hasActiveFilters()"
+            (click)="resetFilters()"
+          >
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+            {{ 'common.reset' | t }}
+          </button>
         </div>
-
-        <div class="w-full md:w-56">
-          <label for="country" class="label">Country</label>
-          <select id="country" class="input" formControlName="country">
-            @for (c of countries; track c.value) {
-              <option [value]="c.value">{{ c.label }}</option>
-            }
-          </select>
-        </div>
-
-        <button
-          type="button"
-          class="btn-ghost md:self-center md:ml-auto"
-          [disabled]="!hasActiveFilters()"
-          (click)="resetFilters()"
-        >
-          Reset
-        </button>
       </form>
 
       <!-- Error banner -->
@@ -130,7 +151,7 @@ const PAGE_SIZES = [10, 25, 50] as const;
           <div class="flex-1">
             <p class="font-medium">{{ error() }}</p>
           </div>
-          <button type="button" class="btn-secondary" (click)="load()">Retry</button>
+          <button type="button" class="btn-secondary" (click)="load()">{{ 'common.retry' | t }}</button>
         </div>
       }
 
@@ -138,15 +159,15 @@ const PAGE_SIZES = [10, 25, 50] as const;
       <div class="card p-0 overflow-hidden">
         <div class="relative overflow-x-auto">
           <table class="min-w-full divide-y divide-slate-200 text-sm">
-            <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <thead class="bg-slate-50 text-start text-xs font-semibold uppercase tracking-wider text-slate-500">
               <tr>
-                <th scope="col" class="px-4 py-3">Name</th>
-                <th scope="col" class="px-4 py-3">Email</th>
-                <th scope="col" class="px-4 py-3">Phone</th>
-                <th scope="col" class="px-4 py-3">Role</th>
-                <th scope="col" class="px-4 py-3">Country</th>
-                <th scope="col" class="px-4 py-3">Joined</th>
-                <th scope="col" class="px-4 py-3 text-right">Actions</th>
+                <th scope="col" class="px-4 py-3">{{ 'users.table.name' | t }}</th>
+                <th scope="col" class="px-4 py-3">{{ 'users.table.email' | t }}</th>
+                <th scope="col" class="px-4 py-3">{{ 'users.table.phone' | t }}</th>
+                <th scope="col" class="px-4 py-3">{{ 'users.table.role' | t }}</th>
+                <th scope="col" class="px-4 py-3">{{ 'users.table.country' | t }}</th>
+                <th scope="col" class="px-4 py-3">{{ 'users.table.joined' | t }}</th>
+                <th scope="col" class="px-4 py-3 text-end">{{ 'users.table.actions' | t }}</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 bg-white">
@@ -163,20 +184,20 @@ const PAGE_SIZES = [10, 25, 50] as const;
                       [class.bg-slate-100]="user.role !== 'admin'"
                       [class.text-slate-700]="user.role !== 'admin'"
                     >
-                      {{ user.role }}
+                      {{ roleLabel(user.role) | t }}
                     </span>
                   </td>
                   <td class="px-4 py-3 text-slate-600">{{ user.country }}</td>
                   <td class="px-4 py-3 text-slate-500">
                     {{ user.created_at | date: 'mediumDate' }}
                   </td>
-                  <td class="px-4 py-3 text-right">
+                  <td class="px-4 py-3 text-end">
                     <a
                       [routerLink]="['/admin/users', user.id]"
                       class="inline-flex items-center gap-1 text-brand-600 hover:text-brand-700 font-medium"
                     >
-                      View
-                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      {{ 'users.view' | t }}
+                      <svg class="h-4 w-4 rtl:-scale-x-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                       </svg>
                     </a>
@@ -191,9 +212,9 @@ const PAGE_SIZES = [10, 25, 50] as const;
                           <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
                           <path stroke-linecap="round" stroke-linejoin="round" d="M3 12h18" />
                         </svg>
-                        <p class="text-sm font-medium text-slate-700">No users found</p>
+                        <p class="text-sm font-medium text-slate-700">{{ 'users.empty_title' | t }}</p>
                         <p class="text-xs text-slate-500">
-                          Try adjusting your search or filters.
+                          {{ 'users.empty_subtitle' | t }}
                         </p>
                       </div>
                     </td>
@@ -212,65 +233,17 @@ const PAGE_SIZES = [10, 25, 50] as const;
           }
         </div>
 
-        <!-- Pagination footer -->
-        <div
-          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-t border-slate-200 bg-slate-50 px-4 py-3 text-sm"
-        >
-          <div class="flex items-center gap-2 text-slate-600">
-            <label for="perPage">Rows per page:</label>
-            <select
-              id="perPage"
-              class="input w-20 py-1"
-              [value]="perPage()"
-              (change)="changePageSize(asSelect($event.target).value)"
-            >
-              @for (size of pageSizes; track size) {
-                <option [value]="size">{{ size }}</option>
-              }
-            </select>
-          </div>
-
-          <div class="flex items-center gap-1">
-            <button
-              type="button"
-              class="btn-ghost px-3 py-1"
-              [disabled]="page() === 1 || loading()"
-              (click)="goToPage(1)"
-            >
-              «
-            </button>
-            <button
-              type="button"
-              class="btn-ghost px-3 py-1"
-              [disabled]="page() === 1 || loading()"
-              (click)="goToPage(page() - 1)"
-            >
-              Prev
-            </button>
-
-            <span class="px-3 text-slate-600">
-              Page <span class="font-medium text-slate-900">{{ page() }}</span>
-              of <span class="font-medium text-slate-900">{{ meta()?.last_page ?? 1 }}</span>
-            </span>
-
-            <button
-              type="button"
-              class="btn-ghost px-3 py-1"
-              [disabled]="isLastPage() || loading()"
-              (click)="goToPage(page() + 1)"
-            >
-              Next
-            </button>
-            <button
-              type="button"
-              class="btn-ghost px-3 py-1"
-              [disabled]="isLastPage() || loading()"
-              (click)="goToPage(meta()?.last_page ?? 1)"
-            >
-              »
-            </button>
-          </div>
-        </div>
+        <app-pagination
+          [page]="page()"
+          [lastPage]="meta()?.last_page ?? 1"
+          [perPage]="perPage()"
+          [pageSizes]="pageSizes"
+          [loading]="loading()"
+          [showFirstLast]="true"
+          [bordered]="true"
+          (pageChange)="goToPage($event)"
+          (perPageChange)="changePageSize($event)"
+        />
       </div>
     </section>
   `,
@@ -279,9 +252,14 @@ export class UsersComponent implements OnInit {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly service = inject(AdminUsersService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly lang = inject(LanguageService);
 
   protected readonly countries = COUNTRIES;
   protected readonly pageSizes = PAGE_SIZES;
+
+  protected roleLabel(role: UserRole): string {
+    return `users.roles.${role}`;
+  }
 
   protected readonly filters = this.fb.group({
     search: this.fb.control(''),
@@ -362,7 +340,7 @@ export class UsersComponent implements OnInit {
         this.meta.set(null);
         this.error.set(
           (err.error as { message?: string } | null)?.message ??
-            'Failed to load users. Please try again.',
+            this.lang.translate('users.error_default'),
         );
       },
     });
@@ -376,8 +354,7 @@ export class UsersComponent implements OnInit {
     this.load();
   }
 
-  changePageSize(value: string | number): void {
-    const next = Number(value);
+  changePageSize(next: number): void {
     if (!next || next === this.perPage()) return;
     this.perPage.set(next);
     this.page.set(1);
@@ -386,10 +363,5 @@ export class UsersComponent implements OnInit {
 
   resetFilters(): void {
     this.filters.reset({ search: '', role: 'all', country: '' });
-  }
-
-  /** Typed cast for DOM event targets in templates (avoids `$any`). */
-  asSelect(target: EventTarget | null): HTMLSelectElement {
-    return target as HTMLSelectElement;
   }
 }

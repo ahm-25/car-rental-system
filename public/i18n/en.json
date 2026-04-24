@@ -31,6 +31,39 @@
     "orders": "Orders",
     "administrator": "Administrator"
   },
+  "users": {
+    "title": "Users",
+    "description": "Manage customer and admin accounts.",
+    "showing": "Showing",
+    "of": "of",
+    "search_label": "Search",
+    "search_placeholder": "Name, email or phone…",
+    "filters": {
+      "role": "Role",
+      "role_all": "All roles",
+      "role_admin": "Admin",
+      "role_customer": "Customer",
+      "country": "Country",
+      "country_all": "All countries"
+    },
+    "table": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "role": "Role",
+      "country": "Country",
+      "joined": "Joined",
+      "actions": "Actions"
+    },
+    "view": "View",
+    "empty_title": "No users found",
+    "empty_subtitle": "Try adjusting your search or filters.",
+    "error_default": "Failed to load users. Please try again.",
+    "roles": {
+      "admin": "Admin",
+      "customer": "Customer"
+    }
+  },
   "auth": {
     "sign_in": "Sign in",
     "sign_in_as": "Sign in as {role}",
@@ -51,5 +84,15 @@
     "english": "English",
     "arabic": "العربية",
     "switch": "Switch language"
+  },
+  "countries": {
+    "saudi_arabia": "Saudi Arabia",
+    "uae": "UAE",
+    "egypt": "Egypt",
+    "jordan": "Jordan",
+    "kuwait": "Kuwait",
+    "qatar": "Qatar",
+    "bahrain": "Bahrain",
+    "oman": "Oman"
   }
 }

@@ -26,61 +26,63 @@ interface AdminNavItem {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="min-h-screen flex bg-surface-muted dark:bg-slate-950">
+    <div class="min-h-screen flex bg-slate-50 dark:bg-slate-950">
       <!-- Desktop sidebar -->
       <aside
-        class="hidden lg:flex lg:flex-col lg:fixed lg:inset-y-0 lg:w-64 bg-slate-900 text-slate-100"
+        class="hidden lg:flex lg:flex-col lg:fixed lg:inset-y-0 lg:start-0 lg:w-72 bg-slate-950 text-slate-100 overflow-hidden border-e border-slate-800 z-50"
       >
+        <!-- Subtle Glow Decoration -->
+        <div class="absolute top-0 end-0 -me-24 -mt-24 w-64 h-64 bg-brand-500/20 rounded-full blur-[80px] pointer-events-none"></div>
+
         <ng-container *ngTemplateOutlet="sidebarInner" />
       </aside>
 
       <!-- Mobile drawer -->
       @if (drawerOpen()) {
-        <div class="lg:hidden fixed inset-0 z-40">
+        <div class="lg:hidden fixed inset-0 z-[60]">
           <div
-            class="absolute inset-0 bg-slate-900/60"
+            class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm"
             aria-hidden="true"
             (click)="closeDrawer()"
           ></div>
           <aside
-            class="absolute inset-y-0 left-0 w-64 bg-slate-900 text-slate-100 shadow-xl flex flex-col"
+            class="absolute inset-y-0 start-0 w-72 bg-slate-950 text-slate-100 shadow-2xl flex flex-col overflow-hidden border-e border-slate-800"
           >
+            <div class="absolute top-0 end-0 -me-24 -mt-24 w-64 h-64 bg-brand-500/20 rounded-full blur-[80px] pointer-events-none"></div>
             <ng-container *ngTemplateOutlet="sidebarInner" />
           </aside>
         </div>
       }
 
       <!-- Content column -->
-      <div class="flex-1 lg:pl-64 flex flex-col min-h-screen">
-        <header class="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-20">
-          <div class="h-full flex items-center gap-3 px-4 sm:px-6 lg:px-8">
-            <button
-              type="button"
-              class="lg:hidden inline-flex h-10 w-10 items-center justify-center rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-              aria-label="Open navigation"
-              (click)="openDrawer()"
-            >
-              <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" />
-              </svg>
-            </button>
-            <h1 class="text-base sm:text-lg font-semibold text-slate-900 dark:text-slate-100">
-              {{ 'nav.admin_panel' | t }}
-            </h1>
-            <div class="flex-1"></div>
-            <app-language-toggle />
-            <app-theme-toggle />
-            <span class="hidden sm:inline text-sm text-slate-600 dark:text-slate-400">
-              {{ auth.user()?.name }}
-            </span>
-            <button type="button" class="btn-ghost" (click)="logout()">
-              {{ 'nav.logout' | t }}
-            </button>
+      <div class="flex-1 lg:ps-72 flex flex-col min-h-screen relative">
+        <header class="h-20 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40">
+          <div class="h-full flex items-center justify-between px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center gap-4 min-w-0">
+              <button
+                type="button"
+                class="lg:hidden inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition shadow-sm border border-slate-200 dark:border-slate-800"
+                aria-label="Open navigation"
+                (click)="openDrawer()"
+              >
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" />
+                </svg>
+              </button>
+              <h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white truncate">
+                {{ 'nav.admin_panel' | t }}
+              </h1>
+            </div>
+            
+            <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+              <app-language-toggle />
+              <app-theme-toggle />
+            </div>
           </div>
         </header>
 
-        <main class="flex-1">
-          <div class="px-4 sm:px-6 lg:px-8 py-6">
+        <main class="flex-1 overflow-x-hidden">
+          <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-screen-2xl mx-auto">
             <router-outlet />
           </div>
         </main>
@@ -88,59 +90,67 @@ interface AdminNavItem {
     </div>
 
     <ng-template #sidebarInner>
-      <div class="h-16 flex items-center gap-2 px-6 border-b border-slate-800">
-        <span class="inline-block h-8 w-8 rounded-lg bg-brand-500"></span>
-        <span class="font-semibold text-white">Admin</span>
+      <div class="relative h-20 flex items-center gap-3 px-8 z-10">
+        <div class="h-10 w-10 rounded-xl bg-brand-600 flex items-center justify-center shadow-lg shadow-brand-500/30">
+          <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <span class="text-2xl font-black tracking-tight text-white">Vroom<span class="text-brand-500 text-3xl leading-none">.</span></span>
       </div>
 
-      <nav class="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
+      <nav class="relative flex-1 py-6 px-4 space-y-1.5 overflow-y-auto z-10 mt-4">
         @for (item of nav; track item.path) {
           <a
             [routerLink]="item.path"
-            routerLinkActive="bg-slate-800 text-white"
-            class="group flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+            routerLinkActive="bg-brand-600/10 text-brand-400 font-semibold shadow-[0_0_15px_-3px_rgba(79,70,229,0.1)] border border-brand-500/20"
+            [routerLinkActiveOptions]="{ exact: false }"
+            #rla="routerLinkActive"
+            class="group flex items-center gap-4 px-4 py-3.5 rounded-2xl text-sm font-medium text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 transition-all duration-200 border border-transparent"
             (click)="closeDrawer()"
           >
-            @switch (item.icon) {
-              @case ('users') {
-                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
+            <span class="flex items-center justify-center">
+              @switch (item.icon) {
+                @case ('users') {
+                  <svg class="h-5 w-5 transition-transform group-hover:scale-110" [class.text-brand-400]="rla.isActive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                }
+                @case ('car') {
+                  <svg class="h-5 w-5 transition-transform group-hover:scale-110" [class.text-brand-400]="rla.isActive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14M6 17h2m8 0h2M5 13v4a1 1 0 001 1h1a1 1 0 001-1v-1m8 1a1 1 0 001-1v-4" />
+                  </svg>
+                }
+                @case ('receipt') {
+                  <svg class="h-5 w-5 transition-transform group-hover:scale-110" [class.text-brand-400]="rla.isActive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h4M7 3h10a2 2 0 012 2v14l-3-2-2 2-2-2-2 2-2-2-3 2V5a2 2 0 012-2z" />
+                  </svg>
+                }
               }
-              @case ('car') {
-                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14M6 17h2m8 0h2M5 13v4a1 1 0 001 1h1a1 1 0 001-1v-1m8 1a1 1 0 001-1v-4" />
-                </svg>
-              }
-              @case ('receipt') {
-                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h4M7 3h10a2 2 0 012 2v14l-3-2-2 2-2-2-2 2-2-2-3 2V5a2 2 0 012-2z" />
-                </svg>
-              }
-            }
+            </span>
             <span>{{ item.labelKey | t }}</span>
           </a>
         }
       </nav>
 
-      <div class="p-3 border-t border-slate-800">
-        <div class="flex items-center gap-3 px-2 py-2">
-          <div class="h-9 w-9 rounded-full bg-brand-500 flex items-center justify-center text-white font-semibold">
+      <div class="relative p-6 z-10 border-t border-slate-800/80 mt-auto bg-slate-950">
+        <div class="flex items-center gap-3 mb-6 bg-slate-900/50 p-3 rounded-2xl border border-slate-800/50">
+          <div class="h-10 w-10 rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
             {{ initials() }}
           </div>
           <div class="flex-1 min-w-0">
-            <div class="text-sm font-medium text-white truncate">
+            <div class="text-sm font-bold text-white truncate">
               {{ auth.user()?.name ?? 'Admin' }}
             </div>
-            <div class="text-xs text-slate-400 truncate">{{ 'admin.administrator' | t }}</div>
+            <div class="text-[11px] font-medium text-slate-400 uppercase tracking-widest truncate mt-0.5">
+              {{ 'admin.administrator' | t }}
+            </div>
           </div>
         </div>
         <button
           type="button"
-          class="w-full mt-2 flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+          class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold text-slate-400 bg-slate-900/50 hover:bg-red-500/10 hover:text-red-400 border border-transparent hover:border-red-500/20 transition-all"
           (click)="logout()"
         >
-          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
           </svg>
           {{ 'nav.logout' | t }}

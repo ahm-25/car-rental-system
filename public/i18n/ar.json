@@ -31,6 +31,39 @@
     "orders": "الطلبات",
     "administrator": "مدير النظام"
   },
+  "users": {
+    "title": "المستخدمون",
+    "description": "إدارة حسابات العملاء والمشرفين.",
+    "showing": "عرض",
+    "of": "من",
+    "search_label": "بحث",
+    "search_placeholder": "الاسم أو البريد الإلكتروني أو الهاتف…",
+    "filters": {
+      "role": "الدور",
+      "role_all": "جميع الأدوار",
+      "role_admin": "مدير",
+      "role_customer": "عميل",
+      "country": "الدولة",
+      "country_all": "جميع الدول"
+    },
+    "table": {
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "role": "الدور",
+      "country": "الدولة",
+      "joined": "تاريخ الانضمام",
+      "actions": "إجراءات"
+    },
+    "view": "عرض",
+    "empty_title": "لا يوجد مستخدمون",
+    "empty_subtitle": "جرّب تعديل البحث أو عوامل التصفية.",
+    "error_default": "تعذّر تحميل المستخدمين. يُرجى المحاولة مجددًا.",
+    "roles": {
+      "admin": "مدير",
+      "customer": "عميل"
+    }
+  },
   "auth": {
     "sign_in": "تسجيل الدخول",
     "sign_in_as": "تسجيل الدخول كـ {role}",
@@ -51,5 +84,15 @@
     "english": "English",
     "arabic": "العربية",
     "switch": "تغيير اللغة"
+  },
+  "countries": {
+    "saudi_arabia": "المملكة العربية السعودية",
+    "uae": "الإمارات العربية المتحدة",
+    "egypt": "مصر",
+    "jordan": "الأردن",
+    "kuwait": "الكويت",
+    "qatar": "قطر",
+    "bahrain": "البحرين",
+    "oman": "عُمان"
   }
 }
