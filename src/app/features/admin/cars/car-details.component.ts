@@ -12,20 +12,22 @@ import { Router, RouterLink } from '@angular/router';
 import { NotificationService } from '../../../core/services/notification.service';
 import { Car } from '../../../models/car.model';
 import { SpinnerComponent } from '../../../shared/components/spinner/spinner.component';
+import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
+import { LanguageService } from '../../../core/services/language.service';
 import { AdminCarsService } from './admin-cars.service';
 
 @Component({
   selector: 'app-admin-car-details',
   standalone: true,
-  imports: [RouterLink, DatePipe, DecimalPipe, SpinnerComponent],
+  imports: [RouterLink, DatePipe, DecimalPipe, SpinnerComponent, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="flex flex-col gap-6 max-w-3xl">
       <nav class="flex items-center gap-2 text-sm text-slate-500">
-        <a routerLink="/admin/cars" class="hover:text-brand-700">Cars</a>
-        <span>/</span>
-        <span class="text-slate-900 font-medium">
-          {{ car()?.name ?? 'Car details' }}
+        <a routerLink="/admin/cars" class="hover:text-brand-700">{{ 'cars.details.nav' | t }}</a>
+        <span class="rtl:rotate-180">/</span>
+        <span class="text-slate-900 dark:text-slate-100 font-medium font-bold">
+          {{ car()?.name ?? ('cars.details.title' | t) }}
         </span>
       </nav>
 
@@ -35,24 +37,24 @@ import { AdminCarsService } from './admin-cars.service';
         </div>
       } @else if (error()) {
         <div class="card flex flex-col items-center gap-3 py-12 text-center">
-          <p class="font-medium text-slate-900">{{ error() }}</p>
+          <p class="font-medium text-slate-900 dark:text-slate-100">{{ error() }}</p>
           <div class="flex gap-2">
-            <a routerLink="/admin/cars" class="btn-secondary">Back to cars</a>
-            <button type="button" class="btn-primary" (click)="load()">Retry</button>
+            <a routerLink="/admin/cars" class="btn-secondary">{{ 'cars.details.back' | t }}</a>
+            <button type="button" class="btn-primary" (click)="load()">{{ 'common.retry' | t }}</button>
           </div>
         </div>
       } @else {
         @if (car(); as c) {
         <header class="card flex flex-wrap items-start justify-between gap-4">
           <div>
-            <h1 class="text-2xl font-semibold text-slate-900">{{ c.name }}</h1>
-            <p class="text-sm text-slate-500 mt-1">
+            <h1 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">{{ c.name }}</h1>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
               {{ c.brand }} · {{ c.model }}
             </p>
           </div>
           <div class="flex items-center gap-2">
             <a [routerLink]="['/admin/cars', c.id, 'edit']" class="btn-secondary">
-              Edit
+              {{ 'common.edit' | t }}
             </a>
             <button
               type="button"
@@ -62,9 +64,9 @@ import { AdminCarsService } from './admin-cars.service';
             >
               @if (deleting()) {
                 <app-spinner size="sm" />
-                Deleting…
+                {{ 'cars.delete_confirm.deleting' | t }}
               } @else {
-                Delete
+                {{ 'common.delete' | t }}
               }
             </button>
           </div>
@@ -72,49 +74,49 @@ import { AdminCarsService } from './admin-cars.service';
 
         <div class="grid gap-4 md:grid-cols-2">
           <article class="card">
-            <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">
-              Details
+            <h2 class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-4">
+              {{ 'cars.details.header' | t }}
             </h2>
             <dl class="space-y-3 text-sm">
               <div class="flex justify-between gap-4">
-                <dt class="text-slate-500">ID</dt>
-                <dd class="font-medium text-slate-900">{{ c.id }}</dd>
+                <dt class="text-slate-500">{{ 'cars.details.id' | t }}</dt>
+                <dd class="font-medium text-slate-900 dark:text-slate-100">{{ c.id }}</dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-slate-500">Brand</dt>
-                <dd class="font-medium text-slate-900">{{ c.brand }}</dd>
+                <dt class="text-slate-500">{{ 'cars.details.brand' | t }}</dt>
+                <dd class="font-medium text-slate-900 dark:text-slate-100">{{ c.brand }}</dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-slate-500">Model</dt>
-                <dd class="font-medium text-slate-900">{{ c.model }}</dd>
+                <dt class="text-slate-500">{{ 'cars.details.model' | t }}</dt>
+                <dd class="font-medium text-slate-900 dark:text-slate-100">{{ c.model }}</dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-slate-500">Kilometers</dt>
-                <dd class="font-medium text-slate-900">{{ c.kilometers | number }}</dd>
+                <dt class="text-slate-500">{{ 'cars.details.kilometers' | t }}</dt>
+                <dd class="font-medium text-slate-900 dark:text-slate-100">{{ c.kilometers | number }} {{ 'cars.table.km' | t }}</dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-slate-500">Price per day</dt>
-                <dd class="font-medium text-slate-900">
-                  {{ +c.price_per_day | number: '1.2-2' }}
+                <dt class="text-slate-500">{{ 'cars.details.price_per_day' | t }}</dt>
+                <dd class="font-bold text-slate-900 dark:text-slate-100">
+                  $ {{ +c.price_per_day | number: '1.2-2' }}
                 </dd>
               </div>
             </dl>
           </article>
 
           <article class="card">
-            <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">
-              Timestamps
+            <h2 class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-4">
+              {{ 'cars.details.timestamps' | t }}
             </h2>
             <dl class="space-y-3 text-sm">
               <div class="flex justify-between gap-4">
-                <dt class="text-slate-500">Created</dt>
-                <dd class="font-medium text-slate-900">
+                <dt class="text-slate-500">{{ 'cars.details.created' | t }}</dt>
+                <dd class="font-medium text-slate-900 dark:text-slate-100">
                   {{ c.created_at | date: 'medium' }}
                 </dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-slate-500">Updated</dt>
-                <dd class="font-medium text-slate-900">
+                <dt class="text-slate-500">{{ 'cars.details.updated' | t }}</dt>
+                <dd class="font-medium text-slate-900 dark:text-slate-100">
                   {{ c.updated_at | date: 'medium' }}
                 </dd>
               </div>
@@ -130,6 +132,7 @@ export class AdminCarDetailsComponent implements OnInit {
   private readonly service = inject(AdminCarsService);
   private readonly notify = inject(NotificationService);
   private readonly router = inject(Router);
+  private readonly lang = inject(LanguageService);
 
   @Input() id?: string;
 
@@ -161,7 +164,7 @@ export class AdminCarDetailsComponent implements OnInit {
         this.car.set(null);
         this.error.set(
           err.status === 404
-            ? 'This car no longer exists.'
+            ? this.lang.translate('cars.details.not_found')
             : (err.error as { message?: string } | null)?.message ??
                 'Failed to load car details.',
         );
@@ -171,7 +174,7 @@ export class AdminCarDetailsComponent implements OnInit {
 
   deleteCar(car: Car): void {
     if (this.deleting()) return;
-    if (!confirm(`Delete "${car.name}"? This cannot be undone.`)) return;
+    if (!confirm(this.lang.translate('cars.delete_confirm.body'))) return;
 
     this.deleting.set(true);
     this.service.delete(car.id).subscribe({

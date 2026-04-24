@@ -15,6 +15,7 @@ import {
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NotificationService } from '../../../core/services/notification.service';
+import { LanguageService } from '../../../core/services/language.service';
 import {
   Car,
   CreateCarPayload,
@@ -22,6 +23,7 @@ import {
 } from '../../../models/car.model';
 import { FieldErrorComponent } from '../../../shared/components/field-error/field-error.component';
 import { SpinnerComponent } from '../../../shared/components/spinner/spinner.component';
+import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { AdminCarsService } from './admin-cars.service';
 
 type ServerErrors = Record<string, string[]>;
@@ -34,23 +36,24 @@ type ServerErrors = Record<string, string[]>;
     RouterLink,
     FieldErrorComponent,
     SpinnerComponent,
+    TranslatePipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="flex flex-col gap-6 max-w-3xl">
       <nav class="flex items-center gap-2 text-sm text-slate-500">
-        <a routerLink="/admin/cars" class="hover:text-brand-700">Cars</a>
-        <span>/</span>
-        <span class="text-slate-900 font-medium">{{ title() }}</span>
+        <a routerLink="/admin/cars" class="hover:text-brand-700">{{ 'cars.details.nav' | t }}</a>
+        <span class="rtl:rotate-180">/</span>
+        <span class="text-slate-900 dark:text-slate-100 font-medium font-bold">{{ title() | t }}</span>
       </nav>
 
       <header>
-        <h1 class="text-2xl font-semibold text-slate-900">{{ title() }}</h1>
-        <p class="text-sm text-slate-500 mt-1">
+        <h1 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">{{ title() | t }}</h1>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
           {{
             isEdit()
-              ? 'Update the car details below.'
-              : 'Add a new car to the fleet.'
+              ? ('cars.form.edit_subtitle' | t)
+              : ('cars.form.new_subtitle' | t)
           }}
         </p>
       </header>
@@ -61,11 +64,11 @@ type ServerErrors = Record<string, string[]>;
         </div>
       } @else if (loadError()) {
         <div class="card flex flex-col items-center gap-3 py-12 text-center">
-          <p class="font-medium text-slate-900">{{ loadError() }}</p>
+          <p class="font-medium text-slate-900 dark:text-slate-100">{{ loadError() }}</p>
           <div class="flex gap-2">
-            <a routerLink="/admin/cars" class="btn-secondary">Back to cars</a>
+            <a routerLink="/admin/cars" class="btn-secondary">{{ 'cars.details.back' | t }}</a>
             <button type="button" class="btn-primary" (click)="loadCar()">
-              Retry
+              {{ 'common.retry' | t }}
             </button>
           </div>
         </div>
@@ -77,7 +80,7 @@ type ServerErrors = Record<string, string[]>;
           novalidate
         >
           <div class="md:col-span-2">
-            <label for="name" class="label">Name</label>
+            <label for="name" class="label">{{ 'cars.form.name_label' | t }}</label>
             <input
               id="name"
               type="text"
@@ -92,7 +95,7 @@ type ServerErrors = Record<string, string[]>;
           </div>
 
           <div>
-            <label for="brand" class="label">Brand</label>
+            <label for="brand" class="label">{{ 'cars.form.brand_label' | t }}</label>
             <input
               id="brand"
               type="text"
@@ -107,12 +110,12 @@ type ServerErrors = Record<string, string[]>;
           </div>
 
           <div>
-            <label for="model" class="label">Model</label>
+            <label for="model" class="label">{{ 'cars.form.model_label' | t }}</label>
             <input
               id="model"
               type="text"
               class="input"
-              placeholder="e.g. 2024"
+              [placeholder]="'cars.form.model_placeholder' | t"
               [class.border-red-400]="showError('model')"
               formControlName="model"
             />
@@ -123,7 +126,7 @@ type ServerErrors = Record<string, string[]>;
           </div>
 
           <div>
-            <label for="kilometers" class="label">Kilometers</label>
+            <label for="kilometers" class="label">{{ 'cars.form.kilometers_label' | t }}</label>
             <input
               id="kilometers"
               type="number"
@@ -136,12 +139,12 @@ type ServerErrors = Record<string, string[]>;
             <app-field-error
               [control]="form.controls.kilometers"
               [serverErrors]="serverErrors()?.['kilometers']"
-              [messages]="{ min: 'Must be 0 or greater.' }"
+              [messages]="{ min: ('cars.form.error_min_km' | t) }"
             />
           </div>
 
           <div>
-            <label for="price_per_day" class="label">Price per day</label>
+            <label for="price_per_day" class="label">{{ 'cars.form.price_label' | t }}</label>
             <input
               id="price_per_day"
               type="number"
@@ -154,12 +157,12 @@ type ServerErrors = Record<string, string[]>;
             <app-field-error
               [control]="form.controls.price_per_day"
               [serverErrors]="serverErrors()?.['price_per_day']"
-              [messages]="{ min: 'Must be greater than zero.' }"
+              [messages]="{ min: ('cars.form.error_min_price' | t) }"
             />
           </div>
 
           <div class="md:col-span-2 flex items-center justify-end gap-2 pt-2">
-            <a routerLink="/admin/cars" class="btn-secondary">Cancel</a>
+            <a routerLink="/admin/cars" class="btn-secondary">{{ 'cars.form.cancel' | t }}</a>
             <button
               type="submit"
               class="btn-primary inline-flex items-center gap-2"
@@ -167,9 +170,9 @@ type ServerErrors = Record<string, string[]>;
             >
               @if (submitting()) {
                 <app-spinner size="sm" />
-                {{ isEdit() ? 'Saving…' : 'Creating…' }}
+                {{ isEdit() ? ('cars.form.saving' | t) : ('cars.form.creating' | t) }}
               } @else {
-                {{ isEdit() ? 'Save changes' : 'Create car' }}
+                {{ isEdit() ? ('cars.form.save' | t) : ('cars.form.create' | t) }}
               }
             </button>
           </div>
@@ -183,6 +186,7 @@ export class AdminCarFormComponent implements OnInit {
   private readonly service = inject(AdminCarsService);
   private readonly router = inject(Router);
   private readonly notify = inject(NotificationService);
+  private readonly lang = inject(LanguageService);
 
   @Input() id?: string;
 
@@ -194,7 +198,7 @@ export class AdminCarFormComponent implements OnInit {
 
   protected readonly isEdit = computed(() => !!this.id);
   protected readonly title = computed(() =>
-    this.isEdit() ? 'Edit car' : 'New car',
+    this.isEdit() ? 'cars.form.edit_title' : 'cars.form.new_title',
   );
 
   protected readonly form = this.fb.group({
@@ -241,7 +245,7 @@ export class AdminCarFormComponent implements OnInit {
         this.loadingCar.set(false);
         this.loadError.set(
           err.status === 404
-            ? 'This car no longer exists.'
+            ? this.lang.translate('cars.details.not_found')
             : (err.error as { message?: string } | null)?.message ??
                 'Failed to load car details.',
         );
@@ -281,11 +285,10 @@ export class AdminCarFormComponent implements OnInit {
     req.subscribe({
       next: (car) => {
         this.submitting.set(false);
-        this.notify.success(
-          this.isEdit()
-            ? `"${car.name}" was updated.`
-            : `"${car.name}" was added to the fleet.`,
-        );
+        const msgKey = this.isEdit()
+          ? 'cars.form.success_updated'
+          : 'cars.form.success_created';
+        this.notify.success(this.lang.translate(msgKey, { name: car.name }));
         this.router.navigate(['/admin/cars']);
       },
       error: (err: HttpErrorResponse) => {

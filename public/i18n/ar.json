@@ -23,13 +23,91 @@
     "admin_panel": "لوحة الإدارة",
     "login": "تسجيل الدخول",
     "register": "إنشاء حساب",
-    "logout": "تسجيل الخروج"
+    "logout": "تسجيل الخروج",
+    "switch_language": "تغيير اللغة"
   },
   "admin": {
     "users": "المستخدمون",
     "cars": "السيارات",
     "orders": "الطلبات",
     "administrator": "مدير النظام"
+  },
+  "cars": {
+    "title": "السيارات",
+    "description": "إدارة الأسطول المتاح للإيجار.",
+    "new_car": "سيارة جديدة",
+    "showing": "عرض",
+    "of": "من",
+    "filters": {
+      "search": "بحث",
+      "search_placeholder": "الاسم أو العلامة التجارية أو الموديل…",
+      "brand": "العلامة التجارية",
+      "brand_placeholder": "مثال: Toyota",
+      "min_day": "الأدنى / يوم",
+      "max_day": "الأعلى / يوم",
+      "reset": "مسح الفلاتر"
+    },
+    "table": {
+      "name": "الاسم",
+      "brand_model": "العلامة / الموديل",
+      "mileage": "المسافة",
+      "price_day": "السعر / يوم",
+      "added": "تاريخ الإضافة",
+      "actions": "إجراءات",
+      "km": "كم"
+    },
+    "actions": {
+      "view": "عرض",
+      "edit": "تعديل",
+      "delete": "حذف"
+    },
+    "empty_title": "لا توجد سيارات",
+    "empty_subtitle": "جرّب تعديل الفلاتر أو أضف سيارة جديدة.",
+    "error_default": "تعذّر تحميل السيارات. يُرجى المحاولة مجددًا.",
+    "delete_confirm": {
+      "title": "حذف \"{name}\"؟",
+      "body": "سيتم حذف السيارة نهائيًا من الأسطول. لا يمكن التراجع عن هذا الإجراء.",
+      "cancel": "إلغاء",
+      "delete": "حذف",
+      "deleting": "جارٍ الحذف…"
+    },
+    "details": {
+      "title": "تفاصيل السيارة",
+      "subtitle": "مراجعة معلومات \"{name}\"",
+      "nav": "السيارات",
+      "back": "العودة للسيارات",
+      "header": "التفاصيل",
+      "id": "المعرف",
+      "brand": "العلامة",
+      "model": "الموديل",
+      "kilometers": "الكيلومترات",
+      "price_per_day": "السعر لكل يوم",
+      "timestamps": "الطوابع الزمنية",
+      "created": "تاريخ الإنشاء",
+      "updated": "تاريخ التحديث",
+      "not_found": "هذه السيارة لم تعد موجودة."
+    },
+    "form": {
+      "new_title": "سيارة جديدة",
+      "edit_title": "تعديل السيارة",
+      "new_subtitle": "أضف سيارة جديدة إلى الأسطول.",
+      "edit_subtitle": "قم بتحديث تفاصيل السيارة أدناه.",
+      "name_label": "الاسم",
+      "brand_label": "العلامة",
+      "model_label": "الموديل",
+      "model_placeholder": "مثال: 2024",
+      "kilometers_label": "الكيلومترات",
+      "price_label": "السعر لكل يوم",
+      "cancel": "إلغاء",
+      "save": "حفظ التغييرات",
+      "create": "إضافة السيارة",
+      "saving": "جارٍ الحفظ…",
+      "creating": "جارٍ الإضافة…",
+      "success_created": "تمت إضافة \"{name}\" إلى الأسطول.",
+      "success_updated": "تم تحديث \"{name}\".",
+      "error_min_km": "يجب أن تكون 0 أو أكثر.",
+      "error_min_price": "يجب أن تكون أكبر من الصفر."
+    }
   },
   "users": {
     "title": "المستخدمون",
@@ -65,14 +143,21 @@
     }
   },
   "auth": {
+    "password": "كلمة المرور",
+    "password_confirm": "تأكيد كلمة المرور",
+    "full_name": "الاسم الكامل",
+    "phone": "رقم الهاتف",
+    "country": "الدولة",
+    "register_subtitle": "انضم إلينا وابدأ في استئجار السيارات خلال دقائق.",
+    "create_account": "إنشاء حساب",
+    "creating_account": "جارٍ إنشاء الحساب…",
+    "already_registered": "لديك حساب بالفعل؟",
     "sign_in": "تسجيل الدخول",
     "sign_in_as": "تسجيل الدخول كـ {role}",
     "welcome_back": "مرحبًا بعودتك — اختر نوع الحساب.",
     "customer": "عميل",
     "admin": "مدير",
     "email": "البريد الإلكتروني",
-    "password": "كلمة المرور",
-    "create_account": "إنشاء حساب",
     "no_account": "ليس لديك حساب؟",
     "create_one": "أنشئ حسابًا",
     "admin_provisioned": "حسابات الإدارة يتم إنشاؤها من قِبَل مدير النظام."
@@ -102,5 +187,22 @@
     "prev": "السابق",
     "next": "التالي",
     "page_of": "صفحة {current} من {last}"
+  },
+  "toast": {
+    "close": "إغلاق"
+  },
+  "theme": {
+    "switch_light": "التغيير للوضع المضيء",
+    "switch_dark": "التغيير للوضع الليلي"
+  },
+  "errors": {
+    "invalid_credentials": "بيانات الاعتماد غير صالحة",
+    "unauthorized": "دخول غير مصرح به",
+    "forbidden": "ليس لديك صلاحية للقيام بهذا الإجراء.",
+    "session_expired": "انتهت صلاحية الجلسة. يرجى تسجيل الدخول مرة أخرى.",
+    "resource_not_found": "المورد غير موجود.",
+    "validation_failed": "فشل التحقق. يرجى مراجعة النموذج.",
+    "server_error": "حدث خطأ غير متوقع",
+    "network_error": "تعذر الاتصال بالخادم"
   }
 }

@@ -23,13 +23,91 @@
     "admin_panel": "Admin panel",
     "login": "Login",
     "register": "Register",
-    "logout": "Logout"
+    "logout": "Logout",
+    "switch_language": "Switch Language"
   },
   "admin": {
     "users": "Users",
     "cars": "Cars",
     "orders": "Orders",
     "administrator": "Administrator"
+  },
+  "cars": {
+    "title": "Cars",
+    "description": "Manage the fleet available for rent.",
+    "new_car": "New car",
+    "showing": "Showing",
+    "of": "of",
+    "filters": {
+      "search": "Search",
+      "search_placeholder": "Name, brand or model…",
+      "brand": "Brand",
+      "brand_placeholder": "e.g. Toyota",
+      "min_day": "Min / day",
+      "max_day": "Max / day",
+      "reset": "Reset filters"
+    },
+    "table": {
+      "name": "Name",
+      "brand_model": "Brand / Model",
+      "mileage": "Mileage",
+      "price_day": "Price / day",
+      "added": "Added",
+      "actions": "Actions",
+      "km": "km"
+    },
+    "actions": {
+      "view": "View",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "empty_title": "No cars found",
+    "empty_subtitle": "Try adjusting your filters or add a new car.",
+    "error_default": "Failed to load cars. Please try again.",
+    "delete_confirm": {
+      "title": "Delete \"{name}\"?",
+      "body": "This will permanently remove the car from the fleet. This action cannot be undone.",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "deleting": "Deleting…"
+    },
+    "details": {
+      "title": "Car details",
+      "subtitle": "Review information for \"{name}\"",
+      "nav": "Cars",
+      "back": "Back to cars",
+      "header": "Details",
+      "id": "ID",
+      "brand": "Brand",
+      "model": "Model",
+      "kilometers": "Kilometers",
+      "price_per_day": "Price per day",
+      "timestamps": "Timestamps",
+      "created": "Created",
+      "updated": "Updated",
+      "not_found": "This car no longer exists."
+    },
+    "form": {
+      "new_title": "New car",
+      "edit_title": "Edit car",
+      "new_subtitle": "Add a new car to the fleet.",
+      "edit_subtitle": "Update the car details below.",
+      "name_label": "Name",
+      "brand_label": "Brand",
+      "model_label": "Model",
+      "model_placeholder": "e.g. 2024",
+      "kilometers_label": "Kilometers",
+      "price_label": "Price per day",
+      "cancel": "Cancel",
+      "save": "Save changes",
+      "create": "Create car",
+      "saving": "Saving…",
+      "creating": "Creating…",
+      "success_created": "\"{name}\" was added to the fleet.",
+      "success_updated": "\"{name}\" was updated.",
+      "error_min_km": "Must be 0 or greater.",
+      "error_min_price": "Must be greater than zero."
+    }
   },
   "users": {
     "title": "Users",
@@ -65,14 +143,21 @@
     }
   },
   "auth": {
+    "password": "Password",
+    "password_confirm": "Confirm password",
+    "full_name": "Full name",
+    "phone": "Phone",
+    "country": "Country",
+    "register_subtitle": "Join to start renting cars in minutes.",
+    "create_account": "Create account",
+    "creating_account": "Creating account…",
+    "already_registered": "Already registered?",
     "sign_in": "Sign in",
     "sign_in_as": "Sign in as {role}",
     "welcome_back": "Welcome back — choose your account type.",
     "customer": "Customer",
     "admin": "Admin",
     "email": "Email",
-    "password": "Password",
-    "create_account": "Create an account",
     "no_account": "No account?",
     "create_one": "Create one",
     "admin_provisioned": "Admin accounts are provisioned by the system administrator."
@@ -102,5 +187,22 @@
     "prev": "Prev",
     "next": "Next",
     "page_of": "Page {current} of {last}"
+  },
+  "toast": {
+    "close": "Close"
+  },
+  "theme": {
+    "switch_light": "Switch to light mode",
+    "switch_dark": "Switch to dark mode"
+  },
+  "errors": {
+    "invalid_credentials": "Invalid credentials",
+    "unauthorized": "Unauthorized access",
+    "forbidden": "You do not have permission to perform this action.",
+    "session_expired": "Your session has expired. Please log in again.",
+    "resource_not_found": "Resource not found.",
+    "validation_failed": "Validation failed. Please review the form.",
+    "server_error": "An unexpected error occurred",
+    "network_error": "Unable to connect to the server"
   }
 }

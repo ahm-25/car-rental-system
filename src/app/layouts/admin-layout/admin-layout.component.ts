@@ -74,7 +74,7 @@ interface AdminNavItem {
               </h1>
             </div>
             
-            <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+            <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0 text-slate-600 dark:text-slate-300">
               <app-language-toggle />
               <app-theme-toggle />
             </div>

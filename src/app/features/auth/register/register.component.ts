@@ -9,21 +9,22 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { FieldErrorComponent } from '../../../shared/components/field-error/field-error.component';
 import { passwordsMatchValidator } from '../../../shared/validators/passwords-match.validator';
+import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 
 type ServerErrors = Record<string, string[]>;
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, FieldErrorComponent],
+  imports: [ReactiveFormsModule, RouterLink, FieldErrorComponent, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <h2 class="mb-1">Create an account</h2>
-    <p class="text-sm text-slate-500 mb-6">Join to start renting cars in minutes.</p>
+    <h2 class="mb-1 text-slate-900 dark:text-white">{{ 'auth.create_account' | t }}</h2>
+    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">{{ 'auth.register_subtitle' | t }}</p>
 
     <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="flex flex-col gap-4">
       <div>
-        <label for="name" class="label">Full name</label>
+        <label for="name" class="label">{{ 'auth.full_name' | t }}</label>
         <input
           id="name"
           type="text"
@@ -39,7 +40,7 @@ type ServerErrors = Record<string, string[]>;
       </div>
 
       <div>
-        <label for="email" class="label">Email</label>
+        <label for="email" class="label">{{ 'auth.email' | t }}</label>
         <input
           id="email"
           type="email"
@@ -55,7 +56,7 @@ type ServerErrors = Record<string, string[]>;
       </div>
 
       <div>
-        <label for="phone" class="label">Phone</label>
+        <label for="phone" class="label">{{ 'auth.phone' | t }}</label>
         <input
           id="phone"
           type="tel"
@@ -72,7 +73,7 @@ type ServerErrors = Record<string, string[]>;
       </div>
 
       <div>
-        <label for="country" class="label">Country</label>
+        <label for="country" class="label">{{ 'auth.country' | t }}</label>
         <input
           id="country"
           type="text"
@@ -88,7 +89,7 @@ type ServerErrors = Record<string, string[]>;
       </div>
 
       <div>
-        <label for="password" class="label">Password</label>
+        <label for="password" class="label">{{ 'auth.password' | t }}</label>
         <input
           id="password"
           type="password"
@@ -104,7 +105,7 @@ type ServerErrors = Record<string, string[]>;
       </div>
 
       <div>
-        <label for="passwordConfirmation" class="label">Confirm password</label>
+        <label for="passwordConfirmation" class="label">{{ 'auth.password_confirm' | t }}</label>
         <input
           id="passwordConfirmation"
           type="password"
@@ -125,17 +126,17 @@ type ServerErrors = Record<string, string[]>;
         [disabled]="form.invalid || submitting()"
       >
         @if (submitting()) {
-          Creating account…
+          {{ 'auth.creating_account' | t }}
         } @else {
-          Create account
+          {{ 'auth.create_account' | t }}
         }
       </button>
     </form>
 
-    <p class="text-sm text-slate-600 mt-6">
-      Already registered?
-      <a routerLink="/login" class="font-medium">Sign in</a>
-    </p>
+    <div class="text-sm text-slate-600 dark:text-slate-400 mt-6 flex items-center gap-1.5">
+      {{ 'auth.already_registered' | t }}
+      <a routerLink="/login" class="font-bold text-brand-600 hover:text-brand-700 dark:text-brand-400">{{ 'auth.sign_in' | t }}</a>
+    </div>
   `,
 })
 export class RegisterComponent {

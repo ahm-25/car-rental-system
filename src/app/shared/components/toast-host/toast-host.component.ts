@@ -28,7 +28,7 @@ const TONE_CLASSES: Record<string, string> = {
           [ngClass]="toneClass(t.kind)"
         >
           <div class="flex items-start gap-3">
-            <span class="flex-1">{{ t.message }}</span>
+            <span class="flex-1">{{ t.message | t }}</span>
             <button
               type="button"
               class="text-xs font-semibold uppercase tracking-wide opacity-70 hover:opacity-100"

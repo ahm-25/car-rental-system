@@ -1,16 +1,18 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ThemeService } from '../../../core/services/theme.service';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
   selector: 'app-theme-toggle',
   standalone: true,
+  imports: [TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <button
       type="button"
-      class="inline-flex h-10 w-10 items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
+      class="inline-flex h-10 w-10 items-center justify-center rounded-lg hover:bg-white/10 dark:hover:bg-slate-800 transition-colors"
       [attr.aria-label]="
-        theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'
+        theme.isDark() ? ('theme.switch_light' | t) : ('theme.switch_dark' | t)
       "
       [attr.aria-pressed]="theme.isDark()"
       (click)="theme.toggle()"

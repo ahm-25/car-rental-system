@@ -15,33 +15,33 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((err: HttpErrorResponse) => {
-      let message = 'An unexpected error occurred.';
+      let message = 'errors.server_error';
       const serverMessage = (err.error as { message?: string } | null)?.message;
 
       switch (err.status) {
         case 0:
-          message = 'Network error. Please check your connection.';
+          message = 'errors.network_error';
           break;
         case 401:
           if (isAuthEndpoint(req.url)) {
-            message = serverMessage ?? 'Invalid credentials.';
+            message = serverMessage === 'Invalid credentials' ? 'errors.invalid_credentials' : (serverMessage ?? 'errors.invalid_credentials');
           } else {
-            message = 'Your session has expired. Please log in again.';
+            message = 'errors.session_expired';
             auth.clearSession();
             router.navigate(['/login']);
           }
           break;
         case 403:
-          message = serverMessage ?? 'You do not have permission to perform this action.';
+          message = serverMessage ?? 'errors.forbidden';
           break;
         case 404:
-          message = serverMessage ?? 'Resource not found.';
+          message = serverMessage ?? 'errors.resource_not_found';
           break;
         case 422:
-          message = serverMessage ?? 'Validation failed. Please review the form.';
+          message = serverMessage ?? 'errors.validation_failed';
           break;
         case 500:
-          message = 'Server error. Please try again later.';
+          message = 'errors.server_error';
           break;
         default:
           message = serverMessage ?? message;

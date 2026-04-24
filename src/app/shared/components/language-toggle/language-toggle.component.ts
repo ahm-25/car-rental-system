@@ -10,7 +10,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
   template: `
     <button
       type="button"
-      class="inline-flex h-10 items-center gap-1.5 px-3 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
+      class="inline-flex h-10 items-center gap-1.5 px-3 rounded-lg text-sm font-medium hover:bg-white/10 dark:hover:bg-slate-800 transition-colors"
       [attr.aria-label]="'language.switch' | t"
       (click)="lang.toggle()"
     >

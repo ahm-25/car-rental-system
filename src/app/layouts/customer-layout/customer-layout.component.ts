@@ -55,8 +55,8 @@ interface NavItem {
 
           <div class="flex-1"></div>
 
-          <app-language-toggle class="hidden md:inline-flex" />
-          <app-theme-toggle class="hidden md:inline-flex" />
+          <app-language-toggle class="hidden md:inline-flex text-slate-600 dark:text-slate-300" />
+          <app-theme-toggle class="hidden md:inline-flex text-slate-600 dark:text-slate-300" />
 
           <div class="hidden md:flex items-center gap-2">
             @if (auth.isAuthenticated()) {
@@ -72,8 +72,8 @@ interface NavItem {
             }
           </div>
 
-          <app-language-toggle class="md:hidden" />
-          <app-theme-toggle class="md:hidden" />
+          <app-language-toggle class="md:hidden text-slate-600 dark:text-slate-300" />
+          <app-theme-toggle class="md:hidden text-slate-600 dark:text-slate-300" />
 
           <button
             type="button"
