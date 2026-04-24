@@ -1,0 +1,1890 @@
+{
+	"info": {
+		"name": "Car Rental API",
+		"description": "Complete API collection for the Car Rental System.\n\n## Setup\n1. Run `php artisan migrate --seed`\n2. Run `php artisan serve`\n3. Use the pre-seeded tokens or call login endpoints to get a token.\n\n## Test Credentials\n- Admin: admin@admin.com / password\n- Customer: customer@customer.com / password",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000/api"
+		},
+		{
+			"key": "admin_token",
+			"value": ""
+		},
+		{
+			"key": "customer_token",
+			"value": ""
+		}
+	],
+	"item": [
+		{
+			"name": "Admin Auth",
+			"item": [
+				{
+					"name": "Register Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"New Admin\",\n    \"email\": \"newadmin@example.com\",\n    \"password\": \"password\",\n    \"password_confirmation\": \"password\",\n    \"phone\": \"+966500000000\",\n    \"country\": \"Saudi Arabia\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/register",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "register"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var json = pm.response.json();",
+									"    pm.collectionVariables.set('admin_token', json.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"response": [
+						{
+							"name": "201 - Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Content-Type", "value": "application/json" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"New Admin\",\n    \"email\": \"newadmin@example.com\",\n    \"password\": \"password\",\n    \"password_confirmation\": \"password\",\n    \"phone\": \"+966500000000\",\n    \"country\": \"Saudi Arabia\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/register",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "register"]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"Admin registered successfully.\",\n    \"user\": {\n        \"id\": 11,\n        \"name\": \"New Admin\",\n        \"email\": \"newadmin@example.com\",\n        \"phone\": \"+966500000000\",\n        \"country\": \"Saudi Arabia\",\n        \"wallet\": null,\n        \"role\": \"admin\",\n        \"created_at\": \"2026-04-14T10:00:00.000000Z\",\n        \"updated_at\": \"2026-04-14T10:00:00.000000Z\"\n    },\n    \"token\": \"aBcDeFgHiJkLmNoPqRsTuVwXyZ0123456789aBcDeFgHiJkLmNoPqRsTuVwXy\"\n}"
+						},
+						{
+							"name": "422 - Validation Error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Content-Type", "value": "application/json" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"\",\n    \"email\": \"invalid\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/register",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "register"]
+								}
+							},
+							"status": "Unprocessable Entity",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"The name field is required. (and 2 more errors)\",\n    \"errors\": {\n        \"name\": [\"The name field is required.\"],\n        \"email\": [\"The email field must be a valid email address.\"],\n        \"password\": [\"The password field is required.\"]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Login Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@admin.com\",\n    \"password\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/login",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "login"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var json = pm.response.json();",
+									"    pm.collectionVariables.set('admin_token', json.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"response": [
+						{
+							"name": "200 - Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Content-Type", "value": "application/json" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"admin@admin.com\",\n    \"password\": \"password\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/login",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "login"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"Login successful.\",\n    \"user\": {\n        \"id\": 1,\n        \"name\": \"Admin User\",\n        \"email\": \"admin@admin.com\",\n        \"phone\": null,\n        \"country\": null,\n        \"wallet\": null,\n        \"role\": \"admin\",\n        \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n        \"updated_at\": \"2026-04-14T10:00:00.000000Z\"\n    },\n    \"token\": \"aBcDeFgHiJkLmNoPqRsTuVwXyZ0123456789aBcDeFgHiJkLmNoPqRsTuVwXy\"\n}"
+						},
+						{
+							"name": "401 - Invalid Credentials",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Content-Type", "value": "application/json" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"admin@admin.com\",\n    \"password\": \"wrongpassword\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/login",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "login"]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"Invalid credentials.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Current Admin",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/me",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "me"]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/me",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "me"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"id\": 1,\n    \"name\": \"Admin User\",\n    \"email\": \"admin@admin.com\",\n    \"phone\": null,\n    \"country\": null,\n    \"wallet\": null,\n    \"role\": \"admin\",\n    \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n    \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n}"
+						},
+						{
+							"name": "401 - Unauthenticated",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/me",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "me"]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"Unauthenticated.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Logout Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/logout",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "logout"]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/logout",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "logout"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"Logged out successfully.\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Admin - Users",
+			"item": [
+				{
+					"name": "List Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/users?per_page=15",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "users"],
+							"query": [
+								{ "key": "per_page", "value": "15" },
+								{ "key": "search", "value": "", "disabled": true },
+								{ "key": "role", "value": "customer", "disabled": true },
+								{ "key": "country", "value": "", "disabled": true },
+								{ "key": "page", "value": "1", "disabled": true }
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/users?per_page=2",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "users"],
+									"query": [
+										{ "key": "per_page", "value": "2" }
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"current_page\": 1,\n    \"data\": [\n        {\n            \"id\": 10,\n            \"name\": \"Sarah Johnson\",\n            \"email\": \"sarah@example.com\",\n            \"phone\": \"+966509876543\",\n            \"country\": \"UAE\",\n            \"wallet\": \"1000.00\",\n            \"role\": \"customer\",\n            \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n            \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n        },\n        {\n            \"id\": 9,\n            \"name\": \"Ali Hassan\",\n            \"email\": \"ali@example.com\",\n            \"phone\": \"+966501112233\",\n            \"country\": \"Saudi Arabia\",\n            \"wallet\": \"1000.00\",\n            \"role\": \"customer\",\n            \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n            \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n        }\n    ],\n    \"first_page_url\": \"http://localhost:8000/api/admin/users?page=1\",\n    \"from\": 1,\n    \"last_page\": 5,\n    \"last_page_url\": \"http://localhost:8000/api/admin/users?page=5\",\n    \"links\": [\n        { \"url\": null, \"label\": \"&laquo; Previous\", \"active\": false },\n        { \"url\": \"http://localhost:8000/api/admin/users?page=1\", \"label\": \"1\", \"active\": true },\n        { \"url\": \"http://localhost:8000/api/admin/users?page=2\", \"label\": \"2\", \"active\": false },\n        { \"url\": \"http://localhost:8000/api/admin/users?page=2\", \"label\": \"Next &raquo;\", \"active\": false }\n    ],\n    \"next_page_url\": \"http://localhost:8000/api/admin/users?page=2\",\n    \"path\": \"http://localhost:8000/api/admin/users\",\n    \"per_page\": 2,\n    \"prev_page_url\": null,\n    \"to\": 2,\n    \"total\": 10\n}"
+						},
+						{
+							"name": "403 - Forbidden (Not Admin)",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/users",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "users"]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"Forbidden. Admin access required.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Show User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/users/2",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "users", "2"]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/users/2",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "users", "2"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"id\": 2,\n    \"name\": \"John Doe\",\n    \"email\": \"customer@customer.com\",\n    \"phone\": \"+1234567890\",\n    \"country\": \"Saudi Arabia\",\n    \"wallet\": \"5000.00\",\n    \"role\": \"customer\",\n    \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n    \"updated_at\": \"2026-04-14T08:00:00.000000Z\",\n    \"orders\": [\n        {\n            \"id\": 1,\n            \"user_id\": 2,\n            \"car_id\": 1,\n            \"delivery_date\": \"2026-04-20\",\n            \"receiving_date\": \"2026-04-25\",\n            \"days\": 5,\n            \"total_price\": \"600.00\",\n            \"points\": 60,\n            \"payment_type\": \"visa\",\n            \"payment_status\": \"success\",\n            \"order_type\": \"full\",\n            \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n            \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"New User\",\n    \"email\": \"newuser@example.com\",\n    \"password\": \"password\",\n    \"phone\": \"+966501111111\",\n    \"country\": \"Saudi Arabia\",\n    \"wallet\": 1000,\n    \"role\": \"customer\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/users",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "users"]
+						}
+					},
+					"response": [
+						{
+							"name": "201 - Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Content-Type", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"New User\",\n    \"email\": \"newuser@example.com\",\n    \"password\": \"password\",\n    \"phone\": \"+966501111111\",\n    \"country\": \"Saudi Arabia\",\n    \"wallet\": 1000,\n    \"role\": \"customer\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/users",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "users"]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"id\": 11,\n    \"name\": \"New User\",\n    \"email\": \"newuser@example.com\",\n    \"phone\": \"+966501111111\",\n    \"country\": \"Saudi Arabia\",\n    \"wallet\": 1000,\n    \"role\": \"customer\",\n    \"created_at\": \"2026-04-14T10:00:00.000000Z\",\n    \"updated_at\": \"2026-04-14T10:00:00.000000Z\"\n}"
+						},
+						{
+							"name": "422 - Validation Error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Content-Type", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"\",\n    \"email\": \"existing@email.com\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/users",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "users"]
+								}
+							},
+							"status": "Unprocessable Entity",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"The name field is required. (and 2 more errors)\",\n    \"errors\": {\n        \"name\": [\"The name field is required.\"],\n        \"email\": [\"The email has already been taken.\"],\n        \"password\": [\"The password field is required.\"]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Name\",\n    \"wallet\": 2000\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/users/2",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "users", "2"]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Success",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Content-Type", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Updated Name\",\n    \"wallet\": 2000\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/users/2",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "users", "2"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"id\": 2,\n    \"name\": \"Updated Name\",\n    \"email\": \"customer@customer.com\",\n    \"phone\": \"+1234567890\",\n    \"country\": \"Saudi Arabia\",\n    \"wallet\": \"2000.00\",\n    \"role\": \"customer\",\n    \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n    \"updated_at\": \"2026-04-14T10:05:00.000000Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/users/10",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "users", "10"]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Success",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/users/10",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "users", "10"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"User deleted successfully.\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Admin - Cars",
+			"item": [
+				{
+					"name": "List Cars",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/cars?per_page=15",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "cars"],
+							"query": [
+								{ "key": "per_page", "value": "15" },
+								{ "key": "search", "value": "", "disabled": true },
+								{ "key": "brand", "value": "", "disabled": true },
+								{ "key": "min_price", "value": "", "disabled": true },
+								{ "key": "max_price", "value": "", "disabled": true },
+								{ "key": "page", "value": "1", "disabled": true }
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/cars?per_page=2",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "cars"],
+									"query": [
+										{ "key": "per_page", "value": "2" }
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"current_page\": 1,\n    \"data\": [\n        {\n            \"id\": 10,\n            \"name\": \"Accord\",\n            \"brand\": \"Honda\",\n            \"model\": \"2025\",\n            \"kilometers\": 5200,\n            \"price_per_day\": \"95.00\",\n            \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n            \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n        },\n        {\n            \"id\": 9,\n            \"name\": \"Camry\",\n            \"brand\": \"Toyota\",\n            \"model\": \"2024\",\n            \"kilometers\": 12000,\n            \"price_per_day\": \"120.00\",\n            \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n            \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n        }\n    ],\n    \"first_page_url\": \"http://localhost:8000/api/admin/cars?page=1\",\n    \"from\": 1,\n    \"last_page\": 5,\n    \"last_page_url\": \"http://localhost:8000/api/admin/cars?page=5\",\n    \"links\": [\n        { \"url\": null, \"label\": \"&laquo; Previous\", \"active\": false },\n        { \"url\": \"http://localhost:8000/api/admin/cars?page=1\", \"label\": \"1\", \"active\": true },\n        { \"url\": \"http://localhost:8000/api/admin/cars?page=2\", \"label\": \"2\", \"active\": false },\n        { \"url\": \"http://localhost:8000/api/admin/cars?page=2\", \"label\": \"Next &raquo;\", \"active\": false }\n    ],\n    \"next_page_url\": \"http://localhost:8000/api/admin/cars?page=2\",\n    \"path\": \"http://localhost:8000/api/admin/cars\",\n    \"per_page\": 2,\n    \"prev_page_url\": null,\n    \"to\": 2,\n    \"total\": 10\n}"
+						}
+					]
+				},
+				{
+					"name": "Show Car",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/cars/1",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "cars", "1"]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/cars/1",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "cars", "1"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"id\": 1,\n    \"name\": \"Camry\",\n    \"brand\": \"Toyota\",\n    \"model\": \"2024\",\n    \"kilometers\": 15000,\n    \"price_per_day\": \"120.00\",\n    \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n    \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Car",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Camry\",\n    \"brand\": \"Toyota\",\n    \"model\": \"2024\",\n    \"kilometers\": 15000,\n    \"price_per_day\": 120.00\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/cars",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "cars"]
+						}
+					},
+					"response": [
+						{
+							"name": "201 - Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Content-Type", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Camry\",\n    \"brand\": \"Toyota\",\n    \"model\": \"2024\",\n    \"kilometers\": 15000,\n    \"price_per_day\": 120.00\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/cars",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "cars"]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"id\": 11,\n    \"name\": \"Camry\",\n    \"brand\": \"Toyota\",\n    \"model\": \"2024\",\n    \"kilometers\": 15000,\n    \"price_per_day\": 120,\n    \"created_at\": \"2026-04-14T10:00:00.000000Z\",\n    \"updated_at\": \"2026-04-14T10:00:00.000000Z\"\n}"
+						},
+						{
+							"name": "422 - Validation Error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Content-Type", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Camry\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/cars",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "cars"]
+								}
+							},
+							"status": "Unprocessable Entity",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"The brand field is required. (and 3 more errors)\",\n    \"errors\": {\n        \"brand\": [\"The brand field is required.\"],\n        \"model\": [\"The model field is required.\"],\n        \"kilometers\": [\"The kilometers field is required.\"],\n        \"price_per_day\": [\"The price per day field is required.\"]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Car",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"price_per_day\": 150.00,\n    \"kilometers\": 20000\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/cars/1",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "cars", "1"]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Success",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Content-Type", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"price_per_day\": 150.00,\n    \"kilometers\": 20000\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/cars/1",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "cars", "1"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"id\": 1,\n    \"name\": \"Camry\",\n    \"brand\": \"Toyota\",\n    \"model\": \"2024\",\n    \"kilometers\": 20000,\n    \"price_per_day\": \"150.00\",\n    \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n    \"updated_at\": \"2026-04-14T10:05:00.000000Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Car",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/cars/10",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "cars", "10"]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Success",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/cars/10",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "cars", "10"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"Car deleted successfully.\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Admin - Orders",
+			"item": [
+				{
+					"name": "List Orders",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/orders?per_page=15",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "orders"],
+							"query": [
+								{ "key": "per_page", "value": "15" },
+								{ "key": "search", "value": "", "disabled": true },
+								{ "key": "user_id", "value": "", "disabled": true },
+								{ "key": "car_id", "value": "", "disabled": true },
+								{ "key": "payment_type", "value": "", "disabled": true },
+								{ "key": "payment_status", "value": "", "disabled": true },
+								{ "key": "order_type", "value": "", "disabled": true },
+								{ "key": "page", "value": "1", "disabled": true }
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/orders?per_page=1",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "orders"],
+									"query": [
+										{ "key": "per_page", "value": "1" }
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"current_page\": 1,\n    \"data\": [\n        {\n            \"id\": 1,\n            \"user_id\": 2,\n            \"car_id\": 1,\n            \"delivery_date\": \"2026-04-20\",\n            \"receiving_date\": \"2026-04-25\",\n            \"days\": 5,\n            \"total_price\": \"600.00\",\n            \"points\": 60,\n            \"payment_type\": \"visa\",\n            \"payment_status\": \"success\",\n            \"order_type\": \"full\",\n            \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n            \"updated_at\": \"2026-04-14T08:00:00.000000Z\",\n            \"user\": {\n                \"id\": 2,\n                \"name\": \"John Doe\",\n                \"email\": \"customer@customer.com\",\n                \"phone\": \"+1234567890\",\n                \"country\": \"Saudi Arabia\",\n                \"wallet\": \"5000.00\",\n                \"role\": \"customer\",\n                \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n                \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n            },\n            \"car\": {\n                \"id\": 1,\n                \"name\": \"Camry\",\n                \"brand\": \"Toyota\",\n                \"model\": \"2024\",\n                \"kilometers\": 15000,\n                \"price_per_day\": \"120.00\",\n                \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n                \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n            }\n        }\n    ],\n    \"first_page_url\": \"http://localhost:8000/api/admin/orders?page=1\",\n    \"from\": 1,\n    \"last_page\": 20,\n    \"last_page_url\": \"http://localhost:8000/api/admin/orders?page=20\",\n    \"links\": [\n        { \"url\": null, \"label\": \"&laquo; Previous\", \"active\": false },\n        { \"url\": \"http://localhost:8000/api/admin/orders?page=1\", \"label\": \"1\", \"active\": true },\n        { \"url\": \"http://localhost:8000/api/admin/orders?page=2\", \"label\": \"Next &raquo;\", \"active\": false }\n    ],\n    \"next_page_url\": \"http://localhost:8000/api/admin/orders?page=2\",\n    \"path\": \"http://localhost:8000/api/admin/orders\",\n    \"per_page\": 1,\n    \"prev_page_url\": null,\n    \"to\": 1,\n    \"total\": 20\n}"
+						}
+					]
+				},
+				{
+					"name": "Show Order",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/orders/4",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "orders", "4"]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Order with Installments",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/orders/4",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "orders", "4"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"id\": 4,\n    \"user_id\": 2,\n    \"car_id\": 5,\n    \"delivery_date\": \"2026-04-19\",\n    \"receiving_date\": \"2026-04-29\",\n    \"days\": 10,\n    \"total_price\": \"1200.00\",\n    \"points\": 120,\n    \"payment_type\": \"visa\",\n    \"payment_status\": \"pending\",\n    \"order_type\": \"installments\",\n    \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n    \"updated_at\": \"2026-04-14T08:00:00.000000Z\",\n    \"user\": {\n        \"id\": 2,\n        \"name\": \"John Doe\",\n        \"email\": \"customer@customer.com\",\n        \"phone\": \"+1234567890\",\n        \"country\": \"Saudi Arabia\",\n        \"wallet\": \"5000.00\",\n        \"role\": \"customer\",\n        \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n        \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n    },\n    \"car\": {\n        \"id\": 5,\n        \"name\": \"Altima\",\n        \"brand\": \"Nissan\",\n        \"model\": \"2023\",\n        \"kilometers\": 25000,\n        \"price_per_day\": \"120.00\",\n        \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n        \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n    },\n    \"installments\": [\n        {\n            \"id\": 1,\n            \"order_id\": 4,\n            \"amount\": \"280.00\",\n            \"due_date\": \"2026-05-19\",\n            \"status\": \"paid\",\n            \"paid_at\": \"2026-04-14T08:00:00.000000Z\",\n            \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n            \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n        },\n        {\n            \"id\": 2,\n            \"order_id\": 4,\n            \"amount\": \"280.00\",\n            \"due_date\": \"2026-06-19\",\n            \"status\": \"pending\",\n            \"paid_at\": null,\n            \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n            \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n        },\n        {\n            \"id\": 3,\n            \"order_id\": 4,\n            \"amount\": \"280.00\",\n            \"due_date\": \"2026-07-19\",\n            \"status\": \"pending\",\n            \"paid_at\": null,\n            \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n            \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Order Status",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"payment_status\": \"success\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/orders/1",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "orders", "1"]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Success",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Content-Type", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"payment_status\": \"success\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/orders/1",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "orders", "1"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"id\": 1,\n    \"user_id\": 2,\n    \"car_id\": 1,\n    \"delivery_date\": \"2026-04-20\",\n    \"receiving_date\": \"2026-04-25\",\n    \"days\": 5,\n    \"total_price\": \"600.00\",\n    \"points\": 60,\n    \"payment_type\": \"visa\",\n    \"payment_status\": \"success\",\n    \"order_type\": \"full\",\n    \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n    \"updated_at\": \"2026-04-14T10:10:00.000000Z\",\n    \"user\": {\n        \"id\": 2,\n        \"name\": \"John Doe\",\n        \"email\": \"customer@customer.com\",\n        \"phone\": \"+1234567890\",\n        \"country\": \"Saudi Arabia\",\n        \"wallet\": \"5000.00\",\n        \"role\": \"customer\",\n        \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n        \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n    },\n    \"car\": {\n        \"id\": 1,\n        \"name\": \"Camry\",\n        \"brand\": \"Toyota\",\n        \"model\": \"2024\",\n        \"kilometers\": 15000,\n        \"price_per_day\": \"120.00\",\n        \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n        \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n    },\n    \"installments\": []\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Order",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/orders/1",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "orders", "1"]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Success",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{admin_token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/orders/1",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "orders", "1"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"Order deleted successfully.\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Customer Auth",
+			"item": [
+				{
+					"name": "Register Customer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Jane Smith\",\n    \"email\": \"jane@example.com\",\n    \"password\": \"password\",\n    \"password_confirmation\": \"password\",\n    \"phone\": \"+966501234567\",\n    \"country\": \"Saudi Arabia\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/customer/register",
+							"host": ["{{base_url}}"],
+							"path": ["customer", "register"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var json = pm.response.json();",
+									"    pm.collectionVariables.set('customer_token', json.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"response": [
+						{
+							"name": "201 - Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Content-Type", "value": "application/json" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Jane Smith\",\n    \"email\": \"jane@example.com\",\n    \"password\": \"password\",\n    \"password_confirmation\": \"password\",\n    \"phone\": \"+966501234567\",\n    \"country\": \"Saudi Arabia\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/customer/register",
+									"host": ["{{base_url}}"],
+									"path": ["customer", "register"]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"Registration successful.\",\n    \"user\": {\n        \"id\": 11,\n        \"name\": \"Jane Smith\",\n        \"email\": \"jane@example.com\",\n        \"phone\": \"+966501234567\",\n        \"country\": \"Saudi Arabia\",\n        \"wallet\": 1000,\n        \"role\": \"customer\",\n        \"created_at\": \"2026-04-14T10:00:00.000000Z\",\n        \"updated_at\": \"2026-04-14T10:00:00.000000Z\"\n    },\n    \"token\": \"aBcDeFgHiJkLmNoPqRsTuVwXyZ0123456789aBcDeFgHiJkLmNoPqRsTuVwXy\"\n}"
+						},
+						{
+							"name": "422 - Validation Error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Content-Type", "value": "application/json" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Jane\",\n    \"email\": \"customer@customer.com\",\n    \"password\": \"pass\",\n    \"password_confirmation\": \"different\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/customer/register",
+									"host": ["{{base_url}}"],
+									"path": ["customer", "register"]
+								}
+							},
+							"status": "Unprocessable Entity",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"The email has already been taken. (and 1 more error)\",\n    \"errors\": {\n        \"email\": [\"The email has already been taken.\"],\n        \"password\": [\"The password field confirmation does not match.\", \"The password field must be at least 6 characters.\"]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Login Customer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"customer@customer.com\",\n    \"password\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/customer/login",
+							"host": ["{{base_url}}"],
+							"path": ["customer", "login"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var json = pm.response.json();",
+									"    pm.collectionVariables.set('customer_token', json.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"response": [
+						{
+							"name": "200 - Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Content-Type", "value": "application/json" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"customer@customer.com\",\n    \"password\": \"password\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/customer/login",
+									"host": ["{{base_url}}"],
+									"path": ["customer", "login"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"Login successful.\",\n    \"user\": {\n        \"id\": 2,\n        \"name\": \"John Doe\",\n        \"email\": \"customer@customer.com\",\n        \"phone\": \"+1234567890\",\n        \"country\": \"Saudi Arabia\",\n        \"wallet\": \"5000.00\",\n        \"role\": \"customer\",\n        \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n        \"updated_at\": \"2026-04-14T10:00:00.000000Z\"\n    },\n    \"token\": \"aBcDeFgHiJkLmNoPqRsTuVwXyZ0123456789aBcDeFgHiJkLmNoPqRsTuVwXy\"\n}"
+						},
+						{
+							"name": "401 - Invalid Credentials",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Content-Type", "value": "application/json" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"customer@customer.com\",\n    \"password\": \"wrongpassword\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/customer/login",
+									"host": ["{{base_url}}"],
+									"path": ["customer", "login"]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"Invalid credentials.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Current Customer",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+						],
+						"url": {
+							"raw": "{{base_url}}/customer/me",
+							"host": ["{{base_url}}"],
+							"path": ["customer", "me"]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/customer/me",
+									"host": ["{{base_url}}"],
+									"path": ["customer", "me"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"id\": 2,\n    \"name\": \"John Doe\",\n    \"email\": \"customer@customer.com\",\n    \"phone\": \"+1234567890\",\n    \"country\": \"Saudi Arabia\",\n    \"wallet\": \"5000.00\",\n    \"role\": \"customer\",\n    \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n    \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n}"
+						},
+						{
+							"name": "401 - Unauthenticated",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" }
+								],
+								"url": {
+									"raw": "{{base_url}}/customer/me",
+									"host": ["{{base_url}}"],
+									"path": ["customer", "me"]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"Unauthenticated.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Logout Customer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+						],
+						"url": {
+							"raw": "{{base_url}}/customer/logout",
+							"host": ["{{base_url}}"],
+							"path": ["customer", "logout"]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/customer/logout",
+									"host": ["{{base_url}}"],
+									"path": ["customer", "logout"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"Logged out successfully.\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Customer - Cars",
+			"item": [
+				{
+					"name": "List Cars",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+						],
+						"url": {
+							"raw": "{{base_url}}/customer/cars?per_page=15",
+							"host": ["{{base_url}}"],
+							"path": ["customer", "cars"],
+							"query": [
+								{ "key": "per_page", "value": "15" },
+								{ "key": "search", "value": "", "disabled": true },
+								{ "key": "brand", "value": "", "disabled": true },
+								{ "key": "min_price", "value": "", "disabled": true },
+								{ "key": "max_price", "value": "", "disabled": true },
+								{ "key": "page", "value": "1", "disabled": true }
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/customer/cars?per_page=2",
+									"host": ["{{base_url}}"],
+									"path": ["customer", "cars"],
+									"query": [
+										{ "key": "per_page", "value": "2" }
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"current_page\": 1,\n    \"data\": [\n        {\n            \"id\": 10,\n            \"name\": \"Accord\",\n            \"brand\": \"Honda\",\n            \"model\": \"2025\",\n            \"kilometers\": 5200,\n            \"price_per_day\": \"95.00\",\n            \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n            \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n        },\n        {\n            \"id\": 9,\n            \"name\": \"Camry\",\n            \"brand\": \"Toyota\",\n            \"model\": \"2024\",\n            \"kilometers\": 12000,\n            \"price_per_day\": \"120.00\",\n            \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n            \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n        }\n    ],\n    \"first_page_url\": \"http://localhost:8000/api/customer/cars?page=1\",\n    \"from\": 1,\n    \"last_page\": 5,\n    \"last_page_url\": \"http://localhost:8000/api/customer/cars?page=5\",\n    \"links\": [\n        { \"url\": null, \"label\": \"&laquo; Previous\", \"active\": false },\n        { \"url\": \"http://localhost:8000/api/customer/cars?page=1\", \"label\": \"1\", \"active\": true },\n        { \"url\": \"http://localhost:8000/api/customer/cars?page=2\", \"label\": \"Next &raquo;\", \"active\": false }\n    ],\n    \"next_page_url\": \"http://localhost:8000/api/customer/cars?page=2\",\n    \"path\": \"http://localhost:8000/api/customer/cars\",\n    \"per_page\": 2,\n    \"prev_page_url\": null,\n    \"to\": 2,\n    \"total\": 10\n}"
+						}
+					]
+				},
+				{
+					"name": "Show Car",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+						],
+						"url": {
+							"raw": "{{base_url}}/customer/cars/1",
+							"host": ["{{base_url}}"],
+							"path": ["customer", "cars", "1"]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/customer/cars/1",
+									"host": ["{{base_url}}"],
+									"path": ["customer", "cars", "1"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"id\": 1,\n    \"name\": \"Camry\",\n    \"brand\": \"Toyota\",\n    \"model\": \"2024\",\n    \"kilometers\": 15000,\n    \"price_per_day\": \"120.00\",\n    \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n    \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Customer - Orders",
+			"item": [
+				{
+					"name": "List My Orders",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+						],
+						"url": {
+							"raw": "{{base_url}}/customer/orders?per_page=15",
+							"host": ["{{base_url}}"],
+							"path": ["customer", "orders"],
+							"query": [
+								{ "key": "per_page", "value": "15" },
+								{ "key": "page", "value": "1", "disabled": true }
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/customer/orders?per_page=1",
+									"host": ["{{base_url}}"],
+									"path": ["customer", "orders"],
+									"query": [
+										{ "key": "per_page", "value": "1" }
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"current_page\": 1,\n    \"data\": [\n        {\n            \"id\": 4,\n            \"user_id\": 2,\n            \"car_id\": 5,\n            \"delivery_date\": \"2026-04-19\",\n            \"receiving_date\": \"2026-04-29\",\n            \"days\": 10,\n            \"total_price\": \"1200.00\",\n            \"points\": 120,\n            \"payment_type\": \"visa\",\n            \"payment_status\": \"pending\",\n            \"order_type\": \"installments\",\n            \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n            \"updated_at\": \"2026-04-14T08:00:00.000000Z\",\n            \"car\": {\n                \"id\": 5,\n                \"name\": \"Altima\",\n                \"brand\": \"Nissan\",\n                \"model\": \"2023\",\n                \"kilometers\": 25000,\n                \"price_per_day\": \"120.00\",\n                \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n                \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n            },\n            \"installments\": [\n                {\n                    \"id\": 1,\n                    \"order_id\": 4,\n                    \"amount\": \"280.00\",\n                    \"due_date\": \"2026-05-19\",\n                    \"status\": \"paid\",\n                    \"paid_at\": \"2026-04-14T08:00:00.000000Z\",\n                    \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n                    \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n                },\n                {\n                    \"id\": 2,\n                    \"order_id\": 4,\n                    \"amount\": \"280.00\",\n                    \"due_date\": \"2026-06-19\",\n                    \"status\": \"pending\",\n                    \"paid_at\": null,\n                    \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n                    \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n                },\n                {\n                    \"id\": 3,\n                    \"order_id\": 4,\n                    \"amount\": \"280.00\",\n                    \"due_date\": \"2026-07-19\",\n                    \"status\": \"pending\",\n                    \"paid_at\": null,\n                    \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n                    \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n                }\n            ]\n        }\n    ],\n    \"first_page_url\": \"http://localhost:8000/api/customer/orders?page=1\",\n    \"from\": 1,\n    \"last_page\": 4,\n    \"last_page_url\": \"http://localhost:8000/api/customer/orders?page=4\",\n    \"links\": [\n        { \"url\": null, \"label\": \"&laquo; Previous\", \"active\": false },\n        { \"url\": \"http://localhost:8000/api/customer/orders?page=1\", \"label\": \"1\", \"active\": true },\n        { \"url\": \"http://localhost:8000/api/customer/orders?page=2\", \"label\": \"Next &raquo;\", \"active\": false }\n    ],\n    \"next_page_url\": \"http://localhost:8000/api/customer/orders?page=2\",\n    \"path\": \"http://localhost:8000/api/customer/orders\",\n    \"per_page\": 1,\n    \"prev_page_url\": null,\n    \"to\": 1,\n    \"total\": 4\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Order (Full Payment)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"car_id\": 1,\n    \"delivery_date\": \"2026-04-20\",\n    \"receiving_date\": \"2026-04-25\",\n    \"payment_type\": \"visa\",\n    \"order_type\": \"full\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/customer/orders",
+							"host": ["{{base_url}}"],
+							"path": ["customer", "orders"]
+						}
+					},
+					"response": [
+						{
+							"name": "201 - Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Content-Type", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"car_id\": 1,\n    \"delivery_date\": \"2026-04-20\",\n    \"receiving_date\": \"2026-04-25\",\n    \"payment_type\": \"visa\",\n    \"order_type\": \"full\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/customer/orders",
+									"host": ["{{base_url}}"],
+									"path": ["customer", "orders"]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"id\": 21,\n    \"user_id\": 2,\n    \"car_id\": 1,\n    \"delivery_date\": \"2026-04-20\",\n    \"receiving_date\": \"2026-04-25\",\n    \"days\": 5,\n    \"total_price\": \"600.00\",\n    \"points\": 60,\n    \"payment_type\": \"visa\",\n    \"payment_status\": \"success\",\n    \"order_type\": \"full\",\n    \"created_at\": \"2026-04-14T10:00:00.000000Z\",\n    \"updated_at\": \"2026-04-14T10:00:00.000000Z\",\n    \"car\": {\n        \"id\": 1,\n        \"name\": \"Camry\",\n        \"brand\": \"Toyota\",\n        \"model\": \"2024\",\n        \"kilometers\": 15000,\n        \"price_per_day\": \"120.00\",\n        \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n        \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n    },\n    \"installments\": []\n}"
+						},
+						{
+							"name": "422 - Insufficient Wallet",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Content-Type", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"car_id\": 1,\n    \"delivery_date\": \"2026-04-20\",\n    \"receiving_date\": \"2026-07-20\",\n    \"payment_type\": \"visa\",\n    \"order_type\": \"full\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/customer/orders",
+									"host": ["{{base_url}}"],
+									"path": ["customer", "orders"]
+								}
+							},
+							"status": "Unprocessable Entity",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"Insufficient wallet balance.\"\n}"
+						},
+						{
+							"name": "422 - Validation Error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Content-Type", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"car_id\": 999,\n    \"delivery_date\": \"2020-01-01\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/customer/orders",
+									"host": ["{{base_url}}"],
+									"path": ["customer", "orders"]
+								}
+							},
+							"status": "Unprocessable Entity",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"The selected car id is invalid. (and 3 more errors)\",\n    \"errors\": {\n        \"car_id\": [\"The selected car id is invalid.\"],\n        \"delivery_date\": [\"The delivery date field must be a date after or equal to today.\"],\n        \"receiving_date\": [\"The receiving date field is required.\"],\n        \"payment_type\": [\"The payment type field is required.\"]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Order (Cash)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"car_id\": 2,\n    \"delivery_date\": \"2026-04-22\",\n    \"receiving_date\": \"2026-04-27\",\n    \"payment_type\": \"cash\",\n    \"order_type\": \"full\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/customer/orders",
+							"host": ["{{base_url}}"],
+							"path": ["customer", "orders"]
+						}
+					},
+					"response": [
+						{
+							"name": "201 - Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Content-Type", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"car_id\": 2,\n    \"delivery_date\": \"2026-04-22\",\n    \"receiving_date\": \"2026-04-27\",\n    \"payment_type\": \"cash\",\n    \"order_type\": \"full\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/customer/orders",
+									"host": ["{{base_url}}"],
+									"path": ["customer", "orders"]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"id\": 22,\n    \"user_id\": 2,\n    \"car_id\": 2,\n    \"delivery_date\": \"2026-04-22\",\n    \"receiving_date\": \"2026-04-27\",\n    \"days\": 5,\n    \"total_price\": \"500.00\",\n    \"points\": 50,\n    \"payment_type\": \"cash\",\n    \"payment_status\": \"pending\",\n    \"order_type\": \"full\",\n    \"created_at\": \"2026-04-14T10:05:00.000000Z\",\n    \"updated_at\": \"2026-04-14T10:05:00.000000Z\",\n    \"car\": {\n        \"id\": 2,\n        \"name\": \"Civic\",\n        \"brand\": \"Honda\",\n        \"model\": \"2023\",\n        \"kilometers\": 30000,\n        \"price_per_day\": \"100.00\",\n        \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n        \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n    },\n    \"installments\": []\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Order (Installments)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"car_id\": 3,\n    \"delivery_date\": \"2026-04-20\",\n    \"receiving_date\": \"2026-04-30\",\n    \"payment_type\": \"tamara\",\n    \"order_type\": \"installments\",\n    \"down_payment\": 200,\n    \"number_of_installments\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/customer/orders",
+							"host": ["{{base_url}}"],
+							"path": ["customer", "orders"]
+						}
+					},
+					"response": [
+						{
+							"name": "201 - Success with Installments",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Content-Type", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"car_id\": 3,\n    \"delivery_date\": \"2026-04-20\",\n    \"receiving_date\": \"2026-04-30\",\n    \"payment_type\": \"tamara\",\n    \"order_type\": \"installments\",\n    \"down_payment\": 200,\n    \"number_of_installments\": 3\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/customer/orders",
+									"host": ["{{base_url}}"],
+									"path": ["customer", "orders"]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"id\": 23,\n    \"user_id\": 2,\n    \"car_id\": 3,\n    \"delivery_date\": \"2026-04-20\",\n    \"receiving_date\": \"2026-04-30\",\n    \"days\": 10,\n    \"total_price\": \"1500.00\",\n    \"points\": 150,\n    \"payment_type\": \"tamara\",\n    \"payment_status\": \"pending\",\n    \"order_type\": \"installments\",\n    \"created_at\": \"2026-04-14T10:10:00.000000Z\",\n    \"updated_at\": \"2026-04-14T10:10:00.000000Z\",\n    \"car\": {\n        \"id\": 3,\n        \"name\": \"Sonata\",\n        \"brand\": \"Hyundai\",\n        \"model\": \"2025\",\n        \"kilometers\": 8000,\n        \"price_per_day\": \"150.00\",\n        \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n        \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n    },\n    \"installments\": [\n        {\n            \"id\": 4,\n            \"order_id\": 23,\n            \"amount\": \"433.33\",\n            \"due_date\": \"2026-05-20\",\n            \"status\": \"pending\",\n            \"paid_at\": null,\n            \"created_at\": \"2026-04-14T10:10:00.000000Z\",\n            \"updated_at\": \"2026-04-14T10:10:00.000000Z\"\n        },\n        {\n            \"id\": 5,\n            \"order_id\": 23,\n            \"amount\": \"433.33\",\n            \"due_date\": \"2026-06-20\",\n            \"status\": \"pending\",\n            \"paid_at\": null,\n            \"created_at\": \"2026-04-14T10:10:00.000000Z\",\n            \"updated_at\": \"2026-04-14T10:10:00.000000Z\"\n        },\n        {\n            \"id\": 6,\n            \"order_id\": 23,\n            \"amount\": \"433.34\",\n            \"due_date\": \"2026-07-20\",\n            \"status\": \"pending\",\n            \"paid_at\": null,\n            \"created_at\": \"2026-04-14T10:10:00.000000Z\",\n            \"updated_at\": \"2026-04-14T10:10:00.000000Z\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "422 - Invalid Down Payment",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Content-Type", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"car_id\": 3,\n    \"delivery_date\": \"2026-04-20\",\n    \"receiving_date\": \"2026-04-30\",\n    \"payment_type\": \"tamara\",\n    \"order_type\": \"installments\",\n    \"down_payment\": 999999,\n    \"number_of_installments\": 3\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/customer/orders",
+									"host": ["{{base_url}}"],
+									"path": ["customer", "orders"]
+								}
+							},
+							"status": "Unprocessable Entity",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"Invalid down payment amount.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Show Order",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+						],
+						"url": {
+							"raw": "{{base_url}}/customer/orders/1",
+							"host": ["{{base_url}}"],
+							"path": ["customer", "orders", "1"]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/customer/orders/1",
+									"host": ["{{base_url}}"],
+									"path": ["customer", "orders", "1"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"id\": 1,\n    \"user_id\": 2,\n    \"car_id\": 1,\n    \"delivery_date\": \"2026-04-20\",\n    \"receiving_date\": \"2026-04-25\",\n    \"days\": 5,\n    \"total_price\": \"600.00\",\n    \"points\": 60,\n    \"payment_type\": \"visa\",\n    \"payment_status\": \"success\",\n    \"order_type\": \"full\",\n    \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n    \"updated_at\": \"2026-04-14T08:00:00.000000Z\",\n    \"car\": {\n        \"id\": 1,\n        \"name\": \"Camry\",\n        \"brand\": \"Toyota\",\n        \"model\": \"2024\",\n        \"kilometers\": 15000,\n        \"price_per_day\": \"120.00\",\n        \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n        \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n    },\n    \"installments\": []\n}"
+						},
+						{
+							"name": "403 - Forbidden (Not Owner)",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/customer/orders/15",
+									"host": ["{{base_url}}"],
+									"path": ["customer", "orders", "15"]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"Forbidden.\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Customer - Installments",
+			"item": [
+				{
+					"name": "List My Installments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+						],
+						"url": {
+							"raw": "{{base_url}}/customer/installments?per_page=15",
+							"host": ["{{base_url}}"],
+							"path": ["customer", "installments"],
+							"query": [
+								{ "key": "per_page", "value": "15" },
+								{ "key": "page", "value": "1", "disabled": true }
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/customer/installments?per_page=15",
+									"host": ["{{base_url}}"],
+									"path": ["customer", "installments"],
+									"query": [
+										{ "key": "per_page", "value": "15" }
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"current_page\": 1,\n    \"data\": [\n        {\n            \"id\": 1,\n            \"order_id\": 4,\n            \"amount\": \"280.00\",\n            \"due_date\": \"2026-05-19\",\n            \"status\": \"paid\",\n            \"paid_at\": \"2026-04-14T08:00:00.000000Z\",\n            \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n            \"updated_at\": \"2026-04-14T08:00:00.000000Z\",\n            \"order\": {\n                \"id\": 4,\n                \"user_id\": 2,\n                \"car_id\": 5,\n                \"delivery_date\": \"2026-04-19\",\n                \"receiving_date\": \"2026-04-29\",\n                \"days\": 10,\n                \"total_price\": \"1200.00\",\n                \"points\": 120,\n                \"payment_type\": \"visa\",\n                \"payment_status\": \"pending\",\n                \"order_type\": \"installments\",\n                \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n                \"updated_at\": \"2026-04-14T08:00:00.000000Z\",\n                \"car\": {\n                    \"id\": 5,\n                    \"name\": \"Altima\",\n                    \"brand\": \"Nissan\",\n                    \"model\": \"2023\",\n                    \"kilometers\": 25000,\n                    \"price_per_day\": \"120.00\",\n                    \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n                    \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n                }\n            }\n        },\n        {\n            \"id\": 2,\n            \"order_id\": 4,\n            \"amount\": \"280.00\",\n            \"due_date\": \"2026-06-19\",\n            \"status\": \"pending\",\n            \"paid_at\": null,\n            \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n            \"updated_at\": \"2026-04-14T08:00:00.000000Z\",\n            \"order\": {\n                \"id\": 4,\n                \"user_id\": 2,\n                \"car_id\": 5,\n                \"delivery_date\": \"2026-04-19\",\n                \"receiving_date\": \"2026-04-29\",\n                \"days\": 10,\n                \"total_price\": \"1200.00\",\n                \"points\": 120,\n                \"payment_type\": \"visa\",\n                \"payment_status\": \"pending\",\n                \"order_type\": \"installments\",\n                \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n                \"updated_at\": \"2026-04-14T08:00:00.000000Z\",\n                \"car\": {\n                    \"id\": 5,\n                    \"name\": \"Altima\",\n                    \"brand\": \"Nissan\",\n                    \"model\": \"2023\",\n                    \"kilometers\": 25000,\n                    \"price_per_day\": \"120.00\",\n                    \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n                    \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n                }\n            }\n        },\n        {\n            \"id\": 3,\n            \"order_id\": 4,\n            \"amount\": \"280.00\",\n            \"due_date\": \"2026-07-19\",\n            \"status\": \"pending\",\n            \"paid_at\": null,\n            \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n            \"updated_at\": \"2026-04-14T08:00:00.000000Z\",\n            \"order\": {\n                \"id\": 4,\n                \"user_id\": 2,\n                \"car_id\": 5,\n                \"delivery_date\": \"2026-04-19\",\n                \"receiving_date\": \"2026-04-29\",\n                \"days\": 10,\n                \"total_price\": \"1200.00\",\n                \"points\": 120,\n                \"payment_type\": \"visa\",\n                \"payment_status\": \"pending\",\n                \"order_type\": \"installments\",\n                \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n                \"updated_at\": \"2026-04-14T08:00:00.000000Z\",\n                \"car\": {\n                    \"id\": 5,\n                    \"name\": \"Altima\",\n                    \"brand\": \"Nissan\",\n                    \"model\": \"2023\",\n                    \"kilometers\": 25000,\n                    \"price_per_day\": \"120.00\",\n                    \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n                    \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n                }\n            }\n        }\n    ],\n    \"first_page_url\": \"http://localhost:8000/api/customer/installments?page=1\",\n    \"from\": 1,\n    \"last_page\": 1,\n    \"last_page_url\": \"http://localhost:8000/api/customer/installments?page=1\",\n    \"links\": [\n        { \"url\": null, \"label\": \"&laquo; Previous\", \"active\": false },\n        { \"url\": \"http://localhost:8000/api/customer/installments?page=1\", \"label\": \"1\", \"active\": true },\n        { \"url\": null, \"label\": \"Next &raquo;\", \"active\": false }\n    ],\n    \"next_page_url\": null,\n    \"path\": \"http://localhost:8000/api/customer/installments\",\n    \"per_page\": 15,\n    \"prev_page_url\": null,\n    \"to\": 3,\n    \"total\": 3\n}"
+						}
+					]
+				},
+				{
+					"name": "Pay Installment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+						],
+						"url": {
+							"raw": "{{base_url}}/customer/installments/2/pay",
+							"host": ["{{base_url}}"],
+							"path": ["customer", "installments", "2", "pay"]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/customer/installments/2/pay",
+									"host": ["{{base_url}}"],
+									"path": ["customer", "installments", "2", "pay"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"Installment paid successfully.\",\n    \"installment\": {\n        \"id\": 2,\n        \"order_id\": 4,\n        \"amount\": \"280.00\",\n        \"due_date\": \"2026-06-19\",\n        \"status\": \"paid\",\n        \"paid_at\": \"2026-04-14T10:15:00.000000Z\",\n        \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n        \"updated_at\": \"2026-04-14T10:15:00.000000Z\"\n    },\n    \"order\": {\n        \"id\": 4,\n        \"user_id\": 2,\n        \"car_id\": 5,\n        \"delivery_date\": \"2026-04-19\",\n        \"receiving_date\": \"2026-04-29\",\n        \"days\": 10,\n        \"total_price\": \"1200.00\",\n        \"points\": 120,\n        \"payment_type\": \"visa\",\n        \"payment_status\": \"pending\",\n        \"order_type\": \"installments\",\n        \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n        \"updated_at\": \"2026-04-14T08:00:00.000000Z\",\n        \"installments\": [\n            {\n                \"id\": 1,\n                \"order_id\": 4,\n                \"amount\": \"280.00\",\n                \"due_date\": \"2026-05-19\",\n                \"status\": \"paid\",\n                \"paid_at\": \"2026-04-14T08:00:00.000000Z\",\n                \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n                \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n            },\n            {\n                \"id\": 2,\n                \"order_id\": 4,\n                \"amount\": \"280.00\",\n                \"due_date\": \"2026-06-19\",\n                \"status\": \"paid\",\n                \"paid_at\": \"2026-04-14T10:15:00.000000Z\",\n                \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n                \"updated_at\": \"2026-04-14T10:15:00.000000Z\"\n            },\n            {\n                \"id\": 3,\n                \"order_id\": 4,\n                \"amount\": \"280.00\",\n                \"due_date\": \"2026-07-19\",\n                \"status\": \"pending\",\n                \"paid_at\": null,\n                \"created_at\": \"2026-04-14T08:00:00.000000Z\",\n                \"updated_at\": \"2026-04-14T08:00:00.000000Z\"\n            }\n        ]\n    }\n}"
+						},
+						{
+							"name": "422 - Already Paid",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/customer/installments/1/pay",
+									"host": ["{{base_url}}"],
+									"path": ["customer", "installments", "1", "pay"]
+								}
+							},
+							"status": "Unprocessable Entity",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"Installment already paid.\"\n}"
+						},
+						{
+							"name": "422 - Insufficient Wallet",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/customer/installments/2/pay",
+									"host": ["{{base_url}}"],
+									"path": ["customer", "installments", "2", "pay"]
+								}
+							},
+							"status": "Unprocessable Entity",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"Insufficient wallet balance.\"\n}"
+						},
+						{
+							"name": "403 - Forbidden (Not Owner)",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{customer_token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/customer/installments/99/pay",
+									"host": ["{{base_url}}"],
+									"path": ["customer", "installments", "99", "pay"]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{ "key": "Content-Type", "value": "application/json" }
+							],
+							"body": "{\n    \"message\": \"Forbidden.\"\n}"
+						}
+					]
+				}
+			]
+		}
+	]
+}
