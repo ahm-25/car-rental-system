@@ -21,7 +21,7 @@
   }
 
   body {
-    @apply bg-surface-muted text-slate-800 font-sans antialiased;
+    @apply bg-surface-muted text-slate-800 font-sans antialiased overflow-x-hidden;
     @apply dark:bg-slate-950 dark:text-slate-200;
     font-feature-settings: 'cv11', 'ss01', 'ss03';
   }
@@ -205,7 +205,7 @@
   /* Table primitives */
   .table-wrap {
     @apply bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800
-      rounded-2xl overflow-hidden shadow-card dark:shadow-none;
+      rounded-2xl shadow-card dark:shadow-none overflow-x-auto;
   }
   .thead {
     @apply bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800

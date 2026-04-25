@@ -75,7 +75,7 @@ const ORDER_TYPES: readonly OrderType[] = ['full', 'installments'];
         class="card"
         (ngSubmit)="page.set(1); load()"
       >
-        <div class="grid gap-4 md:grid-cols-3 lg:grid-cols-6">
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
           <div class="md:col-span-2 lg:col-span-2">
             <label for="search" class="label">{{ 'orders.filters.search' | t }}</label>
             <div class="relative">

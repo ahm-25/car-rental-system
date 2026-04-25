@@ -74,7 +74,7 @@ const PAGE_SIZES = [10, 15, 25, 50] as const;
         class="card"
         (ngSubmit)="page.set(1); load()"
       >
-        <div class="grid gap-4 md:grid-cols-4">
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div class="md:col-span-2">
             <label for="search" class="label">{{ 'cars.filters.search' | t }}</label>
             <div class="relative">

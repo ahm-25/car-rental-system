@@ -59,7 +59,7 @@ interface AdminNavItem {
       }
 
       <!-- Content column -->
-      <div class="flex-1 lg:ps-64 flex flex-col min-h-screen relative">
+      <div class="flex-1 lg:ps-64 flex flex-col min-h-screen relative min-w-0">
         <header class="h-16 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40">
           <div class="h-full flex items-center justify-between px-4 sm:px-6 lg:px-8">
             <div class="flex items-center gap-3 min-w-0">
