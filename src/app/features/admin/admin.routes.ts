@@ -13,12 +13,28 @@ export const ADMIN_ROUTES: Routes = [
     title: 'Admin · Users',
   },
   {
+    path: 'users/new',
+    loadComponent: () =>
+      import('./users/user-form.component').then(
+        (m) => m.AdminUserFormComponent,
+      ),
+    title: 'Admin · New user',
+  },
+  {
     path: 'users/:id',
     loadComponent: () =>
       import('./users/user-details.component').then(
         (m) => m.UserDetailsComponent,
       ),
     title: 'Admin · User details',
+  },
+  {
+    path: 'users/:id/edit',
+    loadComponent: () =>
+      import('./users/user-form.component').then(
+        (m) => m.AdminUserFormComponent,
+      ),
+    title: 'Admin · Edit user',
   },
   {
     path: 'cars',

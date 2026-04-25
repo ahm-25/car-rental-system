@@ -51,4 +51,10 @@ export class AdminOrdersService {
   update(id: number | string, payload: UpdateOrderPayload): Observable<Order> {
     return this.http.put<Order>(`${this.baseUrl}/admin/orders/${id}`, payload);
   }
+
+  delete(id: number | string): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(
+      `${this.baseUrl}/admin/orders/${id}`,
+    );
+  }
 }

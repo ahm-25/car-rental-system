@@ -16,8 +16,8 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
   template: `
     @if (lastPage() > 1 || showPageSize()) {
       <div
-        class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 py-4"
-        [ngClass]="bordered() ? 'border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 px-6' : ''"
+        class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 py-3.5"
+        [ngClass]="bordered() ? 'border-t border-slate-100 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-900/40 px-6' : ''"
       >
         <!-- Info / Page Size -->
         <div class="flex flex-wrap items-center gap-4 text-sm">
@@ -32,11 +32,11 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
           }
 
           @if (showPageSize()) {
-            <div class="flex items-center gap-2 text-slate-600 dark:text-slate-400 ml-auto lg:ml-0">
-              <label for="per-page" class="font-medium">{{ 'pagination.rows_per_page' | t }}</label>
+            <div class="flex items-center gap-2 text-slate-600 dark:text-slate-400 ms-auto lg:ms-0">
+              <label for="per-page" class="text-xs font-medium">{{ 'pagination.rows_per_page' | t }}</label>
               <select
                 id="per-page"
-                class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 text-xs font-bold focus:ring-2 focus:ring-brand-500 outline-none transition-all cursor-pointer"
+                class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md px-2 py-1 text-xs font-semibold tabular-nums focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500 outline-none transition cursor-pointer"
                 [value]="perPage()"
                 (change)="onPerPageChange($event)"
               >
@@ -133,17 +133,22 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
   `,
   styles: [`
     .pagination-btn {
-      @apply w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-900 
-             hover:bg-slate-100 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800 
-             transition-all disabled:opacity-30 disabled:cursor-not-allowed;
+      @apply inline-flex w-9 h-9 items-center justify-center rounded-lg text-slate-500
+             hover:text-slate-900 hover:bg-slate-100
+             dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800
+             transition-all duration-150 ease-smooth
+             disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent;
     }
     .pagination-page-btn {
-      @apply w-9 h-9 flex items-center justify-center rounded-xl text-sm font-bold text-slate-600 
-             hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-slate-100 
-             dark:hover:bg-slate-800 transition-all disabled:opacity-50;
+      @apply inline-flex w-9 h-9 items-center justify-center rounded-lg text-sm font-medium tabular-nums text-slate-600
+             hover:text-slate-900 hover:bg-slate-100
+             dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800
+             transition-all duration-150 ease-smooth
+             disabled:opacity-50;
     }
     .pagination-page-btn.active {
-      @apply bg-brand-600 text-white hover:bg-brand-700 shadow-lg shadow-brand-500/30;
+      @apply bg-brand-600 text-white hover:bg-brand-700 hover:text-white shadow-[0_4px_12px_-2px_rgb(79_70_229_/_0.35)]
+             dark:bg-brand-500 dark:hover:bg-brand-400;
     }
   `]
 })

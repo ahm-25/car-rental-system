@@ -8,6 +8,7 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { FieldErrorComponent } from '../../../shared/components/field-error/field-error.component';
+import { SpinnerComponent } from '../../../shared/components/spinner/spinner.component';
 import { passwordsMatchValidator } from '../../../shared/validators/passwords-match.validator';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 
@@ -16,21 +17,33 @@ type ServerErrors = Record<string, string[]>;
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, FieldErrorComponent, TranslatePipe],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    FieldErrorComponent,
+    SpinnerComponent,
+    TranslatePipe,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <h2 class="mb-1 text-slate-900 dark:text-white">{{ 'auth.create_account' | t }}</h2>
-    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">{{ 'auth.register_subtitle' | t }}</p>
+    <div class="space-y-2 mb-8">
+      <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+        {{ 'auth.create_account' | t }}
+      </h1>
+      <p class="text-sm text-slate-500 dark:text-slate-400">
+        {{ 'auth.register_subtitle' | t }}
+      </p>
+    </div>
 
     <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="flex flex-col gap-4">
-      <div>
+      <div class="form-row">
         <label for="name" class="label">{{ 'auth.full_name' | t }}</label>
         <input
           id="name"
           type="text"
           autocomplete="name"
           class="input"
-          [class.border-red-400]="showError('name')"
+          [class.input-error]="showError('name')"
           formControlName="name"
         />
         <app-field-error
@@ -39,15 +52,16 @@ type ServerErrors = Record<string, string[]>;
         />
       </div>
 
-      <div>
+      <div class="form-row">
         <label for="email" class="label">{{ 'auth.email' | t }}</label>
         <input
           id="email"
           type="email"
           autocomplete="email"
           class="input"
-          [class.border-red-400]="showError('email')"
+          [class.input-error]="showError('email')"
           formControlName="email"
+          placeholder="you@example.com"
         />
         <app-field-error
           [control]="form.controls.email"
@@ -55,48 +69,52 @@ type ServerErrors = Record<string, string[]>;
         />
       </div>
 
-      <div>
-        <label for="phone" class="label">{{ 'auth.phone' | t }}</label>
-        <input
-          id="phone"
-          type="tel"
-          autocomplete="tel"
-          class="input"
-          [class.border-red-400]="showError('phone')"
-          formControlName="phone"
-        />
-        <app-field-error
-          [control]="form.controls.phone"
-          [serverErrors]="serverErrors()?.['phone']"
-          [messages]="{ pattern: 'Enter a valid phone number (digits only, 8–15).' }"
-        />
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div class="form-row">
+          <label for="phone" class="label">{{ 'auth.phone' | t }}</label>
+          <input
+            id="phone"
+            type="tel"
+            autocomplete="tel"
+            class="input"
+            [class.input-error]="showError('phone')"
+            formControlName="phone"
+            placeholder="+966…"
+          />
+          <app-field-error
+            [control]="form.controls.phone"
+            [serverErrors]="serverErrors()?.['phone']"
+            [messages]="{ pattern: 'Enter a valid phone number (8–15 digits).' }"
+          />
+        </div>
+
+        <div class="form-row">
+          <label for="country" class="label">{{ 'auth.country' | t }}</label>
+          <input
+            id="country"
+            type="text"
+            autocomplete="country-name"
+            class="input"
+            [class.input-error]="showError('country')"
+            formControlName="country"
+          />
+          <app-field-error
+            [control]="form.controls.country"
+            [serverErrors]="serverErrors()?.['country']"
+          />
+        </div>
       </div>
 
-      <div>
-        <label for="country" class="label">{{ 'auth.country' | t }}</label>
-        <input
-          id="country"
-          type="text"
-          autocomplete="country-name"
-          class="input"
-          [class.border-red-400]="showError('country')"
-          formControlName="country"
-        />
-        <app-field-error
-          [control]="form.controls.country"
-          [serverErrors]="serverErrors()?.['country']"
-        />
-      </div>
-
-      <div>
+      <div class="form-row">
         <label for="password" class="label">{{ 'auth.password' | t }}</label>
         <input
           id="password"
           type="password"
           autocomplete="new-password"
           class="input"
-          [class.border-red-400]="showError('password')"
+          [class.input-error]="showError('password')"
           formControlName="password"
+          placeholder="••••••••"
         />
         <app-field-error
           [control]="form.controls.password"
@@ -104,15 +122,16 @@ type ServerErrors = Record<string, string[]>;
         />
       </div>
 
-      <div>
+      <div class="form-row">
         <label for="passwordConfirmation" class="label">{{ 'auth.password_confirm' | t }}</label>
         <input
           id="passwordConfirmation"
           type="password"
           autocomplete="new-password"
           class="input"
-          [class.border-red-400]="showError('passwordConfirmation')"
+          [class.input-error]="showError('passwordConfirmation')"
           formControlName="passwordConfirmation"
+          placeholder="••••••••"
         />
         <app-field-error
           [control]="form.controls.passwordConfirmation"
@@ -122,21 +141,27 @@ type ServerErrors = Record<string, string[]>;
 
       <button
         type="submit"
-        class="btn-primary mt-2"
+        class="btn-primary mt-2 py-3"
         [disabled]="form.invalid || submitting()"
       >
         @if (submitting()) {
-          {{ 'auth.creating_account' | t }}
+          <app-spinner size="sm" />
+          <span>{{ 'auth.creating_account' | t }}</span>
         } @else {
-          {{ 'auth.create_account' | t }}
+          <span>{{ 'auth.create_account' | t }}</span>
         }
       </button>
     </form>
 
-    <div class="text-sm text-slate-600 dark:text-slate-400 mt-6 flex items-center gap-1.5">
+    <p class="text-sm text-slate-600 dark:text-slate-400 mt-6 text-center">
       {{ 'auth.already_registered' | t }}
-      <a routerLink="/login" class="font-bold text-brand-600 hover:text-brand-700 dark:text-brand-400">{{ 'auth.sign_in' | t }}</a>
-    </div>
+      <a
+        routerLink="/login"
+        class="font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 ms-1"
+      >
+        {{ 'auth.sign_in' | t }}
+      </a>
+    </p>
   `,
 })
 export class RegisterComponent {
@@ -165,7 +190,7 @@ export class RegisterComponent {
       ]),
       password: this.fb.control('', [
         Validators.required,
-        Validators.minLength(8),
+        Validators.minLength(6),
       ]),
       passwordConfirmation: this.fb.control('', [Validators.required]),
     },
@@ -194,7 +219,6 @@ export class RegisterComponent {
     this.submitting.set(true);
     this.serverErrors.set(null);
 
-    // Map internal form control name → exact API field name
     const { passwordConfirmation, ...rest } = this.form.getRawValue();
     const payload = { ...rest, password_confirmation: passwordConfirmation };
 

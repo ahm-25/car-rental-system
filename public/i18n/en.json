@@ -124,7 +124,8 @@
     "users": "Users",
     "cars": "Cars",
     "orders": "Orders",
-    "administrator": "Administrator"
+    "administrator": "Administrator",
+    "workspace": "Workspace"
   },
   "cars": {
     "title": "Cars",
@@ -206,6 +207,7 @@
   "users": {
     "title": "Users",
     "description": "Manage customer and admin accounts.",
+    "new_user": "New user",
     "showing": "Showing",
     "of": "of",
     "search_label": "Search",
@@ -238,9 +240,35 @@
       "id": "ID",
       "wallet": "Wallet",
       "contact": "Contact",
+      "orders": "Orders",
+      "no_orders": "This user has not placed any orders yet.",
       "error_invalid_id": "Invalid user id.",
       "error_not_found": "This user no longer exists.",
       "error_default": "Failed to load user details."
+    },
+    "form": {
+      "new_title": "New user",
+      "edit_title": "Edit user",
+      "new_subtitle": "Create a new admin or customer account.",
+      "edit_subtitle": "Update account information.",
+      "name_label": "Full name",
+      "email_label": "Email",
+      "phone_label": "Phone",
+      "country_label": "Country",
+      "role_label": "Role",
+      "wallet_label": "Wallet (optional)",
+      "save": "Save changes",
+      "create": "Create user",
+      "saving": "Saving…",
+      "creating": "Creating…",
+      "success_created": "User \"{name}\" was created.",
+      "success_updated": "User \"{name}\" was updated."
+    },
+    "delete_confirm": {
+      "title": "Delete \"{name}\"?",
+      "body": "This will permanently delete the user account and cannot be undone.",
+      "delete": "Delete",
+      "deleting": "Deleting…"
     },
     "roles": {
       "admin": "Admin",
@@ -265,7 +293,13 @@
     "email": "Email",
     "no_account": "No account?",
     "create_one": "Create one",
-    "admin_provisioned": "Admin accounts are provisioned by the system administrator."
+    "admin_provisioned": "Admin accounts are provisioned by the system administrator.",
+    "panel_badge": "Premium car rental",
+    "panel_heading": "Drive the journey that fits your schedule.",
+    "panel_sub": "Sign in to book cars, track orders, and manage installments — all from one beautifully designed dashboard.",
+    "panel_point_1": "Transparent pricing · no hidden fees",
+    "panel_point_2": "Flexible installment plans that suit you",
+    "panel_point_3": "Arabic & English · light & dark mode"
   },
   "footer": {
     "copyright": "© {year} Car Rental System"
@@ -366,6 +400,12 @@
       "inst_pending": "Pending",
       "not_found": "This order no longer exists.",
       "status_updated": "Order #{id} status set to \"{status}\"."
+    },
+    "delete_confirm": {
+      "title": "Delete order #{id}?",
+      "body": "This will permanently remove the order. This action cannot be undone.",
+      "delete": "Delete",
+      "deleting": "Deleting…"
     }
   },
   "toast": {

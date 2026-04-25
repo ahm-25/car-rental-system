@@ -26,14 +26,18 @@ type ServerErrors = Record<string, string[]>;
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <h2 class="mb-1">{{ 'auth.sign_in' | t }}</h2>
-    <p class="text-sm text-slate-500 mb-6">
-      {{ 'auth.welcome_back' | t }}
-    </p>
+    <div class="space-y-2 mb-8">
+      <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+        {{ 'auth.sign_in' | t }}
+      </h1>
+      <p class="text-sm text-slate-500 dark:text-slate-400">
+        {{ 'auth.welcome_back' | t }}
+      </p>
+    </div>
 
     <!-- Role toggle -->
     <div
-      class="flex rounded-lg bg-slate-100 p-1 mb-6"
+      class="flex rounded-xl bg-slate-100/80 dark:bg-slate-800/60 p-1 mb-6"
       role="tablist"
       aria-label="Account type"
     >
@@ -42,12 +46,16 @@ type ServerErrors = Record<string, string[]>;
           type="button"
           role="tab"
           [attr.aria-selected]="loginAs() === opt.value"
-          class="flex-1 py-2 rounded-md text-sm font-medium transition-colors"
+          class="flex-1 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-smooth"
           [class.bg-white]="loginAs() === opt.value"
+          [class.dark:bg-slate-900]="loginAs() === opt.value"
+          [class.shadow-card]="loginAs() === opt.value"
           [class.text-slate-900]="loginAs() === opt.value"
-          [class.shadow-sm]="loginAs() === opt.value"
+          [class.dark:text-slate-100]="loginAs() === opt.value"
           [class.text-slate-500]="loginAs() !== opt.value"
+          [class.dark:text-slate-400]="loginAs() !== opt.value"
           [class.hover:text-slate-700]="loginAs() !== opt.value"
+          [class.dark:hover:text-slate-200]="loginAs() !== opt.value"
           (click)="setRole(opt.value)"
         >
           {{ opt.labelKey | t }}
@@ -61,15 +69,16 @@ type ServerErrors = Record<string, string[]>;
       novalidate
       class="flex flex-col gap-4"
     >
-      <div>
+      <div class="form-row">
         <label for="email" class="label">{{ 'auth.email' | t }}</label>
         <input
           id="email"
           type="email"
           autocomplete="email"
           class="input"
-          [class.border-red-400]="showError('email')"
+          [class.input-error]="showError('email')"
           formControlName="email"
+          placeholder="you@example.com"
         />
         <app-field-error
           [control]="form.controls.email"
@@ -77,15 +86,16 @@ type ServerErrors = Record<string, string[]>;
         />
       </div>
 
-      <div>
+      <div class="form-row">
         <label for="password" class="label">{{ 'auth.password' | t }}</label>
         <input
           id="password"
           type="password"
           autocomplete="current-password"
           class="input"
-          [class.border-red-400]="showError('password')"
+          [class.input-error]="showError('password')"
           formControlName="password"
+          placeholder="••••••••"
         />
         <app-field-error
           [control]="form.controls.password"
@@ -95,25 +105,27 @@ type ServerErrors = Record<string, string[]>;
 
       <button
         type="submit"
-        class="btn-primary mt-2 inline-flex items-center justify-center gap-2"
+        class="btn-primary mt-2 py-3"
         [disabled]="form.invalid || submitting()"
       >
         @if (submitting()) {
           <app-spinner size="sm" />
-          {{ 'common.loading' | t }}
+          <span>{{ 'common.loading' | t }}</span>
         } @else {
-          {{ 'auth.sign_in_as' | t: { role: (('auth.' + loginAs()) | t) } }}
+          <span>{{ 'auth.sign_in_as' | t: { role: (('auth.' + loginAs()) | t) } }}</span>
         }
       </button>
     </form>
 
     @if (loginAs() === 'customer') {
-      <p class="text-sm text-slate-600 mt-6">
+      <p class="text-sm text-slate-600 dark:text-slate-400 mt-6 text-center">
         {{ 'auth.no_account' | t }}
-        <a routerLink="/register" class="font-medium">{{ 'auth.create_one' | t }}</a>
+        <a routerLink="/register" class="font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 ms-1">
+          {{ 'auth.create_one' | t }}
+        </a>
       </p>
     } @else {
-      <p class="text-xs text-slate-500 mt-6 text-center">
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-6 text-center">
         {{ 'auth.admin_provisioned' | t }}
       </p>
     }

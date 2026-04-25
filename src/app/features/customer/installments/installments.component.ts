@@ -12,6 +12,7 @@ import { RouterLink } from '@angular/router';
 import { NotificationService } from '../../../core/services/notification.service';
 import { Installment } from '../../../models/order.model';
 import { PaginationMeta } from '../../../models/pagination.model';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 import { SpinnerComponent } from '../../../shared/components/spinner/spinner.component';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
@@ -23,20 +24,29 @@ const PAGE_SIZES = [10, 15, 25] as const;
 @Component({
   selector: 'app-customer-installments',
   standalone: true,
-  imports: [RouterLink, DatePipe, DecimalPipe, NgClass, SpinnerComponent, PaginationComponent, TranslatePipe],
+  imports: [
+    RouterLink,
+    DatePipe,
+    DecimalPipe,
+    NgClass,
+    SpinnerComponent,
+    PaginationComponent,
+    ConfirmDialogComponent,
+    TranslatePipe,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <section class="flex flex-col gap-6">
-      <header class="flex items-end justify-between gap-4">
+    <section class="page-shell">
+      <header class="page-header">
         <div>
-          <h1 class="text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight">{{ 'customer_orders.details.installments' | t }}</h1>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            {{ ('customer_orders.details.back' | t) || 'Upcoming and past installment payments. Paying deducts from your wallet.' }}
-          </p>
+          <h1 class="page-title">{{ 'customer_orders.details.installments' | t }}</h1>
+          <p class="page-subtitle">Upcoming and past installment payments. Paying deducts from your wallet.</p>
         </div>
         @if (meta(); as m) {
-          <span class="text-sm text-slate-500 dark:text-slate-400">
-            {{ m.from ?? 0 }}–{{ m.to ?? 0 }} {{ 'orders.of' | t }} {{ m.total }}
+          <span class="hidden sm:inline-flex items-center text-xs font-medium text-slate-500 dark:text-slate-400 bg-slate-100/60 dark:bg-slate-800/60 px-3 py-1.5 rounded-lg">
+            <span class="font-semibold text-slate-900 dark:text-slate-100 me-1">{{ m.from ?? 0 }}–{{ m.to ?? 0 }}</span>
+            {{ 'orders.of' | t }}
+            <span class="font-semibold text-brand-600 dark:text-brand-400 ms-1">{{ m.total }}</span>
           </span>
         }
       </header>
@@ -52,72 +62,69 @@ const PAGE_SIZES = [10, 15, 25] as const;
 
       <div class="relative">
         @if (installments().length === 0 && !loading() && !error()) {
-          <div class="card flex flex-col items-center gap-2 py-16 text-center">
-            <p class="text-sm font-medium text-slate-700 dark:text-slate-200">{{ 'customer_orders.details.not_found' | t }}</p>
-            <p class="text-xs text-slate-500 dark:text-slate-400">
-              {{ 'customer_orders.empty_subtitle' | t }}
-            </p>
-            <a routerLink="/orders" class="btn-secondary mt-2">{{ 'customer_orders.details.nav' | t }}</a>
+          <div class="card empty-state">
+            <div class="empty-state-icon">
+              <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100">{{ 'customer_orders.details.not_found' | t }}</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 max-w-md">{{ 'customer_orders.empty_subtitle' | t }}</p>
+            <a routerLink="/orders" class="btn-secondary mt-1">{{ 'customer_orders.details.nav' | t }}</a>
           </div>
         } @else {
-          <div class="card p-0 overflow-hidden shadow-2xl border-slate-100 dark:border-slate-800">
+          <div class="table-wrap">
             <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800 text-sm">
-                <thead class="bg-slate-900 dark:bg-black/60 text-left text-[10px] font-black uppercase tracking-widest text-white/50">
+              <table class="min-w-full text-sm">
+                <thead class="thead">
                   <tr>
-                    <th class="px-6 py-4">{{ 'customer_orders.table.id' | t }}</th>
-                    <th class="px-6 py-4">{{ 'customer_orders.table.car' | t }}</th>
-                    <th class="px-6 py-4 text-right">{{ 'customer_orders.details.inst_amount' | t }}</th>
-                    <th class="px-6 py-4">{{ 'customer_orders.details.inst_due' | t }}</th>
-                    <th class="px-6 py-4">{{ 'customer_orders.details.inst_status' | t }}</th>
-                    <th class="px-6 py-4">{{ 'customer_orders.details.inst_paid_at' | t }}</th>
-                    <th class="px-6 py-4 text-right">{{ 'customer_orders.table.actions' | t }}</th>
+                    <th class="th">{{ 'customer_orders.table.id' | t }}</th>
+                    <th class="th">{{ 'customer_orders.table.car' | t }}</th>
+                    <th class="th text-end">{{ 'customer_orders.details.inst_amount' | t }}</th>
+                    <th class="th">{{ 'customer_orders.details.inst_due' | t }}</th>
+                    <th class="th">{{ 'customer_orders.details.inst_status' | t }}</th>
+                    <th class="th">{{ 'customer_orders.details.inst_paid_at' | t }}</th>
+                    <th class="th text-end">{{ 'customer_orders.table.actions' | t }}</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-800 bg-white dark:bg-slate-900">
                   @for (inst of installments(); track inst.id) {
-                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors group">
-                      <td class="px-6 py-4">
+                    <tr class="tr-hover group">
+                      <td class="td">
                         <a
                           [routerLink]="['/orders', inst.order_id]"
-                          class="bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 px-2 py-1 rounded font-black hover:bg-brand-600 hover:text-white transition-all text-xs"
+                          class="badge-neutral tabular-nums hover:ring-brand-300 dark:hover:ring-brand-500/40"
                         >
                           #{{ inst.order_id }}
                         </a>
                       </td>
-                      <td class="px-6 py-4">
-                        <div class="text-slate-900 dark:text-slate-100 font-bold group-hover:text-brand-600 transition-colors">
+                      <td class="td">
+                        <div class="text-slate-900 dark:text-slate-100 font-semibold">
                           {{ inst.order?.car?.name ?? '—' }}
                         </div>
-                        <div class="text-[10px] text-slate-400 dark:text-slate-500 font-black uppercase tracking-widest">
-                          {{ inst.order?.car?.brand }}
-                          {{ inst.order?.car?.model }}
+                        <div class="text-xs text-slate-500 dark:text-slate-400">
+                          {{ inst.order?.car?.brand }} · {{ inst.order?.car?.model }}
                         </div>
                       </td>
-                      <td class="px-6 py-4 text-right font-black text-slate-900 dark:text-slate-100">
+                      <td class="td text-end font-semibold tabular-nums text-slate-900 dark:text-slate-100">
                         $ {{ +inst.amount | number: '1.2-2' }}
                       </td>
-                      <td class="px-6 py-4 text-slate-600 dark:text-slate-400 font-medium">
+                      <td class="td text-slate-600 dark:text-slate-300">
                         {{ inst.due_date | date: 'mediumDate' }}
                       </td>
-                      <td class="px-6 py-4">
-                        <span
-                          class="inline-flex items-center rounded-lg px-2 py-0.5 text-[10px] font-black uppercase tracking-wider"
-                          [ngClass]="inst.status === 'paid'
-                            ? 'bg-emerald-50 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-300'
-                            : 'bg-amber-50 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300'"
-                        >
+                      <td class="td">
+                        <span [ngClass]="inst.status === 'paid' ? 'badge-success' : 'badge-warning'">
                           {{ 'customer_orders.details.inst_' + inst.status | t }}
                         </span>
                       </td>
-                      <td class="px-6 py-4 text-slate-500 dark:text-slate-500 font-medium italic">
+                      <td class="td text-slate-500 dark:text-slate-400">
                         {{ inst.paid_at ? (inst.paid_at | date: 'medium') : '—' }}
                       </td>
-                      <td class="px-6 py-4 text-right">
+                      <td class="td text-end">
                         @if (inst.status === 'pending') {
                           <button
                             type="button"
-                            class="btn-primary px-4 py-1.5 text-[10px] font-black uppercase tracking-widest shadow-lg shadow-brand-500/20"
+                            class="btn-primary text-xs px-3 py-2"
                             [disabled]="payingId() === inst.id"
                             (click)="pay(inst)"
                           >
@@ -125,14 +132,15 @@ const PAGE_SIZES = [10, 15, 25] as const;
                               <app-spinner size="sm" />
                               <span>{{ 'common.loading' | t }}</span>
                             } @else {
-                              {{ 'customer_orders.details.pay_now' | t }}
+                              <span>{{ 'customer_orders.details.pay_now' | t }}</span>
                             }
                           </button>
                         } @else {
-                          <span class="inline-flex items-center text-emerald-500">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                          <span class="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                             </svg>
+                            {{ 'customer_orders.details.inst_paid' | t }}
                           </span>
                         }
                       </td>
@@ -145,7 +153,7 @@ const PAGE_SIZES = [10, 15, 25] as const;
         }
 
         @if (loading()) {
-          <div class="absolute inset-0 flex items-center justify-center bg-white/70 dark:bg-slate-950/70 backdrop-blur-sm rounded-2xl">
+          <div class="absolute inset-0 flex items-center justify-center bg-white/70 dark:bg-slate-950/70 backdrop-blur-sm rounded-2xl animate-fade-in">
             <app-spinner size="lg" />
           </div>
         }
@@ -163,6 +171,23 @@ const PAGE_SIZES = [10, 15, 25] as const;
         />
       </div>
     </section>
+
+    @if (pendingPayment(); as pending) {
+      <app-confirm-dialog
+        [open]="true"
+        [title]="'customer_orders.details.pay_now' | t"
+        [body]="
+          'customer_orders.details.pay_confirm'
+            | t: { amount: pending.amount, id: pending.id }
+        "
+        [confirmLabel]="'customer_orders.details.pay_now' | t"
+        [busyLabel]="'common.loading' | t"
+        [busy]="payingId() === pending.id"
+        tone="primary"
+        (confirm)="confirmPay(pending)"
+        (cancel)="cancelPay()"
+      />
+    }
   `,
 })
 export class InstallmentsComponent implements OnInit {
@@ -179,6 +204,7 @@ export class InstallmentsComponent implements OnInit {
   protected readonly error = signal<string | null>(null);
 
   protected readonly payingId = signal<number | null>(null);
+  protected readonly pendingPayment = signal<Installment | null>(null);
 
   protected readonly isLastPage = computed(() => {
     const m = this.meta();
@@ -216,26 +242,29 @@ export class InstallmentsComponent implements OnInit {
 
   pay(inst: Installment): void {
     if (this.payingId() !== null) return;
-    
-    const confirmMsg = this.lang.translate('customer_orders.details.pay_confirm', { 
-      amount: inst.amount, 
-      id: inst.id 
-    }) || `Pay ${inst.amount} for installment #${inst.id}? This deducts from your wallet.`;
+    this.pendingPayment.set(inst);
+  }
 
-    if (!confirm(confirmMsg)) {
-      return;
-    }
+  cancelPay(): void {
+    if (this.payingId() !== null) return;
+    this.pendingPayment.set(null);
+  }
+
+  confirmPay(inst: Installment): void {
+    if (this.payingId() !== null) return;
 
     this.payingId.set(inst.id);
 
     this.service.pay(inst.id).subscribe({
       next: (res) => {
         this.payingId.set(null);
+        this.pendingPayment.set(null);
         this.notify.success(res.message);
         this.applyPaidInstallment(res.installment);
       },
       error: () => {
         this.payingId.set(null);
+        this.pendingPayment.set(null);
       },
     });
   }

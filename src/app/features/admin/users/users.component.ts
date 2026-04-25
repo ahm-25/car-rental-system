@@ -17,10 +17,12 @@ import {
 } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 import { SpinnerComponent } from '../../../shared/components/spinner/spinner.component';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { LanguageService } from '../../../core/services/language.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import { PaginationMeta } from '../../../models/pagination.model';
 import { User, UserRole } from '../../../models/user.model';
 import { AdminUsersService, UsersQuery } from './admin-users.service';
@@ -57,44 +59,48 @@ const PAGE_SIZES = [10, 25, 50] as const;
     NgClass,
     SpinnerComponent,
     PaginationComponent,
+    ConfirmDialogComponent,
     TranslatePipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <section class="flex flex-col gap-8">
-      <header class="flex flex-wrap items-end justify-between gap-6">
+    <section class="page-shell">
+      <header class="page-header">
         <div>
-          <h1 class="text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight">{{ 'users.title' | t }}</h1>
-          <p class="text-base text-slate-500 dark:text-slate-400 font-medium mt-1">
-            {{ 'users.description' | t }}
-          </p>
+          <h1 class="page-title">{{ 'users.title' | t }}</h1>
+          <p class="page-subtitle">{{ 'users.description' | t }}</p>
         </div>
 
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
           @if (meta(); as m) {
-            <span class="hidden sm:inline text-sm font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-full">
+            <span class="hidden sm:inline-flex items-center text-xs font-medium text-slate-500 dark:text-slate-400 bg-slate-100/60 dark:bg-slate-800/60 px-3 py-1.5 rounded-lg">
               {{ 'users.showing' | t }}
-              <span class="font-bold text-slate-900 dark:text-slate-100">{{ m.from ?? rangeFrom() }}</span>
-              –
-              <span class="font-bold text-slate-900 dark:text-slate-100">{{ m.to ?? rangeTo() }}</span>
-              {{ 'users.of' | t }} <span class="font-bold text-brand-600 dark:text-brand-400">{{ m.total }}</span>
+              <span class="font-semibold text-slate-900 dark:text-slate-100 mx-1">{{ m.from ?? rangeFrom() }}–{{ m.to ?? rangeTo() }}</span>
+              {{ 'users.of' | t }}
+              <span class="font-semibold text-brand-600 dark:text-brand-400 ms-1">{{ m.total }}</span>
             </span>
           }
+          <a routerLink="/admin/users/new" class="btn-primary">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            {{ 'users.new_user' | t }}
+          </a>
         </div>
       </header>
 
       <!-- Filters -->
       <form
         [formGroup]="filters"
-        class="bg-white dark:bg-slate-900 rounded-[2rem] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none border border-slate-100 dark:border-slate-800"
+        class="card"
         (submit)="$event.preventDefault()"
       >
-        <div class="grid gap-6 md:grid-cols-4">
+        <div class="grid gap-4 md:grid-cols-4">
           <div class="md:col-span-2">
-            <label for="search" class="block text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest mb-2 px-1">{{ 'users.search_label' | t }}</label>
+            <label for="search" class="label">{{ 'users.search_label' | t }}</label>
             <div class="relative">
-              <div class="absolute inset-y-0 start-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
-                <svg class="h-5 w-5 rtl:-scale-x-100 ms-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <div class="absolute inset-y-0 start-0 ps-3 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
+                <svg class="h-4 w-4 rtl:-scale-x-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
@@ -102,7 +108,7 @@ const PAGE_SIZES = [10, 25, 50] as const;
                 id="search"
                 type="search"
                 [placeholder]="'users.search_placeholder' | t"
-                class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 rounded-2xl ps-11 pe-5 py-3.5 text-slate-900 dark:text-slate-100 font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-all text-sm"
+                class="input ps-9"
                 formControlName="search"
                 autocomplete="off"
               />
@@ -110,8 +116,8 @@ const PAGE_SIZES = [10, 25, 50] as const;
           </div>
 
           <div>
-            <label for="role" class="block text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest mb-2 px-1">{{ 'users.filters.role' | t }}</label>
-            <select id="role" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 rounded-2xl px-5 py-3.5 text-slate-900 dark:text-slate-100 font-medium transition-all text-sm appearance-none" formControlName="role">
+            <label for="role" class="label">{{ 'users.filters.role' | t }}</label>
+            <select id="role" class="input" formControlName="role">
               <option value="all">{{ 'users.filters.role_all' | t }}</option>
               <option value="admin">{{ 'users.filters.role_admin' | t }}</option>
               <option value="customer">{{ 'users.filters.role_customer' | t }}</option>
@@ -119,8 +125,8 @@ const PAGE_SIZES = [10, 25, 50] as const;
           </div>
 
           <div>
-            <label for="country" class="block text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest mb-2 px-1">{{ 'users.filters.country' | t }}</label>
-            <select id="country" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 rounded-2xl px-5 py-3.5 text-slate-900 dark:text-slate-100 font-medium transition-all text-sm appearance-none" formControlName="country">
+            <label for="country" class="label">{{ 'users.filters.country' | t }}</label>
+            <select id="country" class="input" formControlName="country">
               @for (c of countries; track c.value) {
                 <option [value]="c.value">{{ c.labelKey | t }}</option>
               }
@@ -128,14 +134,14 @@ const PAGE_SIZES = [10, 25, 50] as const;
           </div>
         </div>
 
-        <div class="flex justify-end mt-6 pt-6 border-t border-slate-100 dark:border-slate-800">
+        <div class="flex justify-end mt-5 pt-5 border-t border-slate-100 dark:border-slate-800">
           <button
             type="button"
-            class="inline-flex items-center gap-2 text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 px-5 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors disabled:opacity-50 disabled:hover:bg-transparent disabled:cursor-not-allowed"
+            class="btn-ghost text-sm"
             [disabled]="!hasActiveFilters()"
             (click)="resetFilters()"
           >
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
             {{ 'common.reset' | t }}
           </button>
         </div>
@@ -157,65 +163,82 @@ const PAGE_SIZES = [10, 25, 50] as const;
       }
 
       <!-- Table -->
-      <div class="card p-0 overflow-hidden">
-        <div class="relative overflow-x-auto">
-          <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800 text-sm">
-            <thead class="bg-slate-50 dark:bg-slate-800/50 text-start text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+      <div class="table-wrap relative">
+        <div class="relative overflow-x-auto min-h-[360px]">
+          <table class="min-w-full text-sm">
+            <thead class="thead">
               <tr>
-                <th scope="col" class="px-4 py-3">{{ 'users.table.name' | t }}</th>
-                <th scope="col" class="px-4 py-3">{{ 'users.table.email' | t }}</th>
-                <th scope="col" class="px-4 py-3">{{ 'users.table.phone' | t }}</th>
-                <th scope="col" class="px-4 py-3">{{ 'users.table.role' | t }}</th>
-                <th scope="col" class="px-4 py-3">{{ 'users.table.country' | t }}</th>
-                <th scope="col" class="px-4 py-3">{{ 'users.table.joined' | t }}</th>
-                <th scope="col" class="px-4 py-3 text-end">{{ 'users.table.actions' | t }}</th>
+                <th scope="col" class="th">{{ 'users.table.name' | t }}</th>
+                <th scope="col" class="th">{{ 'users.table.email' | t }}</th>
+                <th scope="col" class="th">{{ 'users.table.phone' | t }}</th>
+                <th scope="col" class="th">{{ 'users.table.role' | t }}</th>
+                <th scope="col" class="th">{{ 'users.table.country' | t }}</th>
+                <th scope="col" class="th">{{ 'users.table.joined' | t }}</th>
+                <th scope="col" class="th text-end">{{ 'users.table.actions' | t }}</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 dark:divide-slate-800 bg-white dark:bg-slate-900">
               @for (user of users(); track user.id) {
-                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
-                  <td class="px-4 py-3 font-medium text-slate-900 dark:text-slate-100">{{ user.name }}</td>
-                  <td class="px-4 py-3 text-slate-600 dark:text-slate-300">{{ user.email }}</td>
-                  <td class="px-4 py-3 text-slate-600 dark:text-slate-300">{{ user.phone }}</td>
-                  <td class="px-4 py-3">
-                    <span
-                      class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold"
-                      [ngClass]="user.role === 'admin'
-                        ? 'bg-brand-50 dark:bg-brand-500/15 text-brand-700 dark:text-brand-300'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'"
-                    >
+                <tr class="tr-hover">
+                  <td class="td">
+                    <div class="flex items-center gap-3">
+                      <div class="h-9 w-9 rounded-full bg-gradient-to-br from-brand-500 to-brand-700 text-white flex items-center justify-center text-xs font-semibold shadow-card">
+                        {{ initialsFor(user.name) }}
+                      </div>
+                      <span class="font-semibold text-slate-900 dark:text-slate-100">{{ user.name }}</span>
+                    </div>
+                  </td>
+                  <td class="td text-slate-600 dark:text-slate-300">{{ user.email }}</td>
+                  <td class="td text-slate-600 dark:text-slate-300 tabular-nums">{{ user.phone ?? '—' }}</td>
+                  <td class="td">
+                    <span [ngClass]="user.role === 'admin' ? 'badge-brand' : 'badge-neutral'">
                       {{ roleLabel(user.role) | t }}
                     </span>
                   </td>
-                  <td class="px-4 py-3 text-slate-600 dark:text-slate-300">{{ user.country }}</td>
-                  <td class="px-4 py-3 text-slate-500 dark:text-slate-400">
+                  <td class="td text-slate-600 dark:text-slate-300">{{ user.country ?? '—' }}</td>
+                  <td class="td text-slate-500 dark:text-slate-400">
                     {{ user.created_at | date: 'mediumDate' }}
                   </td>
-                  <td class="px-4 py-3 text-end">
-                    <a
-                      [routerLink]="['/admin/users', user.id]"
-                      class="inline-flex items-center gap-1 text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium"
-                    >
-                      {{ 'users.view' | t }}
-                      <svg class="h-4 w-4 rtl:-scale-x-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                      </svg>
-                    </a>
+                  <td class="td">
+                    <div class="flex items-center justify-end gap-1">
+                      <a
+                        [routerLink]="['/admin/users', user.id]"
+                        class="icon-btn"
+                        [title]="'common.view' | t"
+                      >
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                      </a>
+                      <a
+                        [routerLink]="['/admin/users', user.id, 'edit']"
+                        class="icon-btn-brand"
+                        [title]="'common.edit' | t"
+                      >
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                      </a>
+                      <button
+                        type="button"
+                        class="icon-btn-danger"
+                        [title]="'common.delete' | t"
+                        (click)="askDelete(user)"
+                      >
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               } @empty {
                 @if (!loading() && !error()) {
                   <tr>
-                    <td colspan="7" class="px-4 py-12">
-                      <div class="flex flex-col items-center gap-2 text-center">
-                        <svg class="h-10 w-10 text-slate-300 dark:text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M3 12h18" />
-                        </svg>
-                        <p class="text-sm font-medium text-slate-700 dark:text-slate-300">{{ 'users.empty_title' | t }}</p>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">
-                          {{ 'users.empty_subtitle' | t }}
-                        </p>
+                    <td colspan="7" class="px-6 py-16">
+                      <div class="empty-state">
+                        <div class="empty-state-icon">
+                          <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12h18" />
+                          </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100">{{ 'users.empty_title' | t }}</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 max-w-md">{{ 'users.empty_subtitle' | t }}</p>
                       </div>
                     </td>
                   </tr>
@@ -225,9 +248,7 @@ const PAGE_SIZES = [10, 25, 50] as const;
           </table>
 
           @if (loading()) {
-            <div
-              class="absolute inset-0 flex items-center justify-center bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm"
-            >
+            <div class="absolute inset-0 flex items-center justify-center bg-white/70 dark:bg-slate-900/70 backdrop-blur-[2px] animate-fade-in">
               <app-spinner size="lg" />
             </div>
           }
@@ -249,6 +270,20 @@ const PAGE_SIZES = [10, 25, 50] as const;
         />
       </div>
     </section>
+
+    @if (userToDelete(); as u) {
+      <app-confirm-dialog
+        [open]="true"
+        [title]="'users.delete_confirm.title' | t: { name: u.name }"
+        [body]="'users.delete_confirm.body' | t"
+        [confirmLabel]="'users.delete_confirm.delete' | t"
+        [busyLabel]="'users.delete_confirm.deleting' | t"
+        [busy]="deleting()"
+        tone="danger"
+        (confirm)="confirmDelete(u)"
+        (cancel)="cancelDelete()"
+      />
+    }
   `,
 })
 export class UsersComponent implements OnInit {
@@ -256,12 +291,24 @@ export class UsersComponent implements OnInit {
   private readonly service = inject(AdminUsersService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly lang = inject(LanguageService);
+  private readonly notify = inject(NotificationService);
 
   protected readonly countries = COUNTRIES;
   protected readonly pageSizes = PAGE_SIZES;
 
   protected roleLabel(role: UserRole): string {
     return `users.roles.${role}`;
+  }
+
+  protected initialsFor(name: string): string {
+    return (
+      name
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((w) => w[0]!.toUpperCase())
+        .join('') || '?'
+    );
   }
 
   protected readonly filters = this.fb.group({
@@ -277,6 +324,9 @@ export class UsersComponent implements OnInit {
   protected readonly meta = signal<PaginationMeta | null>(null);
   protected readonly loading = signal(false);
   protected readonly error = signal<string | null>(null);
+
+  protected readonly userToDelete = signal<User | null>(null);
+  protected readonly deleting = signal(false);
 
   protected readonly isLastPage = computed(() => {
     const m = this.meta();
@@ -366,5 +416,33 @@ export class UsersComponent implements OnInit {
 
   resetFilters(): void {
     this.filters.reset({ search: '', role: 'all', country: '' });
+  }
+
+  askDelete(user: User): void {
+    if (this.deleting()) return;
+    this.userToDelete.set(user);
+  }
+
+  cancelDelete(): void {
+    if (this.deleting()) return;
+    this.userToDelete.set(null);
+  }
+
+  confirmDelete(user: User): void {
+    if (this.deleting()) return;
+
+    this.deleting.set(true);
+    this.service.delete(user.id).subscribe({
+      next: (res) => {
+        this.deleting.set(false);
+        this.userToDelete.set(null);
+        this.notify.success(res.message);
+        this.load();
+      },
+      error: () => {
+        this.deleting.set(false);
+        this.userToDelete.set(null);
+      },
+    });
   }
 }

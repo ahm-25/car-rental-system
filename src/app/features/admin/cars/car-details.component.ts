@@ -11,6 +11,7 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { NotificationService } from '../../../core/services/notification.service';
 import { Car } from '../../../models/car.model';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { SpinnerComponent } from '../../../shared/components/spinner/spinner.component';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { LanguageService } from '../../../core/services/language.service';
@@ -19,7 +20,14 @@ import { AdminCarsService } from './admin-cars.service';
 @Component({
   selector: 'app-admin-car-details',
   standalone: true,
-  imports: [RouterLink, DatePipe, DecimalPipe, SpinnerComponent, TranslatePipe],
+  imports: [
+    RouterLink,
+    DatePipe,
+    DecimalPipe,
+    SpinnerComponent,
+    ConfirmDialogComponent,
+    TranslatePipe,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="flex flex-col gap-6 max-w-3xl">
@@ -60,14 +68,9 @@ import { AdminCarsService } from './admin-cars.service';
               type="button"
               class="btn inline-flex items-center gap-2 bg-red-600 text-white hover:bg-red-700"
               [disabled]="deleting()"
-              (click)="deleteCar(c)"
+              (click)="askDelete()"
             >
-              @if (deleting()) {
-                <app-spinner size="sm" />
-                {{ 'cars.delete_confirm.deleting' | t }}
-              } @else {
-                {{ 'common.delete' | t }}
-              }
+              {{ 'common.delete' | t }}
             </button>
           </div>
         </header>
@@ -126,6 +129,20 @@ import { AdminCarsService } from './admin-cars.service';
         }
       }
     </section>
+
+    @if (car(); as c) {
+      <app-confirm-dialog
+        [open]="confirmDeleteOpen()"
+        [title]="'cars.delete_confirm.title' | t: { name: c.name }"
+        [body]="'cars.delete_confirm.body' | t"
+        [confirmLabel]="'cars.delete_confirm.delete' | t"
+        [busyLabel]="'cars.delete_confirm.deleting' | t"
+        [busy]="deleting()"
+        tone="danger"
+        (confirm)="confirmDelete(c)"
+        (cancel)="cancelDelete()"
+      />
+    }
   `,
 })
 export class AdminCarDetailsComponent implements OnInit {
@@ -140,6 +157,7 @@ export class AdminCarDetailsComponent implements OnInit {
   protected readonly loading = signal(false);
   protected readonly error = signal<string | null>(null);
   protected readonly deleting = signal(false);
+  protected readonly confirmDeleteOpen = signal(false);
 
   ngOnInit(): void {
     this.load();
@@ -172,19 +190,30 @@ export class AdminCarDetailsComponent implements OnInit {
     });
   }
 
-  deleteCar(car: Car): void {
+  askDelete(): void {
     if (this.deleting()) return;
-    if (!confirm(this.lang.translate('cars.delete_confirm.body'))) return;
+    this.confirmDeleteOpen.set(true);
+  }
+
+  cancelDelete(): void {
+    if (this.deleting()) return;
+    this.confirmDeleteOpen.set(false);
+  }
+
+  confirmDelete(car: Car): void {
+    if (this.deleting()) return;
 
     this.deleting.set(true);
     this.service.delete(car.id).subscribe({
       next: (res) => {
         this.deleting.set(false);
+        this.confirmDeleteOpen.set(false);
         this.notify.success(res.message);
         this.router.navigate(['/admin/cars']);
       },
       error: () => {
         this.deleting.set(false);
+        this.confirmDeleteOpen.set(false);
       },
     });
   }

@@ -13,12 +13,13 @@ import {
   NonNullableFormBuilder,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { NotificationService } from '../../../core/services/notification.service';
 import {
   Order,
   PaymentStatus,
 } from '../../../models/order.model';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { SpinnerComponent } from '../../../shared/components/spinner/spinner.component';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { LanguageService } from '../../../core/services/language.service';
@@ -35,6 +36,7 @@ const STATUSES: readonly PaymentStatus[] = ['success', 'pending'];
     DatePipe,
     DecimalPipe,
     SpinnerComponent,
+    ConfirmDialogComponent,
     TranslatePipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -71,15 +73,25 @@ const STATUSES: readonly PaymentStatus[] = ['success', 'pending'];
               {{ 'orders.details.created' | t }} {{ o.created_at | date: 'medium' }}
             </p>
           </div>
-          <span
-            class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold"
-            [class.bg-emerald-100]="o.payment_status === 'success'"
-            [class.text-emerald-800]="o.payment_status === 'success'"
-            [class.bg-amber-100]="o.payment_status === 'pending'"
-            [class.text-amber-800]="o.payment_status === 'pending'"
-          >
-            {{ 'orders.statuses.' + o.payment_status | t }}
-          </span>
+          <div class="flex items-center gap-3">
+            <span
+              class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold"
+              [class.bg-emerald-100]="o.payment_status === 'success'"
+              [class.text-emerald-800]="o.payment_status === 'success'"
+              [class.bg-amber-100]="o.payment_status === 'pending'"
+              [class.text-amber-800]="o.payment_status === 'pending'"
+            >
+              {{ 'orders.statuses.' + o.payment_status | t }}
+            </span>
+            <button
+              type="button"
+              class="btn inline-flex items-center gap-2 bg-red-600 text-white hover:bg-red-700"
+              [disabled]="deleting()"
+              (click)="askDelete()"
+            >
+              {{ 'common.delete' | t }}
+            </button>
+          </div>
         </header>
 
         <div class="grid gap-4 md:grid-cols-3">
@@ -297,12 +309,27 @@ const STATUSES: readonly PaymentStatus[] = ['success', 'pending'];
         }
       }
     </section>
+
+    @if (order(); as o) {
+      <app-confirm-dialog
+        [open]="confirmDeleteOpen()"
+        [title]="'orders.delete_confirm.title' | t: { id: o.id }"
+        [body]="'orders.delete_confirm.body' | t"
+        [confirmLabel]="'orders.delete_confirm.delete' | t"
+        [busyLabel]="'orders.delete_confirm.deleting' | t"
+        [busy]="deleting()"
+        tone="danger"
+        (confirm)="confirmDelete(o)"
+        (cancel)="cancelDelete()"
+      />
+    }
   `,
 })
 export class AdminOrderDetailsComponent implements OnInit {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly service = inject(AdminOrdersService);
   private readonly notify = inject(NotificationService);
+  private readonly router = inject(Router);
   private readonly lang = inject(LanguageService);
 
   @Input() id?: string;
@@ -314,6 +341,8 @@ export class AdminOrderDetailsComponent implements OnInit {
   protected readonly error = signal<string | null>(null);
 
   protected readonly updating = signal(false);
+  protected readonly deleting = signal(false);
+  protected readonly confirmDeleteOpen = signal(false);
 
   protected readonly statusForm = this.fb.group({
     payment_status: this.fb.control<PaymentStatus>('pending'),
@@ -352,6 +381,34 @@ export class AdminOrderDetailsComponent implements OnInit {
             : (err.error as { message?: string } | null)?.message ??
                 this.lang.translate('orders.details.error_default'),
         );
+      },
+    });
+  }
+
+  askDelete(): void {
+    if (this.deleting()) return;
+    this.confirmDeleteOpen.set(true);
+  }
+
+  cancelDelete(): void {
+    if (this.deleting()) return;
+    this.confirmDeleteOpen.set(false);
+  }
+
+  confirmDelete(order: Order): void {
+    if (this.deleting()) return;
+
+    this.deleting.set(true);
+    this.service.delete(order.id).subscribe({
+      next: (res) => {
+        this.deleting.set(false);
+        this.confirmDeleteOpen.set(false);
+        this.notify.success(res.message);
+        this.router.navigate(['/admin/orders']);
+      },
+      error: () => {
+        this.deleting.set(false);
+        this.confirmDeleteOpen.set(false);
       },
     });
   }
