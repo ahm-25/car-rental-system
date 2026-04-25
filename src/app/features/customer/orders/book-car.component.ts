@@ -169,7 +169,7 @@ function diffInDays(startIso: string, endIso: string): number {
                   <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-300">
                     {{ 'customer_cars.details.header' | t }}
                   </p>
-                  <h1 class="mt-0.5 text-xl sm:text-2xl font-bold tracking-tight truncate">
+                  <h1 class="mt-0.5 text-xl sm:text-2xl font-bold tracking-tight text-white truncate">
                     {{ c.brand }} {{ c.name }}
                     <span class="font-normal text-white/50">· {{ c.model }}</span>
                   </h1>

@@ -37,7 +37,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
                 <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </span>
-            <span class="text-lg font-bold tracking-tight">
+            <span class="text-lg font-bold tracking-tight text-white">
               {{ 'common.company_name' | t }}<span class="text-brand-400">.</span>
             </span>
           </a>
@@ -47,10 +47,10 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
               {{ 'auth.panel_badge' | t }}
             </span>
-            <h2 class="text-3xl xl:text-4xl font-bold tracking-tight leading-tight text-balance">
+            <h2 class="text-3xl xl:text-4xl font-bold tracking-tight leading-tight text-white text-balance">
               {{ 'auth.panel_heading' | t }}
             </h2>
-            <p class="mt-4 text-base text-white/70 text-pretty">
+            <p class="mt-4 text-base text-white/80 text-pretty">
               {{ 'auth.panel_sub' | t }}
             </p>
 
@@ -82,7 +82,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
             </ul>
           </div>
 
-          <p class="relative text-xs text-white/50">
+          <p class="relative text-xs text-white/60">
             {{ 'footer.copyright' | t: { year: year } }}
           </p>
         </div>

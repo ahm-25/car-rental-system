@@ -42,10 +42,10 @@ import { CustomerCarsQuery, CustomerCarsService } from './customer-cars.service'
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
             {{ 'customer_cars.details.available' | t }}
           </span>
-          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-tight text-balance">
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-tight text-white text-balance">
             {{ 'customer_cars.hero_title' | t }}
           </h1>
-          <p class="mt-4 text-base sm:text-lg text-white/70 max-w-xl text-pretty">
+          <p class="mt-4 text-base sm:text-lg text-white max-w-xl text-pretty opacity-90">
             {{ 'customer_cars.hero_subtitle' | t }}
           </p>
         </div>
@@ -54,7 +54,7 @@ import { CustomerCarsQuery, CustomerCarsService } from './customer-cars.service'
       <!-- Filters -->
       <form
         [formGroup]="filters"
-        (submit)="$event.preventDefault()"
+        (ngSubmit)="load()"
         class="card grid gap-4 md:grid-cols-4 lg:grid-cols-5 items-end -mt-16 relative z-10 mx-2 sm:mx-4 shadow-elevated"
       >
         <div class="md:col-span-1 lg:col-span-1">
@@ -97,8 +97,7 @@ import { CustomerCarsQuery, CustomerCarsService } from './customer-cars.service'
         </div>
         <div class="md:col-span-4 lg:col-span-1">
           <button
-            type="button"
-            (click)="load()"
+            type="submit"
             class="btn-primary w-full py-3"
             [disabled]="loading()"
           >
@@ -253,19 +252,10 @@ export class CarsListComponent implements OnInit {
 
   ngOnInit(): void {
     this.load();
-
-    this.filters.valueChanges
-      .pipe(
-        debounceTime(500),
-        distinctUntilChanged(
-          (a, b) => JSON.stringify(a) === JSON.stringify(b),
-        ),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe(() => this.load());
   }
 
   load(): void {
+    if (this.loading()) return;
     this.loading.set(true);
     this.error.set(null);
 

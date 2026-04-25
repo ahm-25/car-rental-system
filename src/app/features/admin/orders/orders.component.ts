@@ -73,7 +73,7 @@ const ORDER_TYPES: readonly OrderType[] = ['full', 'installments'];
       <form
         [formGroup]="filters"
         class="card"
-        (submit)="$event.preventDefault()"
+        (ngSubmit)="page.set(1); load()"
       >
         <div class="grid gap-4 md:grid-cols-3 lg:grid-cols-6">
           <div class="md:col-span-2 lg:col-span-2">
@@ -138,7 +138,7 @@ const ORDER_TYPES: readonly OrderType[] = ['full', 'installments'];
           </div>
         </div>
 
-        <div class="flex justify-end mt-5 pt-5 border-t border-slate-100 dark:border-slate-800">
+        <div class="flex justify-end items-center gap-3 mt-5 pt-5 border-t border-slate-100 dark:border-slate-800">
           <button
             type="button"
             class="btn-ghost text-sm"
@@ -147,6 +147,20 @@ const ORDER_TYPES: readonly OrderType[] = ['full', 'installments'];
           >
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
             {{ 'orders.filters.reset' | t }}
+          </button>
+          <button
+            type="submit"
+            class="btn-primary py-2 px-6"
+            [disabled]="loading()"
+          >
+            @if (loading()) {
+              <app-spinner size="sm" />
+            } @else {
+              <svg class="h-4 w-4 rtl:-scale-x-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            }
+            {{ 'common.search' | t }}
           </button>
         </div>
       </form>
@@ -351,23 +365,11 @@ export class AdminOrdersComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.filters.valueChanges
-      .pipe(
-        debounceTime(350),
-        distinctUntilChanged(
-          (a, b) => JSON.stringify(a) === JSON.stringify(b),
-        ),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe(() => {
-        this.page.set(1);
-        this.load();
-      });
-
     this.load();
   }
 
   load(): void {
+    if (this.loading()) return;
     this.loading.set(true);
     this.error.set(null);
 
